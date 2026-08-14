@@ -7,7 +7,8 @@ components with the mock content pulled out into data modules.
 
 ```bash
 npm install
-npm run dev      # http://localhost:5173
+npm run dev      # http://localhost:5174 — pinned; must match FRONTEND_URL and
+                 # CORS_ORIGINS in backend/.env or OAuth sign-in fails
 npm run build    # production build into dist/
 npm run preview  # serve the production build
 npm run lint

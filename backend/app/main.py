@@ -92,7 +92,9 @@ app.add_middleware(
     # A browser can only read response headers that are named here. These carry
     # why a call was refused — see deps.require_feature — so without them the
     # SPA would get the 403 but not what to upgrade to.
-    expose_headers=["X-Required-Plan", "X-Required-Feature", "X-Contact-Limit"],
+    expose_headers=[
+        "X-Required-Plan", "X-Required-Feature", "X-Required-Phase", "X-Contact-Limit",
+    ],
 )
 
 # Auth sits at /auth so the callback matches GOOGLE_REDIRECT_URI exactly.

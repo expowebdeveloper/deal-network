@@ -3,18 +3,22 @@
 Two things are described here, and they are the same two things the pricing page
 and the landing page show:
 
-1. **Modules** — the platform is built in phases (see the landing page roadmap),
-   and a plan reaches up to a phase. Free stops at phase 1, Member at phase 3,
-   Professional reaches everything including the Pro-only module.
+1. **Phases** — the platform is built in seven phases (the phase cards on the
+   landing page, and `frontend/src/data/phases.js` behind them). A plan reaches
+   up to a phase and everything below it:
+
+       Early access ($0)     phase 1
+       Member ($25)          phases 1–4
+       Professional ($100)   every phase, 1–7
+
+   Access is cumulative and contiguous: reaching phase 4 means phases 1, 2, 3
+   and 4 are all open. There is no plan that skips a phase.
 
 2. **Features** — the ticks on the plan cards: contact limits, the pipeline
    board, creating communities, introduction requests, team seats.
 
-A module unlocks only when its *whole* phase range is within the plan's reach, so
-"Analytics · Phase 3–4" belongs to Professional rather than Member — it is not
-finished until phase 4, and Professional is the tier that advertises "early
-access to what ships next". Change `_reaches` if a module should instead unlock
-as soon as its first phase is in range.
+The phase names below are the ones in card.txt, which is also what
+`frontend/src/data/phases.js` was transcribed from. Keep the three in step.
 """
 
 from __future__ import annotations
@@ -23,34 +27,31 @@ from dataclasses import dataclass, field
 
 from app.models import PlanTier
 
-# --- The modules, exactly as the landing page lists them ------------------
+# --- The build phases, exactly as the landing page lists them --------------
 
 @dataclass(frozen=True)
-class Module:
-    id: str
-    title: str
-    phase_from: int
-    phase_to: int
-    pro: bool = False
+class Phase:
+    n: int
+    name: str
 
     @property
-    def phase_label(self) -> str:
-        if self.phase_from == self.phase_to:
-            return f"Phase {self.phase_from}"
-        return f"Phase {self.phase_from}–{self.phase_to}"
+    def label(self) -> str:
+        return f"Phase {self.n}"
 
 
-MODULES: list[Module] = [
-    Module("forum", "Online Forum & Networking Hub", 1, 1),
-    Module("news", "Niche News & Market Analysis", 2, 2),
-    Module("crm", "CRM & Deal Pipeline", 2, 2),
-    Module("dataroom", "Integrated Data & Deal Room", 2, 3),
-    Module("lp", "Smarter LP & Capital Sourcing", 2, 2),
-    Module("analytics", "Analytics", 3, 4),
-    Module("ai", "AI Underwriting", 4, 4, pro=True),
+PHASES: list[Phase] = [
+    Phase(1, "Basic Platform"),
+    Phase(2, "CRM, Profiles and Networking"),
+    Phase(3, "Data Room and Basic Underwriting"),
+    Phase(4, "Advanced Underwriting and Analytics"),
+    Phase(5, "AI Agent and Regulatory / Cyber"),
+    Phase(6, "Stabilisation, Native Planning, Interview, Team"),
+    Phase(7, "Native App and New Features"),
 ]
 
-MODULES_BY_ID = {module.id: module for module in MODULES}
+PHASES_BY_NUMBER = {phase.n: phase for phase in PHASES}
+FIRST_PHASE = PHASES[0].n
+LAST_PHASE = PHASES[-1].n
 
 
 # --- What a plan reaches --------------------------------------------------
@@ -77,7 +78,7 @@ PLAN_ACCESS: dict[PlanTier, PlanAccess] = {
         features=frozenset({"full_profile", "join_communities", "unlimited_connections"}),
     ),
     PlanTier.member: PlanAccess(
-        max_phase=3,
+        max_phase=4,
         pro=False,
         contact_limit=None,
         team_seats=0,
@@ -88,7 +89,7 @@ PLAN_ACCESS: dict[PlanTier, PlanAccess] = {
         }),
     ),
     PlanTier.professional: PlanAccess(
-        max_phase=max(module.phase_to for module in MODULES),
+        max_phase=LAST_PHASE,
         pro=True,
         contact_limit=None,
         team_seats=5,
@@ -122,17 +123,13 @@ def access_for(plan: PlanTier) -> PlanAccess:
     return PLAN_ACCESS[plan]
 
 
-def _reaches(access: PlanAccess, module: Module) -> bool:
-    """A module counts as included once the plan reaches its final phase."""
-    return module.phase_to <= access.max_phase and (access.pro or not module.pro)
+def phase_included(plan: PlanTier, phase: int) -> bool:
+    """A phase is open once the plan reaches it — and every phase below it."""
+    return phase <= access_for(plan).max_phase
 
 
-def module_included(plan: PlanTier, module: Module) -> bool:
-    return _reaches(access_for(plan), module)
-
-
-def modules_for(plan: PlanTier) -> list[Module]:
-    return [module for module in MODULES if module_included(plan, module)]
+def phases_for(plan: PlanTier) -> list[Phase]:
+    return [phase for phase in PHASES if phase_included(plan, phase.n)]
 
 
 def allows(plan: PlanTier, feature: str) -> bool:
@@ -151,11 +148,9 @@ def plan_needed_for_feature(feature: str) -> PlanTier | None:
     return None
 
 
-def plan_needed_for_module(module_id: str) -> PlanTier | None:
-    module = MODULES_BY_ID.get(module_id)
-    if module is None:
-        return None
+def plan_needed_for_phase(phase: int) -> PlanTier | None:
+    """The cheapest plan that reaches a phase, or None if it is past all of them."""
     for tier in PLAN_ORDER:
-        if module_included(tier, module):
+        if phase_included(tier, phase):
             return tier
     return None

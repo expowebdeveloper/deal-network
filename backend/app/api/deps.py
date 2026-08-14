@@ -131,6 +131,40 @@ PlanGated = Annotated[User, Depends(require_plan_selected)]
 GATES = [Depends(require_terms_accepted), Depends(require_plan_selected)]
 
 
+async def _plan_of(db: DbSession, user_id) -> "PlanTier":  # noqa: F821
+    from app.models import PlanTier, Subscription  # imported here to avoid a cycle
+
+    subscription = await db.scalar(select(Subscription).where(Subscription.user_id == user_id))
+    return subscription.plan if subscription else PlanTier.early_access
+
+
+def require_phase(phase: int):
+    """Dependency factory: refuse the call unless the plan reaches a build phase.
+
+    The counterpart to `require_feature` below, for whole phases rather than
+    individual ticks: put it on the routes a phase introduces and the tier rules
+    (free → phase 1, Member → 1–4, Professional → all of them) are enforced in
+    one place instead of being re-derived per route.
+    """
+    async def dependency(db: DbSession, current_user: CurrentUser) -> User:
+        from app.services import entitlements as entitlement_service
+
+        plan = await _plan_of(db, current_user.id)
+        if not entitlement_service.phase_included(plan, phase):
+            needed = entitlement_service.plan_needed_for_phase(phase)
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="upgrade_required",
+                headers={
+                    "X-Required-Plan": needed.value if needed else "",
+                    "X-Required-Phase": str(phase),
+                },
+            )
+        return current_user
+
+    return dependency
+
+
 def require_feature(feature: str):
     """Dependency factory: refuse the call unless the member's plan carries a tick.
 
@@ -139,13 +173,9 @@ def require_feature(feature: str):
     header, so a client can say *which* plan to upgrade to without parsing prose.
     """
     async def dependency(db: DbSession, current_user: CurrentUser) -> User:
-        from app.models import PlanTier, Subscription  # imported here to avoid a cycle
         from app.services import entitlements as entitlement_service
 
-        subscription = await db.scalar(
-            select(Subscription).where(Subscription.user_id == current_user.id)
-        )
-        plan = subscription.plan if subscription else PlanTier.early_access
+        plan = await _plan_of(db, current_user.id)
         if not entitlement_service.allows(plan, feature):
             needed = entitlement_service.plan_needed_for_feature(feature)
             raise HTTPException(
