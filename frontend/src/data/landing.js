@@ -237,12 +237,7 @@ export const about = {
   body: [
     'Deal Network is being built for the people who actually put property deals together — developers, investors, brokers, lenders and the professionals around them. It started from a simple irritation: a single transaction spread across an inbox, a spreadsheet, a file-sharing account and three chat groups, with nobody sure which version was current.',
     'We are deliberately small, and deliberately public about the plan. The roadmap above is the real one — a working network first, then the CRM and the data room, then the analytics and AI layers on top. We would rather ship a phase that works than announce a feature that does not exist yet.',
-    'Early access is invitation and referral only while we grow the first few hundred members, because a network of the right people beats a network of a lot of people.',
-  ],
-  points: [
-    { n: 'Phase 1', l: 'Live now — profiles, communities, networking' },
-    { n: '7 phases', l: 'Published roadmap, through to native apps' },
-    { n: 'Invite only', l: 'How members join during early access' },
+    'Early access is invitation and referral only while we grow the first few hundred members. A network of the right people beats a network of a lot of people — and the difference shows the first time you need an introduction to a lender who actually writes in your market.',
   ],
 }
 

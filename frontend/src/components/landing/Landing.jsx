@@ -24,6 +24,18 @@ function Tile({ icon, className = 'a1' }) {
   return <div className={`feat-avatar ${className}`}><Icon /></div>
 }
 
+/**
+ * Phase 6 is internal delivery work — defect burn-down, disaster recovery,
+ * compliance and hiring — so it is not something to sell a visitor on. It still
+ * exists everywhere else: the roadmap strip below, and the plan entitlements
+ * the API enforces.
+ */
+const HIDDEN_PHASES = [6]
+const shownPhases = phases.filter((p) => !HIDDEN_PHASES.includes(p.n))
+
+/** The phase marked "Coming soon" on its card — the last one on the plan. */
+const COMING_SOON_FROM = 7
+
 export default function Landing() {
   const navigate = useNavigate()
   const { pathname, hash } = useLocation()
@@ -135,15 +147,15 @@ export default function Landing() {
         <div className="wrap">
           <div className="section-head">
             <span className="eyebrow">The build plan</span>
-            <h2>Seven phases, and exactly what is in each one</h2>
+            <h2>What we are building, and exactly what is in it</h2>
             <p>
-              Click any phase to see the full feature list behind it — every item, its group and
-              where it currently stands.
+              Click any card to see the full feature list behind it — every item, and the group
+              it belongs to.
             </p>
           </div>
 
           <div className="feat-grid">
-            {phases.map((p) => (
+            {shownPhases.map((p) => (
               <button
                 className="card feat-card"
                 key={p.n}
@@ -151,7 +163,7 @@ export default function Landing() {
               >
                 <div className="feat-top">
                   <Tile icon={p.icon} className={p.avatar} />
-                  <span className="chip">Phase {p.n}</span>
+                  {p.n === COMING_SOON_FROM && <span className="chip">Coming soon</span>}
                 </div>
                 <div>
                   <h3>{p.name}</h3>
@@ -336,23 +348,19 @@ export default function Landing() {
       </section>
 
       <section className="landing-section" id="about">
-        <div className="wrap about-grid">
-          <div className="about-copy">
+        <div className="wrap">
+          {/* Centred like every other section on the page. The lead paragraph
+              carries the story; the rest sits in two readable columns under it,
+              which keeps the line length short without a sidebar. */}
+          <div className="section-head about-head">
             <span className="eyebrow">About us</span>
             <h2>{about.title}</h2>
-            {about.body.map((para) => <p key={para}>{para}</p>)}
+            <p>{about.body[0]}</p>
           </div>
-          <aside className="card about-points">
-            {about.points.map((p) => (
-              <div className="about-point" key={p.n}>
-                <div className="n">{p.n}</div>
-                <div className="l">{p.l}</div>
-              </div>
-            ))}
-            <button className="btn btn-ghost btn-block" onClick={() => scrollTo('roadmap')}>
-              See the full roadmap
-            </button>
-          </aside>
+
+          <div className="about-cols">
+            {about.body.slice(1).map((para) => <p key={para}>{para}</p>)}
+          </div>
         </div>
       </section>
 

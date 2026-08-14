@@ -25,7 +25,6 @@ export default function PhaseModal({ phaseNumber }) {
         <div className={`feat-avatar ${phase.avatar}`}><Icon /></div>
         <div className="tt">
           <h2>{phase.name}</h2>
-          <span className="chip">Phase {phase.n}</span>
           <span className="tag">{phaseItemCount(phase)} features</span>
         </div>
         <button className="modal-close" onClick={closeModal} aria-label="Close">
