@@ -169,3 +169,8 @@ export const ClockIcon = (p) => (
 export const StackIcon = (p) => (
   <Stroke width={1.9} {...p}><rect x="4" y="4" width="16" height="16" rx="3" /><path d="M9 12h6M12 9v6" /></Stroke>
 )
+export const PhoneIcon = (p) => (
+  <Stroke width={1.9} {...p}>
+    <rect x="6.5" y="2.5" width="11" height="19" rx="2.6" /><path d="M10.6 5.6h2.8M12 18.4h.01" />
+  </Stroke>
+)

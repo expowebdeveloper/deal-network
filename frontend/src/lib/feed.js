@@ -149,7 +149,7 @@ export function currentSelection() {
   return api.get('/api/plans/selection')
 }
 
-/** What my plan unlocks: modules, feature ticks, contact limit and usage. */
+/** What my plan unlocks: build phases, feature ticks, contact limit and usage. */
 export function fetchEntitlements() {
   return api.get('/api/plans/entitlements')
 }

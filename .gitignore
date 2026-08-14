@@ -10,11 +10,18 @@ __pycache__/
 venv/
 
 # Environment variables / secrets
+# Every .env variant is ignored — a stray .env.bak or .env.old holds the same
+# live credentials as the original. The committed example is the exception.
 .env
-.env.local
+.env.*
+!.env.example
 
 # OS generated files
 .DS_Store
 
 landing.html
 sample.html
+card.txt
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat

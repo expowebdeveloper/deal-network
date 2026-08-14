@@ -4,7 +4,9 @@
  */
 import {
   ForumIcon, NewsIcon, MailIcon, DataRoomIcon, CommunitiesIcon,
-  AnalyticsIcon, BoltIcon, ClockIcon, StackIcon,
+  AnalyticsIcon, BoltIcon, ClockIcon, StackIcon, ProfileIcon,
+  LockIcon, PinIcon, CheckIcon, UnderwritingIcon, HomeIcon,
+  InvestorsIcon, SearchIcon, ContactsIcon, PlansIcon, PhoneIcon,
 } from '../icons/Icons'
 
 export const ICONS = {
@@ -17,4 +19,15 @@ export const ICONS = {
   bolt: BoltIcon,
   clock: ClockIcon,
   stack: StackIcon,
+  profile: ProfileIcon,
+  lock: LockIcon,
+  pin: PinIcon,
+  check: CheckIcon,
+  underwriting: UnderwritingIcon,
+  home: HomeIcon,
+  investors: InvestorsIcon,
+  search: SearchIcon,
+  contacts: ContactsIcon,
+  plans: PlansIcon,
+  phone: PhoneIcon,
 }

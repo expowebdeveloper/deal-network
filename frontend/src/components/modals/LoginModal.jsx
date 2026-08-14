@@ -31,7 +31,11 @@ function describeError(code) {
 export default function LoginModal({ error = null, onClose }) {
   const { closeModal, openModal } = useApp()
 
-  const [providers, setProviders] = useState(null) // null = still checking
+  // null = we do not know which providers exist — either still checking, or the
+  // lookup failed. Never [] on failure: an empty list reads as "the server has
+  // no providers configured", which is a different problem with a different fix.
+  const [providers, setProviders] = useState(null)
+  const [checking, setChecking] = useState(true)
   const [problem, setProblem] = useState(() => describeError(error))
   const [busy, setBusy] = useState(null)
 
@@ -44,13 +48,15 @@ export default function LoginModal({ error = null, onClose }) {
       })
       .catch((err) => {
         if (cancelled) return
-        setProviders([])
         setProblem(
           err.status === 0
-            ? 'Cannot reach the API. Start the backend with: uvicorn app.main:app --reload'
-            : 'Could not load sign-in options from the server.',
+            ? 'Cannot reach the API. Start the backend with: uvicorn app.main:app --reload — ' +
+              'if it is running, check that this page’s address is listed in CORS_ORIGINS ' +
+              'in backend/.env.'
+            : 'Could not load sign-in options from the server. Signing in may still work.',
         )
       })
+      .finally(() => { if (!cancelled) setChecking(false) })
     return () => { cancelled = true }
   }, [])
 
@@ -81,8 +87,6 @@ export default function LoginModal({ error = null, onClose }) {
     // Single modal slot — offer the way back to this one.
     openModal('terms', { onBack: () => openModal('login', { onClose }) })
   }
-
-  const checking = providers === null
 
   return (
     <Modal className="login-modal">
