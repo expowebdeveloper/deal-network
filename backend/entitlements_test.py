@@ -26,12 +26,12 @@ from app.services.users import resolve_user
 BASE = "http://127.0.0.1:8000"
 passed, failed = 0, 0
 
-# Which modules each tier should reach. A module counts as included once the
-# plan reaches its *final* phase — so Analytics (3–4) is Professional, not Member.
+# Which build phases each tier should reach. Free stops at phase 1, Member runs
+# to phase 4, Professional opens all seven.
 EXPECTED = {
-    "early_access": ["forum"],
-    "member": ["forum", "news", "crm", "dataroom", "lp"],
-    "professional": ["forum", "news", "crm", "dataroom", "lp", "analytics", "ai"],
+    "early_access": [1],
+    "member": [1, 2, 3, 4],
+    "professional": [1, 2, 3, 4, 5, 6, 7],
 }
 
 
@@ -81,6 +81,52 @@ async def fill_contacts(user_id, count: int) -> None:
         await db.commit()
 
 
+async def check_phase_guard(user_id) -> None:
+    """`require_phase` guards routes a phase has not shipped yet, so there is no
+    endpoint to call. Exercise the dependency itself instead."""
+    from fastapi import HTTPException
+
+    from app.api.deps import require_phase
+    from app.models import User
+
+    async def ask(plan: PlanTier, phase: int):
+        """-> (allowed, headers). Headers are what the 403 would carry."""
+        await set_plan(user_id, plan)
+        async with AsyncSessionLocal() as db:
+            user = await db.get(User, user_id)
+            try:
+                await require_phase(phase)(db, user)
+                return True, {}
+            except HTTPException as exc:
+                return False, exc.headers or {}
+
+    allowed, _ = await ask(PlanTier.early_access, 1)
+    check("free passes the phase 1 guard", allowed is True, str(allowed))
+
+    allowed, headers = await ask(PlanTier.early_access, 2)
+    check("free is refused at phase 2", allowed is False, str(allowed))
+    check("  and is told Member unlocks it",
+          headers.get("X-Required-Plan") == "member", str(headers))
+    check("  and which phase it was", headers.get("X-Required-Phase") == "2", str(headers))
+
+    allowed, headers = await ask(PlanTier.early_access, 5)
+    check("free is refused at phase 5, pointed at Professional",
+          allowed is False and headers.get("X-Required-Plan") == "professional", str(headers))
+
+    for phase in (1, 2, 3, 4):
+        allowed, _ = await ask(PlanTier.member, phase)
+        check(f"member passes the phase {phase} guard", allowed is True, str(allowed))
+
+    allowed, headers = await ask(PlanTier.member, 5)
+    check("member is refused at phase 5", allowed is False, str(allowed))
+    check("  and is told Professional unlocks it",
+          headers.get("X-Required-Plan") == "professional", str(headers))
+
+    for phase in (1, 4, 5, 6, 7):
+        allowed, _ = await ask(PlanTier.professional, phase)
+        check(f"professional passes the phase {phase} guard", allowed is True, str(allowed))
+
+
 async def main() -> None:
     run = uuid.uuid4().hex[:8]
     user_id, email = await make_member(run)
@@ -92,10 +138,14 @@ async def main() -> None:
             for tier, expected in EXPECTED.items():
                 r = await c.get(f"/api/plans/{tier}/entitlements", headers=auth)
                 body = r.json()
-                included = [m["id"] for m in body["modules"] if m["included"]]
-                check(f"{tier}: {', '.join(expected)}",
+                included = [p["n"] for p in body["phases"] if p["included"]]
+                label = ", ".join(f"phase {n}" for n in expected)
+                check(f"{tier}: {label}",
                       r.status_code == 200 and included == expected,
                       f"{r.status_code} {included}")
+                check(f"{tier}: all seven phases are listed, open or not",
+                      [p["n"] for p in body["phases"]] == [1, 2, 3, 4, 5, 6, 7],
+                      str([p["n"] for p in body["phases"]]))
 
             r = await c.get("/api/plans/early_access/entitlements", headers=auth)
             body = r.json()
@@ -103,14 +153,18 @@ async def main() -> None:
             check("free is not pro", body["pro"] is False, str(body["pro"]))
             check("free caps contacts at 25", body["contact_limit"] == 25, str(body["contact_limit"]))
             check("free has no team seats", body["team_seats"] == 0, str(body["team_seats"]))
-            locked = {m["id"]: m["unlocked_by"] for m in body["modules"] if not m["included"]}
-            check("it says which plan unlocks each locked module",
-                  locked["crm"] == "member" and locked["analytics"] == "professional"
-                  and locked["ai"] == "professional", str(locked))
+            check("phase 1 carries its name from card.txt",
+                  next(p for p in body["phases"] if p["n"] == 1)["name"] == "Basic Platform",
+                  str(body["phases"][0]))
+            locked = {p["n"]: p["unlocked_by"] for p in body["phases"] if not p["included"]}
+            check("it says which plan unlocks each locked phase",
+                  locked == {2: "member", 3: "member", 4: "member",
+                             5: "professional", 6: "professional", 7: "professional"},
+                  str(locked))
 
             r = await c.get("/api/plans/member/entitlements", headers=auth)
             body = r.json()
-            check("member reaches phase 3", body["max_phase"] == 3, str(body["max_phase"]))
+            check("member reaches phase 4", body["max_phase"] == 4, str(body["max_phase"]))
             check("member is unlimited on contacts",
                   body["contact_limit"] is None, str(body["contact_limit"]))
             check("member carries its four ticks",
@@ -119,14 +173,20 @@ async def main() -> None:
                        "introduction_requests"]), str(body["features"]))
             check("but not team seats", body["features"]["team_seats"] is False,
                   str(body["features"]["team_seats"]))
-            check("the Pro module stays locked",
-                  next(m for m in body["modules"] if m["id"] == "ai")["included"] is False, "")
+            check("phases 5 to 7 stay locked",
+                  [p["n"] for p in body["phases"] if not p["included"]] == [5, 6, 7],
+                  str([p["n"] for p in body["phases"] if not p["included"]]))
+            check("and Professional is what opens them",
+                  all(p["unlocked_by"] == "professional"
+                      for p in body["phases"] if not p["included"]), "")
 
             r = await c.get("/api/plans/professional/entitlements", headers=auth)
             body = r.json()
-            check("professional reaches the last phase", body["max_phase"] == 4, str(body["max_phase"]))
+            check("professional reaches the last phase", body["max_phase"] == 7, str(body["max_phase"]))
             check("professional is pro", body["pro"] is True, str(body["pro"]))
             check("professional includes 5 seats", body["team_seats"] == 5, str(body["team_seats"]))
+            check("nothing is locked on professional",
+                  all(p["included"] for p in body["phases"]), str(body["phases"])[:160])
             check("and every card tick",
                   all(body["features"].values()), str(body["features"]))
 
@@ -214,10 +274,10 @@ async def main() -> None:
             await set_plan(user_id, PlanTier.professional)
             r = await c.get("/api/plans/entitlements", headers=auth)
             body = r.json()
-            check("every module is included",
-                  all(m["included"] for m in body["modules"]), str(body["modules"])[:160])
-            check("including the Pro one",
-                  next(m for m in body["modules"] if m["pro"])["included"] is True, "")
+            check("every phase is included",
+                  all(p["included"] for p in body["phases"]), str(body["phases"])[:160])
+            check("including phase 7",
+                  next(p for p in body["phases"] if p["n"] == 7)["included"] is True, "")
             check("with the 5 seats", body["team_seats"] == 5, str(body["team_seats"]))
             r = await c.get("/api/contacts/pipeline", headers=auth)
             check("everything Member could do still works", r.status_code == 200, str(r.status_code))
@@ -229,7 +289,7 @@ async def main() -> None:
             r = await c.get("/api/plans/entitlements", headers=auth)
             check("and the entitlements follow the downgrade",
                   r.json()["max_phase"] == 1
-                  and [m["id"] for m in r.json()["modules"] if m["included"]] == ["forum"],
+                  and [p["n"] for p in r.json()["phases"] if p["included"]] == [1],
                   str(r.json()["max_phase"]))
 
             if slug:
@@ -238,6 +298,9 @@ async def main() -> None:
             print("\nUnauthenticated")
             r = await c.get("/api/plans/entitlements")
             check("entitlements need a token -> 401", r.status_code == 401, str(r.status_code))
+
+        print("\nThe phase guard itself (require_phase)")
+        await check_phase_guard(user_id)
     finally:
         async with AsyncSessionLocal() as db:
             await db.execute(delete(User).where(User.id == user_id))

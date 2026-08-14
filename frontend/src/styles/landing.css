@@ -19,6 +19,9 @@ body.page-scrolls{overflow-y:auto;height:auto;min-height:100%}
 
 .landing{background:var(--canvas);min-height:100%}
 .landing .chip{cursor:default}
+/* The navbar is sticky, so a section jumped to from the nav or the footer has
+   to stop clear of it rather than underneath it. */
+.landing section[id]{scroll-margin-top:78px}
 
 /* --- Navbar --- */
 .site-nav{
@@ -113,12 +116,17 @@ body.page-scrolls{overflow-y:auto;height:auto;min-height:100%}
 .strip-item .n{font-size:15px;font-weight:800;letter-spacing:-.01em}
 .strip-item .l{font-size:12px;color:var(--muted)}
 
-/* --- Sections --- */
+/* --- Sections ---
+   The page alternates plain canvas and .tint so the eleven sections below the
+   hero read as separate stops rather than one long scroll. */
 .landing-section{padding:76px 0}
+.landing-section.tint{background:var(--surface-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .section-head{text-align:center;max-width:640px;margin:0 auto 46px}
 .section-head .eyebrow{display:block;margin-bottom:12px}
 .section-head h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.02em;margin-bottom:12px}
 .section-head p{color:var(--muted);font-size:15px;line-height:1.6}
+.landing .link{color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.landing .link:hover{color:var(--accent-dark)}
 
 /* --- Feature cards --- */
 .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
@@ -131,7 +139,8 @@ body.page-scrolls{overflow-y:auto;height:auto;min-height:100%}
 .feat-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 .feat-card h3{font-size:16.5px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px}
 .feat-card p{font-size:13.5px;color:var(--muted);line-height:1.55;flex:1}
-.feat-foot{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.feat-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px}
+.feat-count{font-size:12px;color:var(--faint);white-space:nowrap}
 .feat-more{font-size:12.5px;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:4px}
 .feat-more svg{width:14px;height:14px;transition:transform .15s ease}
 .feat-card:hover .feat-more svg{transform:translateX(3px)}
@@ -140,6 +149,139 @@ body.page-scrolls{overflow-y:auto;height:auto;min-height:100%}
 .feat-avatar{width:46px;height:46px;border-radius:12px;flex:none;display:grid;place-items:center;color:#fff}
 .feat-avatar svg{width:22px;height:22px}
 .a7{background:linear-gradient(135deg,var(--green-950),var(--lime-edge))}
+
+/* --- How it works ---
+   An ordered list: the numbers are the point, so the markup is <ol> and the
+   step number is repeated large in the corner of each card. */
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;list-style:none;counter-reset:none}
+.how-card{padding:22px;display:flex;flex-direction:column;gap:12px}
+.how-top{display:flex;align-items:center;justify-content:space-between}
+.how-num{font-size:26px;font-weight:800;letter-spacing:-.03em;color:var(--line)}
+.how-card h3{font-size:15.5px;font-weight:700;letter-spacing:-.01em}
+.how-card p{font-size:13.5px;color:var(--muted);line-height:1.6}
+
+/* --- Why choose us --- */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px 22px}
+.why-card{display:flex;gap:14px}
+.why-card h3{font-size:15.5px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px}
+.why-card p{font-size:13.5px;color:var(--muted);line-height:1.6}
+.why-card .feat-avatar{width:40px;height:40px;border-radius:11px}
+.why-card .feat-avatar svg{width:19px;height:19px}
+
+/* --- Use cases --- */
+.uc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.uc-card{padding:20px;display:flex;gap:14px;align-items:flex-start}
+.uc-icon{
+  width:38px;height:38px;border-radius:10px;flex:none;display:grid;place-items:center;
+  background:var(--accent-soft);color:var(--accent);
+}
+.uc-icon svg{width:19px;height:19px}
+.uc-card h3{font-size:14.5px;font-weight:700;letter-spacing:-.01em;margin-bottom:5px}
+.uc-card p{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* --- User types ---
+   Five cards across, so they are narrower than the three-column grids above and
+   the type steps down to match. */
+.ut-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.ut-card{padding:20px;display:flex;flex-direction:column;gap:10px}
+.ut-card .feat-avatar{width:40px;height:40px;border-radius:11px}
+.ut-card .feat-avatar svg{width:19px;height:19px}
+.ut-card h3{font-size:14.5px;font-weight:700;letter-spacing:-.01em}
+.ut-desc{font-size:12.5px;color:var(--muted);line-height:1.55}
+.ut-card ul{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:auto;padding-top:4px}
+.ut-card li{display:flex;gap:8px;font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.ut-card li svg{width:14px;height:14px;flex:none;margin-top:2px;color:var(--accent)}
+
+/* --- Testimonials --- */
+.quote-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.quote-card{padding:24px;display:flex;flex-direction:column;gap:14px}
+/* In the flow rather than behind the text: a watermark large enough to read as
+   a quote mark is also large enough to sit under two or three words. */
+.quote-mark{font-size:46px;line-height:1;height:22px;font-weight:800;color:var(--line)}
+.quote-card blockquote{font-size:14.5px;color:var(--ink-2);line-height:1.65;flex:1}
+.quote-card figcaption{display:flex;align-items:center;gap:10px;padding-top:14px;border-top:1px solid var(--line-2)}
+.quote-who{display:block;font-size:13px;font-weight:700}
+.quote-org{display:block;font-size:12px;color:var(--muted)}
+
+/* --- Trust & security ---
+   The one dark band in the middle of the page: this is the section people scan
+   for before they upload a deal, so it gets the weight. */
+.trust{
+  background:linear-gradient(160deg,var(--green-950),var(--green-800));
+  color:#fff;padding:76px 0;
+}
+.trust .eyebrow{color:var(--lime)}
+.trust .section-head h2{color:#fff}
+.trust .section-head p{color:#CBE7D5}
+.trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px 24px}
+.trust-item{display:flex;gap:13px}
+.trust-item svg{width:21px;height:21px;flex:none;margin-top:2px;color:var(--lime)}
+.trust-item h3{font-size:14.5px;font-weight:700;letter-spacing:-.01em;margin-bottom:5px}
+.trust-item p{font-size:13px;color:#B7D6C4;line-height:1.6}
+.trust-stats{
+  display:flex;justify-content:center;gap:56px;flex-wrap:wrap;
+  margin-top:44px;padding-top:34px;border-top:1px solid rgba(255,255,255,.13);
+}
+.trust-stats .hero-stat{text-align:center}
+
+/* --- About --- */
+.about-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:44px;align-items:start}
+.about-copy .eyebrow{display:block;margin-bottom:12px}
+.about-copy h2{font-size:clamp(23px,3vw,31px);font-weight:800;letter-spacing:-.02em;margin-bottom:16px}
+.about-copy p{font-size:14.5px;color:var(--muted);line-height:1.7;margin-bottom:14px;max-width:62ch}
+.about-copy p:last-child{margin-bottom:0}
+.about-points{padding:24px;display:flex;flex-direction:column;gap:18px}
+.about-point .n{font-size:20px;font-weight:800;letter-spacing:-.02em;color:var(--accent)}
+.about-point .l{font-size:12.5px;color:var(--muted);line-height:1.5;margin-top:2px}
+.about-points .btn{margin-top:2px}
+
+/* --- FAQs ---
+   Native <details>, so it opens without JavaScript and reads correctly to a
+   screen reader; only the marker is restyled. */
+.faq-list{display:flex;flex-direction:column;gap:10px;max-width:820px;margin:0 auto}
+.faq-item{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.faq-item summary{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:16px 20px;font-size:14.5px;font-weight:700;letter-spacing:-.01em;
+  cursor:pointer;list-style:none;
+}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary:hover{color:var(--accent)}
+.faq-item summary svg{width:17px;height:17px;flex:none;color:var(--accent);transition:transform .18s ease}
+.faq-item[open] summary svg{transform:rotate(180deg)}
+.faq-item[open] summary{border-bottom:1px solid var(--line-2)}
+.faq-item > p{padding:15px 20px 19px;font-size:13.5px;color:var(--muted);line-height:1.7}
+
+/* --- Legal documents (Privacy Policy, Terms & Conditions) --- */
+.legal{padding:56px 0 76px}
+.legal .wrap{max-width:860px}
+.legal-head{padding-bottom:26px;border-bottom:1px solid var(--line);margin-bottom:30px}
+.legal-head .eyebrow{display:block;margin-bottom:10px}
+.legal-head h1{font-size:clamp(27px,3.6vw,36px);font-weight:800;letter-spacing:-.022em;margin-bottom:8px}
+.legal-updated{font-size:12.5px;color:var(--faint);margin-bottom:16px}
+.legal-intro{font-size:15px;color:var(--ink-2);line-height:1.7;max-width:66ch}
+.legal-toc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px 24px;margin-bottom:36px}
+.legal-toc-label{
+  display:block;font-size:11px;font-weight:800;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--faint);margin-bottom:12px;
+}
+.legal-toc ol{columns:2;column-gap:32px;list-style:none;counter-reset:toc}
+.legal-toc li{counter-increment:toc;break-inside:avoid;margin-bottom:7px}
+.legal-toc a{font-size:13px;color:var(--ink-2);cursor:pointer;line-height:1.5}
+.legal-toc a::before{content:counter(toc) ". ";color:var(--faint)}
+.legal-toc a:hover{color:var(--accent)}
+.legal-body section{margin-bottom:34px;scroll-margin-top:84px}
+.legal-body h2{display:flex;gap:11px;font-size:18px;font-weight:800;letter-spacing:-.015em;margin-bottom:12px}
+.legal-num{
+  width:24px;height:24px;border-radius:7px;flex:none;background:var(--accent-soft);
+  color:var(--accent);display:grid;place-items:center;font-size:12px;font-weight:800;margin-top:2px;
+}
+.legal-body p{font-size:14px;color:var(--ink-2);line-height:1.75;margin-bottom:12px;max-width:70ch}
+.legal-body ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin:4px 0 12px;max-width:70ch}
+.legal-body li{position:relative;padding-left:18px;font-size:14px;color:var(--ink-2);line-height:1.7}
+.legal-body li::before{content:"";position:absolute;left:2px;top:10px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.legal-foot{margin-top:8px;padding-top:22px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+.legal-foot a{color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:2px}
 
 /* --- Roadmap --- */
 .roadmap{background:var(--surface-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -169,13 +311,27 @@ body.page-scrolls{overflow-y:auto;height:auto;min-height:100%}
 .cta-band p{color:#CBE7D5;font-size:15px;margin-bottom:28px}
 .cta-band .hero-ctas{margin-bottom:0}
 
-/* --- Footer --- */
-.site-foot{padding:36px 0;background:var(--surface)}
-.foot-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
-.foot-row .brand-name{font-size:14px;font-weight:800}
-.foot-links{display:flex;gap:22px;flex-wrap:wrap}
-.foot-links a{font-size:12.5px;color:var(--muted);cursor:pointer}
-.foot-links a:hover{color:var(--ink)}
+/* --- Footer ---
+   Four link columns now that the page has sections worth deep-linking to; the
+   legal documents live here too, since the footer is where people look. */
+.site-foot{padding:52px 0 28px;background:var(--surface);border-top:1px solid var(--line)}
+.foot-top{display:grid;grid-template-columns:1.1fr 2.4fr;gap:48px;padding-bottom:34px}
+.foot-brand .brand{margin-bottom:12px}
+.foot-brand .brand-name{font-size:14px;font-weight:800}
+.foot-brand p{font-size:12.5px;color:var(--muted);line-height:1.65;max-width:34ch;margin-bottom:16px}
+.foot-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.foot-col{display:flex;flex-direction:column;gap:9px}
+.foot-col h4{
+  font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:2px;
+}
+.foot-col a{font-size:12.5px;color:var(--muted);cursor:pointer}
+.foot-col a:hover{color:var(--accent)}
+.foot-col a.on{color:var(--accent);font-weight:600}
+.foot-row{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+  padding-top:22px;border-top:1px solid var(--line-2);
+}
 .foot-copy{font-size:12px;color:var(--faint)}
 
 /* --- Feature detail modal --- */
@@ -195,15 +351,58 @@ body.page-scrolls{overflow-y:auto;height:auto;min-height:100%}
 .feature-modal li svg{width:17px;height:17px;flex:none;margin-top:2px;color:var(--accent)}
 .feature-status{margin-top:18px;font-size:12.5px;color:var(--muted)}
 
+/* --- Phase detail dialog ---
+   The same shell as the feature dialog, carrying a whole phase: feature groups,
+   every item under them, and the status each one is at. */
+.phase-modal .tag{margin-left:6px}
+.phase-group{margin-bottom:22px}
+.phase-group:last-child{margin-bottom:0}
+.phase-modal .sec-title{
+  display:flex;align-items:center;gap:8px;letter-spacing:.04em;
+  padding-bottom:8px;border-bottom:1px solid var(--line-2);
+}
+.phase-modal li{align-items:flex-start;gap:9px;padding:7px 0}
+.phase-modal li + li{border-top:1px solid var(--line-2)}
+.phase-item{flex:1;display:block}
+/* A hollow marker where a completed item has a tick, so both line up. */
+.phase-bullet{
+  width:17px;height:17px;flex:none;margin-top:2px;position:relative;
+}
+.phase-bullet::before{
+  content:"";position:absolute;left:5px;top:5px;width:7px;height:7px;
+  border-radius:50%;border:1.6px solid var(--line-strong);
+}
+.phase-code{
+  font-family:var(--mono);font-size:11.5px;font-weight:600;
+  color:var(--faint);margin-right:7px;white-space:nowrap;
+}
+.phase-note{display:block;margin-top:3px;font-size:12.5px;color:var(--muted);font-style:italic}
+
 /* --- Responsive --- */
-@media (max-width:940px){.feat-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:1080px){
+  .how-grid{grid-template-columns:1fr 1fr}
+  .ut-grid{grid-template-columns:repeat(3,1fr)}
+  .foot-top{grid-template-columns:1fr;gap:34px}
+}
+@media (max-width:940px){
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .why-grid,.uc-grid,.quote-grid,.trust-grid{grid-template-columns:1fr 1fr}
+  .about-grid{grid-template-columns:1fr;gap:30px}
+  .legal-toc ol{columns:1}
+}
 @media (max-width:900px){
   .strip-row{grid-template-columns:1fr 1fr;row-gap:18px}
   .strip-item{border-left:none;padding-left:0}
 }
 @media (max-width:760px){
   .nav-links{display:none}
-  .landing-section{padding:52px 0}
+  .landing-section,.trust{padding:52px 0}
   .hero{padding:56px 0 48px}
+  .foot-cols{grid-template-columns:1fr 1fr;gap:26px 24px}
+  .trust-stats{gap:34px;margin-top:34px}
+  .legal{padding:38px 0 56px}
 }
-@media (max-width:620px){.feat-grid{grid-template-columns:1fr}}
+@media (max-width:620px){
+  .feat-grid,.how-grid,.why-grid,.uc-grid,.ut-grid,.quote-grid,.trust-grid{grid-template-columns:1fr}
+  .section-head{margin-bottom:32px}
+}

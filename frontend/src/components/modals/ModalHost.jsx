@@ -6,7 +6,7 @@ import CheckoutModal from './CheckoutModal'
 import EditProfileModal from './EditProfileModal'
 import AddContactModal from './AddContactModal'
 import RequestIntroModal from './RequestIntroModal'
-import FeatureModal from './FeatureModal'
+import PhaseModal from './PhaseModal'
 import LoginModal from './LoginModal'
 import LandingModal from './LandingModal'
 import TermsModal from './TermsModal'
@@ -24,7 +24,7 @@ const MODALS = {
   'edit-profile': EditProfileModal,
   'add-contact': AddContactModal,
   'request-intro': RequestIntroModal,
-  feature: FeatureModal,
+  phase: PhaseModal,
   login: LoginModal,
   paid: PaidModal,
   landing: LandingModal,

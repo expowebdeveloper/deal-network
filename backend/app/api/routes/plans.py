@@ -20,7 +20,7 @@ from app.schemas.crm import (
     PlanFeature, PlanOut, PlanSelect, PlanSelectionOut, PublicPlanOut, SubscribeRequest,
     SubscriptionOut,
 )
-from app.schemas.entitlements import Entitlements, ModuleAccess
+from app.schemas.entitlements import Entitlements, PhaseAccess
 from app.services import email as email_service
 from app.services import entitlements as entitlement_service
 
@@ -47,10 +47,12 @@ PLAN_CATALOGUE: list[dict] = [
         "billed": "No card required",
         "featured": False,
         "features": [
+            "Phase 1 — Basic Platform",
             "Full profile",
             "Join any community",
             "Unlimited connections",
             "Up to 25 contacts",
+            ("Phases 2–7", False),
         ],
     },
     {
@@ -62,11 +64,13 @@ PLAN_CATALOGUE: list[dict] = [
         "billed": "Billed monthly · cancel anytime",
         "featured": True,
         "features": [
+            "Phases 1–4 — through Advanced Underwriting",
             "Everything in early access",
             "Unlimited contacts",
             "Pipeline board",
             "Create your own communities",
             "Introduction requests",
+            ("Phases 5–7", False),
             ("Team seats", False),
         ],
     },
@@ -79,6 +83,7 @@ PLAN_CATALOGUE: list[dict] = [
         "billed": "Billed monthly · includes 5 seats",
         "featured": False,
         "features": [
+            "All 7 phases, including the AI agent",
             "Everything in Member",
             "5 team seats included",
             "Shared company profile",
@@ -143,21 +148,18 @@ def _plan_name(plan: PlanTier) -> str:
     return next(p["name"] for p in PLAN_CATALOGUE if p["id"] == plan)
 
 
-def _modules_for(plan: PlanTier) -> list[ModuleAccess]:
-    """Every module, flagged with whether this plan reaches it."""
+def _phases_for(plan: PlanTier) -> list[PhaseAccess]:
+    """Every phase, flagged with whether this plan reaches it."""
     rows = []
-    for module in entitlement_service.MODULES:
-        included = entitlement_service.module_included(plan, module)
-        rows.append(ModuleAccess(
-            id=module.id,
-            title=module.title,
-            phase_from=module.phase_from,
-            phase_to=module.phase_to,
-            phase_label=module.phase_label,
-            pro=module.pro,
+    for phase in entitlement_service.PHASES:
+        included = entitlement_service.phase_included(plan, phase.n)
+        rows.append(PhaseAccess(
+            n=phase.n,
+            name=phase.name,
+            label=phase.label,
             included=included,
             unlocked_by=None if included
-            else entitlement_service.plan_needed_for_module(module.id),
+            else entitlement_service.plan_needed_for_phase(phase.n),
         ))
     return rows
 
@@ -177,7 +179,7 @@ def _entitlements(plan: PlanTier, contacts_used: int | None = None) -> Entitleme
         contacts_used=contacts_used,
         team_seats=access.team_seats,
         features={name: name in access.features for name in every_feature},
-        modules=_modules_for(plan),
+        phases=_phases_for(plan),
     )
 
 

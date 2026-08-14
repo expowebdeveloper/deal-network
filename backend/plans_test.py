@@ -84,7 +84,7 @@ async def main() -> None:
               [p["price"] for p in catalogue] == ["$0", "$25", "$100"],
               str([p.get("price") for p in catalogue]))
         check("and how far up the roadmap each one reaches",
-              [p["max_phase"] for p in catalogue] == [1, 3, 4],
+              [p["max_phase"] for p in catalogue] == [1, 4, 7],
               str([p.get("max_phase") for p in catalogue]))
         check("only the top tier is pro",
               [p["pro"] for p in catalogue] == [False, False, True],

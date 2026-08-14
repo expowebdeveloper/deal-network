@@ -3,6 +3,7 @@ import { useApp } from './context/AppContext'
 import AppShell from './components/layout/AppShell'
 import Landing from './components/landing/Landing'
 import Pricing from './components/landing/Pricing'
+import Legal from './components/landing/Legal'
 import AuthCallback from './components/login/AuthCallback'
 import Home from './components/screens/Home'
 import Communities from './components/screens/Communities'
@@ -46,6 +47,11 @@ export default function App() {
             <Route index element={<Landing />} />
             <Route path="login" element={<Landing />} />
             <Route path="pricing" element={<Pricing />} />
+            {/* The public legal documents, linked from the footer. `/terms`
+                below is the consent gate a signed-in member has to clear —
+                a different screen for a different job. */}
+            <Route path="privacy" element={<Legal doc="privacy" />} />
+            <Route path="terms" element={<Legal doc="terms" />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </>
         ) : !termsAccepted ? (

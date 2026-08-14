@@ -6,10 +6,12 @@ import { useApp } from '../../context/AppContext'
 import { fetchPlanCatalogue } from '../../lib/feed'
 import { roadmap } from '../../data/landing'
 
-/** "Phase 1", "Phase 1–3" — how far up the roadmap a tier reaches. */
+/** How far up the roadmap a tier reaches. `roadmap` is the full phase list, so
+    a tier that reaches the end says so rather than naming the last number. */
 function phaseLabel(maxPhase) {
   if (!maxPhase) return null
-  return maxPhase > 1 ? `Roadmap access: phase 1–${maxPhase}` : 'Roadmap access: phase 1'
+  if (maxPhase >= roadmap.length) return `Roadmap access: all ${roadmap.length} phases`
+  return maxPhase > 1 ? `Roadmap access: phase 1–${maxPhase}` : 'Roadmap access: phase 1 only'
 }
 
 function Feature({ feature }) {
@@ -110,8 +112,9 @@ export default function Pricing() {
             <span className="eyebrow">What the phases mean</span>
             <h2>Every plan is a slice of the roadmap</h2>
             <p>
-              Early access covers phase 1, Member reaches phase 3, and Professional unlocks every
-              module we ship — including the AI underwriting layer in phase 4.
+              Early access covers phase 1. Member reaches phase 4, through the underwriting and
+              analytics layer. Professional opens all seven, including the AI agent and everything
+              that ships after it.
             </p>
           </div>
         </div>
