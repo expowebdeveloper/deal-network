@@ -1,0 +1,20 @@
+# Node / React
+node_modules/
+dist/
+build/
+
+# Python / FastAPI
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment variables / secrets
+.env
+.env.local
+
+# OS generated files
+.DS_Store
+
+landing.html
+sample.html

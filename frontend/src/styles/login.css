@@ -1,0 +1,108 @@
+/* ============================================================
+   LOGIN
+   ============================================================ */
+/* The sign-in screen is a dialog now (modals/LoginModal.jsx); what is left here
+   is what that dialog and the OAuth interstitial still use. */
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:30px;height:30px;flex:none}
+.brand-name{font-size:17px;font-weight:750;letter-spacing:-.025em}
+.oauth{
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  width:100%;height:48px;margin-bottom:11px;
+  border:1px solid var(--line-strong);border-radius:9px;background:var(--surface);
+  font-size:14.5px;font-weight:600;letter-spacing:-.012em;color:var(--ink);
+  transition:all .15s ease;
+}
+.oauth:hover{border-color:var(--accent);box-shadow:var(--shadow);transform:translateY(-1px)}
+.oauth:active{transform:translateY(0)}
+.oauth svg{width:19px;height:19px;flex:none}
+.oauth-apple{background:#000;border-color:#000;color:#fff}
+.oauth-apple:hover{background:#1a1a1a;border-color:#1a1a1a}
+.login-or{display:flex;align-items:center;gap:12px;margin:22px 0;color:var(--faint);font-size:11.5px;font-weight:600}
+.login-or::before,.login-or::after{content:"";flex:1;height:1px;background:var(--line)}
+.login-alert{
+  display:flex;gap:8px;align-items:flex-start;
+  padding:11px 13px;margin-bottom:16px;
+  background:var(--danger-soft);border:1px solid var(--danger-line);border-radius:var(--r-sm);
+  font-size:12.5px;line-height:1.55;color:var(--danger);
+}
+.oauth[disabled]{opacity:.55;cursor:not-allowed}
+.oauth[disabled]:hover{border-color:var(--line-strong);box-shadow:none;transform:none}
+.oauth-apple[disabled]:hover{background:#000;border-color:#000}
+
+/* ============================================================
+   SIGN-IN DIALOG
+   The two-panel sign-in, as a centred dialog: the pitch on the left,
+   the providers on the right.
+   `.modal.` beats the plain `.modal` width in modal.css, which loads later.
+   ============================================================ */
+.modal.login-modal{max-width:940px;min-height:min(620px,88vh)}
+.login-split{flex:1;display:grid;grid-template-columns:1.06fr 1fr;min-height:0}
+
+/* --- Left: the pitch --- */
+.login-aside{
+  background:linear-gradient(155deg,var(--green-950) 0%,var(--green-800) 55%,var(--green-600) 100%);
+  color:#fff;padding:42px 44px;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:space-between;gap:28px;
+}
+.login-aside::before{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:52px 52px;
+  mask-image:radial-gradient(ellipse 90% 70% at 70% 30%,#000 20%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 70% at 70% 30%,#000 20%,transparent 75%);
+}
+.login-aside>*{position:relative}
+.login-glow{
+  position:absolute;width:460px;height:460px;border-radius:50%;
+  background:radial-gradient(circle,rgba(163,230,53,.22),transparent 62%);
+  top:-150px;right:-170px;pointer-events:none;
+}
+.login-pitch h1{
+  font-size:33px;line-height:1.16;font-weight:750;letter-spacing:-.032em;
+  margin-bottom:15px;max-width:13ch;
+}
+.login-pitch p{font-size:14px;line-height:1.62;color:rgba(255,255,255,.78);max-width:44ch}
+.login-stats{display:flex;gap:32px;margin-top:30px}
+.login-stat .n{font-size:22px;font-weight:750;letter-spacing:-.02em}
+.login-stat .l{font-size:11.5px;color:rgba(255,255,255,.7);margin-top:2px}
+.login-foot{font-size:11.5px;color:rgba(255,255,255,.62)}
+
+/* --- Right: the providers, on the panel's centre line --- */
+.login-pane{
+  position:relative;background:var(--surface);
+  display:grid;place-items:center;padding:42px 44px;
+}
+.login-pane .modal-close{position:absolute;top:16px;right:16px}
+.login-form{width:100%;max-width:330px}
+.login-form h2{font-size:26px;font-weight:750;letter-spacing:-.028em;margin-bottom:7px}
+.login-form .sub{font-size:14px;color:var(--muted);margin-bottom:28px}
+.login-modal .oauth{height:50px;font-size:15px;margin-bottom:12px}
+
+/* One column once the pitch no longer fits beside the form. */
+@media(max-width:860px){
+  .modal.login-modal{max-width:452px;min-height:min(560px,86vh)}
+  .login-split{grid-template-columns:1fr}
+  .login-aside{display:none}
+}
+@media(max-width:640px){
+  .modal.login-modal{min-height:min(540px,80vh)}
+  .login-pane{padding:34px 24px}
+}
+@media(max-height:640px){
+  .login-aside,.login-pane{padding:30px 32px}
+  .login-pitch h1{font-size:27px}
+  .login-stats{margin-top:20px}
+}
+
+/* Interstitial shown while the OAuth callback is processed. */
+.auth-callback{
+  position:fixed;inset:0;z-index:200;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  background:var(--surface);
+}
+.auth-callback .brand-mark{width:40px;height:40px}
+.auth-callback p{font-size:13.5px;color:var(--muted)}
+
+.login-legal{font-size:11.5px;line-height:1.6;color:var(--faint);text-align:center;margin-top:22px}
+.login-legal a{color:var(--accent);font-weight:600;border-bottom:1px solid var(--line-strong)}

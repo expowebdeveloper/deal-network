@@ -1,0 +1,11 @@
+{% extends "_base.html" %}
+{% block content %}
+<h1 style="margin:0 0 10px;font-size:21px;font-weight:730;letter-spacing:-.028em;">{{ by_name }} accepted</h1>
+<p style="margin:0 0 22px;font-size:14px;line-height:1.62;color:#33445F;">
+  Hi {{ to_name }} — you and {{ by_name }} are now connected. You can both see member-level
+  profile fields; private financials, lenders and investor names stay hidden on both sides.
+</p>
+<a href="{{ frontend_url }}/contacts" style="display:inline-block;background:#0E7C6B;color:#FFFFFF;font-size:14px;font-weight:600;text-decoration:none;padding:12px 22px;border-radius:6px;">
+  Open contacts
+</a>
+{% endblock %}

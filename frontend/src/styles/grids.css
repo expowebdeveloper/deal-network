@@ -1,0 +1,40 @@
+/* ============================================================
+   COMMUNITIES / MEMBERS GRIDS
+   ============================================================ */
+.filterbar{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:18px}
+.filterbar .lbl{font-size:11.5px;font-weight:700;color:var(--faint);letter-spacing:.04em;text-transform:uppercase;margin-right:3px}
+.filter-sep{width:1px;height:20px;background:var(--line);margin:0 5px}
+
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:15px}
+.ccard{padding:0;overflow:hidden;transition:all .17s ease;cursor:pointer}
+.ccard:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);border-color:var(--faint)}
+.ccard-banner{height:66px;position:relative}
+.b1{background:linear-gradient(120deg,#073728,#116B4A)}
+.b2{background:linear-gradient(120deg,#0B4A33,#17855C)}
+.b3{background:linear-gradient(120deg,#2C5F1E,#4C7A1A)}
+.b4{background:linear-gradient(120deg,#0A3D2C,#1A7A66)}
+.b5{background:linear-gradient(120deg,#34482A,#587F5C)}
+.b6{background:linear-gradient(120deg,#3E6212,#547A12)}
+.ccard-banner .kind{
+  position:absolute;top:9px;left:11px;
+  padding:2px 8px;border-radius:5px;font-size:10.5px;font-weight:750;letter-spacing:.03em;
+  background:rgba(255,255,255,.92);color:var(--ink);
+}
+.ccard-body{padding:13px 15px 15px}
+.ccard-body h3{font-size:14.5px;font-weight:700;letter-spacing:-.018em}
+.ccard-body .desc{font-size:12.5px;color:var(--muted);line-height:1.52;margin-top:5px;min-height:38px}
+.ccard-foot{display:flex;align-items:center;gap:9px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line-2)}
+.facepile{display:flex}
+.facepile .avatar{margin-left:-8px;border:2px solid var(--surface)}
+.facepile .avatar:first-child{margin-left:0}
+.ccard-count{font-size:11.5px;color:var(--muted);font-weight:560}
+
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(252px,1fr));gap:15px}
+.mcard{padding:17px 16px;text-align:center;transition:all .17s ease}
+.mcard:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.mcard .avatar{margin:0 auto 11px}
+.mcard h3{font-size:14.5px;font-weight:700;letter-spacing:-.018em}
+.mcard .role{font-size:12.5px;color:var(--ink-2);margin-top:3px;font-weight:560}
+.mcard .loc{font-size:12px;color:var(--muted);margin-top:2px}
+.mcard .mutual{font-size:11.5px;color:var(--faint);margin-top:9px}
+.mcard .acts{display:flex;gap:7px;margin-top:13px}

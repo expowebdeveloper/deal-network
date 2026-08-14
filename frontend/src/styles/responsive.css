@@ -1,0 +1,134 @@
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* --- Laptop: drop the side rails --- */
+@media(max-width:1180px){
+  .feed-grid,.inv-grid{grid-template-columns:1fr}
+  .feed-rail,.inv-rail{display:none}
+}
+
+/* --- Tablet landscape: sidebar becomes an icon rail --- */
+@media(max-width:1024px){
+  #app{grid-template-columns:64px 1fr}
+  .sb-head{justify-content:center;padding:15px 0}
+  .sb-head .brand-name,.sb-item span,.sb-label,.sb-count,.sb-soon,.sb-user .txt{display:none}
+  .sb-nav{padding:6px 8px}
+  .sb-item{justify-content:center;padding:11px 0}
+  .sb-user{justify-content:center}
+  .page{padding:22px 20px 52px}
+  .modal-wide{max-width:94vw}
+}
+
+/* --- Tablet portrait --- */
+@media(max-width:900px){
+  .cgrid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+  .mgrid{grid-template-columns:repeat(auto-fill,minmax(212px,1fr))}
+  .plans{grid-template-columns:1fr;max-width:520px}
+  .page-head{flex-wrap:wrap}
+}
+
+/* --- Flow view stacks vertically --- */
+@media(max-width:860px){
+  .band-row{flex-direction:column;gap:0}
+  .node{max-width:100%;width:100%;min-width:0}
+  .arrow{width:100%;height:26px}
+  .arrow svg{transform:rotate(90deg)}
+  .vgap{padding:2px 0;justify-content:center}
+  .flow-scroll{padding:22px 16px 60px}
+  .flow-legend{gap:9px}
+  .flow-top{padding:0 15px}
+  .flow-top p{display:none}
+}
+
+/* --- Phone --- */
+@media(max-width:640px){
+  #app{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .bottomnav{display:grid}
+  .topbar-brand{display:flex}
+  .searchbox{display:none}
+  .signout-btn{display:none}
+  .lbl-wide{display:none}
+
+  .topbar{height:52px;padding:0 12px;gap:5px}
+  .topbar .btn-sm{height:32px;padding:0 9px}
+  .screenwrap{padding-bottom:66px}
+  .page{padding:18px 15px 34px}
+
+  .page-head{flex-direction:column;align-items:stretch;gap:11px;margin-bottom:18px}
+  .page-head h1{font-size:21px}
+  .page-head .sp{display:none}
+  .page-head .btn{width:100%}
+
+  .cgrid,.mgrid{grid-template-columns:1fr;gap:12px}
+  .tiles{grid-template-columns:1fr 1fr;gap:11px}
+  .tile .n{font-size:22px}
+  .field-row,.field-row-3{grid-template-columns:1fr}
+
+  /* Modals become bottom sheets */
+  .modal-back{padding:0;align-items:flex-end}
+  .modal,.modal-wide{
+    max-width:100%;max-height:93vh;
+    border-radius:var(--r-xl) var(--r-xl) 0 0;
+    animation:sheetIn .3s cubic-bezier(.32,.72,0,1);
+  }
+  .modal-head{padding:18px 18px 15px}
+  .modal-body{padding:17px 18px}
+  .modal-foot{padding:13px 18px;padding-bottom:calc(13px + env(safe-area-inset-bottom,0))}
+  .modal-foot .btn{flex:1}
+  .cm-layout{display:block}
+
+  /* Presenter drawer full width */
+  #presenter{width:100%;max-width:100%}
+  .pr-body{padding-bottom:calc(40px + env(safe-area-inset-bottom,0))}
+
+  /* Profile */
+  .phead{padding:0 17px 18px}
+  .phead-top{flex-direction:column;align-items:flex-start;gap:12px;margin-top:-36px}
+  .phead-top .who{padding-bottom:0}
+  .phead-top h1{font-size:19px}
+  .phead-top .btn{width:100%}
+  .avatar-xl{width:74px;height:74px;font-size:24px}
+  .pstats{flex-wrap:wrap;gap:16px 26px}
+  .vis-row{flex-direction:column;align-items:stretch;gap:9px}
+  .vis-seg{width:100%}
+  .vis-opt{flex:1;text-align:center}
+
+  /* Feed */
+  .post,.composer{padding:14px 15px}
+  .composer-acts{flex-wrap:wrap}
+  .post-stats{flex-wrap:wrap}
+
+  /* Community + member cards */
+  .mcard .acts{flex-direction:column}
+  .mcard .acts .btn{width:100%}
+
+  /* CRM board scrolls sideways */
+  .board{grid-template-columns:repeat(5,minmax(190px,1fr));gap:10px}
+
+  /* Plans */
+  .plan{padding:19px 17px}
+  .plan .price .amt{font-size:31px}
+  .earlybar{padding:13px 14px}
+
+  /* Login */
+  .oauth{height:50px}
+}
+
+/* --- Small phone --- */
+@media(max-width:380px){
+  .bn-item{font-size:9px}
+  .bn-item svg{width:19px;height:19px}
+  .tiles{grid-template-columns:1fr}
+  .page{padding:16px 12px 30px}
+}
+
+/* --- Touch devices: bigger tap targets --- */
+@media(hover:none){
+  .btn-sm{height:34px}
+  .chip{height:30px;padding:0 12px}
+  .vis-opt{padding:7px 10px}
+  .tab{padding:11px 14px}
+  .dcard{cursor:default}
+}

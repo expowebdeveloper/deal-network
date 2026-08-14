@@ -1,0 +1,31 @@
+/* ============================================================
+   PROFILE
+   ============================================================ */
+.pcover{height:132px;border-radius:var(--r-lg) var(--r-lg) 0 0;background:linear-gradient(120deg,var(--green-950),var(--green-700) 45%,var(--lime-edge))}
+.phead{padding:0 24px 20px;background:var(--surface);border:1px solid var(--line);border-top:none;border-radius:0 0 var(--r-lg) var(--r-lg)}
+.phead-top{display:flex;align-items:flex-end;gap:17px;margin-top:-42px;margin-bottom:15px}
+.phead-top .who{flex:1;padding-bottom:5px}
+.phead-top h1{font-size:22px;font-weight:740;letter-spacing:-.028em}
+.phead-top .rl{font-size:13.5px;color:var(--ink-2);margin-top:3px;font-weight:560}
+.phead-top .lc{font-size:12.5px;color:var(--muted);margin-top:2px}
+.pstats{display:flex;gap:26px;padding-top:15px;border-top:1px solid var(--line-2)}
+.pstat .n{font-size:17px;font-weight:730;letter-spacing:-.024em}
+.pstat .l{font-size:11.5px;color:var(--muted);margin-top:1px}
+
+.vis-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-top:1px solid var(--line-2)}
+.vis-row:first-of-type{border-top:none}
+.vis-row .info{flex:1;min-width:0}
+.vis-row .k{font-size:13px;font-weight:620;letter-spacing:-.012em}
+.vis-row .v{font-size:12.5px;color:var(--muted);margin-top:2px}
+.vis-seg{display:flex;gap:2px;padding:2px;background:var(--canvas);border:1px solid var(--line);border-radius:7px;flex:none}
+.vis-opt{padding:4px 10px;border-radius:5px;font-size:11.5px;font-weight:650;color:var(--muted);transition:all .13s;white-space:nowrap}
+.vis-opt:hover{color:var(--ink)}
+/* Which one is selected has to be obvious from colour, not just a shadow —
+   a white-on-near-white pill was under 1.2:1 against its own track. */
+.vis-opt.on{background:var(--accent);color:var(--on-dark);box-shadow:var(--shadow-sm)}
+.vis-opt.on:hover{color:var(--on-dark)}
+
+.pvis-card{padding:19px 21px}
+.pvis-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
+.pvis-head h2{font-size:15px;font-weight:720;letter-spacing:-.02em}
+.pvis-head p{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.55}

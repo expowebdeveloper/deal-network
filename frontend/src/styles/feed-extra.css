@@ -1,0 +1,71 @@
+/* ============================================================
+   COMPOSER + POST MEDIA (added when the feed went live)
+   ============================================================ */
+.composer-input{
+  flex:1;border:1px solid var(--line);border-radius:var(--r);
+  padding:10px 13px;font-size:13.5px;line-height:1.55;resize:vertical;min-height:60px;
+  background:var(--surface);
+}
+.composer-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+.composer-embed{display:flex;flex-direction:column;gap:8px}
+.composer-embed input{
+  width:100%;height:34px;padding:0 11px;font-size:13px;
+  border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface);
+}
+.composer-embed input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.composer-embed-remove{
+  display:flex;align-items:center;gap:5px;align-self:flex-start;
+  font-size:11.5px;font-weight:600;color:var(--muted);
+}
+.composer-embed-remove:hover{color:var(--danger)}
+.composer-embed-remove svg{width:12px;height:12px}
+
+.composer-files{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.composer-file{position:relative;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.composer-file.is-image{width:104px;height:104px}
+.composer-file.is-image img{width:100%;height:100%;object-fit:cover;display:block}
+.composer-file-doc{display:flex;align-items:center;gap:9px;padding:11px 32px 11px 12px;background:var(--surface-2)}
+.composer-file-doc svg{width:18px;height:18px;color:var(--muted);flex:none}
+.composer-file-doc .n{font-size:12.5px;font-weight:640;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.composer-file-doc .s{font-size:11px;color:var(--muted);margin-top:1px}
+.composer-file-remove{
+  position:absolute;top:5px;right:5px;width:20px;height:20px;border-radius:50%;
+  background:rgba(4,31,23,.74);color:#fff;display:grid;place-items:center;
+}
+.composer-file-remove:hover{background:var(--danger)}
+.composer-file-remove svg{width:11px;height:11px}
+
+.composer-submit{display:flex;gap:7px;margin-left:auto}
+
+/* Post attachments */
+.post-files{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px}
+.post-image{display:block;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);max-width:100%}
+.post-image img{display:block;max-width:340px;max-height:280px;object-fit:cover}
+.post-doc{
+  display:flex;align-items:center;gap:10px;padding:11px 14px;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);
+  transition:border-color .13s;
+}
+.post-doc:hover{border-color:var(--faint)}
+.post-doc svg{width:18px;height:18px;color:var(--muted);flex:none}
+.post-doc .n{font-size:13px;font-weight:640;letter-spacing:-.012em}
+.post-doc .s{font-size:11.5px;color:var(--muted);margin-top:1px}
+
+/* Comments */
+.post-comments{margin-top:12px;padding-top:12px;border-top:1px solid var(--line-2)}
+.post-comment{display:flex;gap:9px;padding:7px 0}
+.post-comment .n{font-size:12.5px;font-weight:650}
+.post-comment .n span{font-weight:500;color:var(--faint);margin-left:6px;font-size:11.5px}
+.post-comment .b{font-size:13px;color:var(--ink-2);line-height:1.55;margin-top:2px}
+.post-comment-new{display:flex;gap:7px;margin-top:9px}
+.post-comment-new input{
+  flex:1;height:34px;padding:0 12px;font-size:13px;
+  border:1px solid var(--line);border-radius:99px;background:var(--surface);
+}
+.post-comment-new input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+@media(max-width:640px){
+  .post-image img{max-width:100%}
+  .composer-submit{margin-left:0;width:100%;justify-content:flex-end}
+}

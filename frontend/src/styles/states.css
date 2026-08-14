@@ -1,0 +1,61 @@
+/* ============================================================
+   LOADING / EMPTY / ERROR
+   ============================================================ */
+.state-block{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
+  padding:44px 22px;text-align:center;
+  background:var(--surface);border:1px dashed var(--line);border-radius:var(--r-lg);
+}
+.state-block h3{font-size:14.5px;font-weight:700;letter-spacing:-.018em}
+.state-block p{font-size:12.5px;color:var(--muted);line-height:1.55;max-width:46ch}
+.state-error{background:var(--danger-soft);border-color:var(--danger-line)}
+.state-error h3{color:var(--danger)}
+.state-error p{color:var(--danger)}
+
+.spinner{
+  width:20px;height:20px;border-radius:50%;
+  border:2px solid var(--line);border-top-color:var(--accent);
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Inline busy state on a button */
+.btn[data-busy="true"]{opacity:.7;pointer-events:none}
+
+/* Card-level join button sits beside the member count */
+.ccard-join{margin-left:auto}
+
+/* Banner colour picker in the create-community form */
+.banner-picker{display:flex;gap:7px;margin-top:3px}
+.banner-swatch{
+  width:38px;height:26px;border-radius:5px;border:2px solid transparent;
+  cursor:pointer;transition:transform .12s,border-color .12s;
+}
+.banner-swatch:hover{transform:translateY(-1px)}
+.banner-swatch.on{border-color:var(--ink)}
+
+/* Small inline error inside a modal */
+.inline-error{
+  padding:10px 12px;margin-bottom:14px;
+  background:var(--danger-soft);border:1px solid var(--danger-line);border-radius:var(--r-sm);
+  font-size:12.5px;line-height:1.5;color:var(--danger);
+}
+
+/* ============================================================
+   PLAN GATE (before a plan is chosen)
+   ============================================================ */
+#app.app-locked,
+#app.app-fullscreen{grid-template-columns:1fr !important}
+.topbar-brand-always{display:flex}
+
+/* Informational, not a warning — amber stays reserved for things that are
+   actually going wrong, like a contact allowance running out. */
+.gate-bar{
+  display:flex;gap:13px;align-items:flex-start;
+  padding:15px 17px;margin-bottom:24px;
+  background:linear-gradient(100deg,var(--accent-soft),var(--lime-soft));
+  border:1px solid var(--line);border-radius:var(--r-lg);
+}
+.gate-bar svg{width:19px;height:19px;color:var(--accent);flex:none;margin-top:1px}
+.gate-bar h4{font-size:13.5px;font-weight:700;letter-spacing:-.015em;color:var(--accent-dark)}
+.gate-bar p{font-size:12.5px;color:var(--accent-dark);margin-top:3px;line-height:1.55;max-width:78ch}

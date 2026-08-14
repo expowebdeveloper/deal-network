@@ -1,0 +1,209 @@
+/* ============================================================
+   PUBLIC LANDING PAGE
+   Everything here is landing-only. Buttons, chips, tags, cards and
+   the modal shell come from primitives.css / modal.css; the two
+   size overrides below are the landing's larger scale.
+   ============================================================ */
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+
+.btn-on-dark{background:rgba(163,230,53,.12);border-color:rgba(163,230,53,.42);color:#fff}
+.btn-on-dark:hover{background:rgba(163,230,53,.22)}
+.btn-xl{height:48px;padding:0 24px;font-size:15.5px}
+
+/* The app shell is a fixed, full-viewport grid with its own inner scroller, so
+   tokens.css turns page scrolling off. The landing page is an ordinary long
+   document and needs it back — Landing.jsx adds this class to <body> while it
+   is mounted, and removes it on the way out. */
+body.page-scrolls{overflow-y:auto;height:auto;min-height:100%}
+
+.landing{background:var(--canvas);min-height:100%}
+.landing .chip{cursor:default}
+
+/* --- Navbar --- */
+.site-nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(232,243,235,.88);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav-row{
+  max-width:1180px;margin:0 auto;padding:0 28px;height:64px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.nav-row .brand{cursor:pointer}
+.nav-row .brand-name{font-size:16px;font-weight:800;letter-spacing:-.01em}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:13.5px;font-weight:600;color:var(--ink-2);text-decoration:none;cursor:pointer}
+.nav-links a:hover{color:var(--accent)}
+.nav-links a.on{color:var(--accent)}
+.nav-actions{display:flex;align-items:center;gap:10px}
+
+/* --- Hero --- */
+.hero{
+  position:relative;overflow:hidden;
+  background:linear-gradient(155deg,var(--green-950) 0%,var(--green-800) 55%,var(--green-600) 100%);
+  color:#fff;padding:76px 0 64px;
+}
+.hero::before{
+  content:"";position:absolute;top:-140px;right:-120px;width:520px;height:520px;
+  background:radial-gradient(circle,rgba(163,230,53,.20),transparent 70%);
+  pointer-events:none;
+}
+.hero-inner{position:relative;text-align:center;max-width:760px;margin:0 auto}
+.hero .eyebrow{color:var(--lime);display:inline-block;margin-bottom:16px}
+.hero h1{font-size:clamp(30px,5vw,48px);font-weight:800;letter-spacing:-.02em;line-height:1.12;margin-bottom:18px}
+.hero .sub{font-size:16.5px;color:#CBE7D5;line-height:1.6;max-width:620px;margin:0 auto 30px}
+.hero-ctas{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:44px}
+.hero-stats{display:flex;justify-content:center;gap:44px;flex-wrap:wrap}
+.hero-stat .n{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.hero-stat .l{font-size:12px;color:#A9CDB8;margin-top:2px}
+
+/* --- Pricing page ---
+   Deliberately compact: the plan cards are the page, so the heading stays small
+   enough that all three fit on the first screen without scrolling. */
+.pricing-top{padding:30px 0 44px}
+.pricing-head{text-align:center;max-width:680px;margin:0 auto 26px}
+.pricing-head .eyebrow{display:block;margin-bottom:9px}
+.pricing-head h1{font-size:clamp(23px,2.6vw,31px);font-weight:800;letter-spacing:-.022em;margin-bottom:10px}
+.pricing-head p{color:var(--muted);font-size:14.5px;line-height:1.55}
+.pricing-note{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin:14px auto 0;padding:9px 14px;max-width:620px;
+  background:var(--accent-soft);border:1px solid var(--line);border-radius:var(--r-lg);
+  color:var(--accent-dark);font-size:12.5px;font-weight:600;line-height:1.45;text-align:left;
+}
+.pricing-note svg{width:16px;height:16px;flex:none}
+
+/* Tighter than the signed-in plans screen, which has a sidebar and room to
+   breathe. Here all three cards have to land above the fold. */
+.pricing-top .plan{padding:22px}
+.pricing-top .plan .for{min-height:36px;font-size:12.5px}
+.pricing-top .plan .price{margin:14px 0 3px}
+.pricing-top .plan .price .amt{font-size:33px}
+.pricing-top .plan ul{margin:15px 0 17px}
+.pricing-top .plan li{padding:5px 0;font-size:13px}
+.pricing-top .plan-phase{margin-bottom:13px}
+
+/* Short laptop screens: shrink the heading rather than clip the cards. */
+@media (max-height:800px){
+  .pricing-top{padding:20px 0 34px}
+  .pricing-head{margin-bottom:18px}
+  .pricing-head h1{font-size:clamp(21px,2.2vw,26px);margin-bottom:7px}
+  .pricing-head p{font-size:13.5px}
+  .pricing-note{margin-top:10px;padding:7px 12px}
+}
+@media (max-height:740px){
+  .pricing-top{padding:14px 0 26px}
+  .pricing-head{margin-bottom:14px}
+  .pricing-top .plan{padding:18px}
+  .pricing-top .plan .price .amt{font-size:29px}
+  .pricing-top .plan ul{margin:12px 0 14px}
+  .pricing-top .plan li{padding:4px 0}
+}
+
+/* --- Benefit strip --- */
+.strip{background:var(--surface);border-bottom:1px solid var(--line)}
+.strip-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  max-width:1180px;margin:0 auto;padding:26px 28px;
+}
+.strip-item{display:flex;align-items:center;gap:12px;padding:0 20px;border-left:1px solid var(--line-2)}
+.strip-item:first-child{border-left:none;padding-left:0}
+.strip-item svg{width:22px;height:22px;color:var(--accent);flex:none}
+.strip-item .n{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.strip-item .l{font-size:12px;color:var(--muted)}
+
+/* --- Sections --- */
+.landing-section{padding:76px 0}
+.section-head{text-align:center;max-width:640px;margin:0 auto 46px}
+.section-head .eyebrow{display:block;margin-bottom:12px}
+.section-head h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.02em;margin-bottom:12px}
+.section-head p{color:var(--muted);font-size:15px;line-height:1.6}
+
+/* --- Feature cards --- */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.feat-card{
+  text-align:left;padding:24px;cursor:pointer;
+  display:flex;flex-direction:column;gap:14px;height:100%;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+.feat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--faint)}
+.feat-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.feat-card h3{font-size:16.5px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px}
+.feat-card p{font-size:13.5px;color:var(--muted);line-height:1.55;flex:1}
+.feat-foot{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.feat-more{font-size:12.5px;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:4px}
+.feat-more svg{width:14px;height:14px;transition:transform .15s ease}
+.feat-card:hover .feat-more svg{transform:translateX(3px)}
+
+/* Rounded-square icon tile — the app's .avatar is a round initials badge. */
+.feat-avatar{width:46px;height:46px;border-radius:12px;flex:none;display:grid;place-items:center;color:#fff}
+.feat-avatar svg{width:22px;height:22px}
+.a7{background:linear-gradient(135deg,var(--green-950),var(--lime-edge))}
+
+/* --- Roadmap --- */
+.roadmap{background:var(--surface-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.roadmap-head{padding-top:40px;padding-bottom:8px}
+.roadmap-head .section-head{margin-bottom:22px}
+.roadmap-scroll{display:flex;gap:14px;overflow-x:auto;padding:8px 2px 14px}
+.roadmap-scroll::-webkit-scrollbar{height:6px}
+.roadmap-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+.rm-card{
+  flex:none;width:216px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:16px;box-shadow:var(--shadow-sm);
+}
+.rm-num{
+  width:26px;height:26px;border-radius:7px;background:var(--accent);color:var(--on-dark);
+  display:grid;place-items:center;font-size:11.5px;font-weight:800;margin-bottom:10px;
+}
+.rm-card.now .rm-num{background:var(--lime);color:var(--on-lime)}
+.rm-card h4{font-size:13px;font-weight:700;margin-bottom:5px;letter-spacing:-.01em}
+.rm-card p{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* --- CTA band --- */
+.cta-band{
+  background:linear-gradient(155deg,var(--green-950) 0%,var(--green-800) 55%,var(--green-600) 100%);
+  color:#fff;padding:64px 0;text-align:center;
+}
+.cta-band h2{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-.02em;margin-bottom:12px}
+.cta-band p{color:#CBE7D5;font-size:15px;margin-bottom:28px}
+.cta-band .hero-ctas{margin-bottom:0}
+
+/* --- Footer --- */
+.site-foot{padding:36px 0;background:var(--surface)}
+.foot-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.foot-row .brand-name{font-size:14px;font-weight:800}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{font-size:12.5px;color:var(--muted);cursor:pointer}
+.foot-links a:hover{color:var(--ink)}
+.foot-copy{font-size:12px;color:var(--faint)}
+
+/* --- Feature detail modal --- */
+.modal-close{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--muted);flex:none}
+.modal-close:hover{background:var(--line-2);color:var(--ink)}
+.modal-close svg{width:18px;height:18px}
+.feature-modal .modal-head{align-items:flex-start}
+.feature-modal .tt h2{margin-bottom:6px}
+.feature-modal .tt .chip{margin-right:6px}
+.feature-modal .modal-body > p{font-size:14px;color:var(--ink-2);line-height:1.6;margin-bottom:16px}
+.feature-modal .sec-title{
+  font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:10px;
+}
+.feature-modal ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.feature-modal li{display:flex;gap:10px;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.feature-modal li svg{width:17px;height:17px;flex:none;margin-top:2px;color:var(--accent)}
+.feature-status{margin-top:18px;font-size:12.5px;color:var(--muted)}
+
+/* --- Responsive --- */
+@media (max-width:940px){.feat-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:900px){
+  .strip-row{grid-template-columns:1fr 1fr;row-gap:18px}
+  .strip-item{border-left:none;padding-left:0}
+}
+@media (max-width:760px){
+  .nav-links{display:none}
+  .landing-section{padding:52px 0}
+  .hero{padding:56px 0 48px}
+}
+@media (max-width:620px){.feat-grid{grid-template-columns:1fr}}

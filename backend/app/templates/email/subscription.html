@@ -1,0 +1,14 @@
+{% extends "_base.html" %}
+{% block content %}
+<h1 style="margin:0 0 10px;font-size:21px;font-weight:730;letter-spacing:-.028em;">You are on {{ plan }}</h1>
+<p style="margin:0 0 14px;font-size:14px;line-height:1.62;color:#33445F;">
+  Hi {{ name }} — your {{ plan }} plan (${{ price }}/month) is set up.
+</p>
+<p style="margin:0 0 22px;font-size:14px;line-height:1.62;color:#33445F;">
+  Nothing is charged while early access is running. We will email you before the first
+  payment is taken.
+</p>
+<a href="{{ frontend_url }}/plans" style="display:inline-block;background:#0E7C6B;color:#FFFFFF;font-size:14px;font-weight:600;text-decoration:none;padding:12px 22px;border-radius:6px;">
+  View plan
+</a>
+{% endblock %}
