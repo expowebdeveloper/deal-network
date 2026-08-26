@@ -53,7 +53,6 @@ PLAN_CATALOGUE: list[dict] = [
             "Join any community",
             "Unlimited connections",
             "Up to 25 contacts",
-            ("Create your own communities", False),
             ("Phases 2–7", False),
         ],
     },
@@ -67,7 +66,7 @@ PLAN_CATALOGUE: list[dict] = [
         "featured": True,
         "features": [
             "Phases 1–4 — through Advanced Underwriting",
-            "Everything in Freemium",
+            "Everything in early access",
             "Unlimited contacts",
             "Pipeline board",
             "Create 1 community, public or private",
@@ -86,8 +85,7 @@ PLAN_CATALOGUE: list[dict] = [
         "featured": False,
         "features": [
             "All 7 phases, including the AI agent",
-            "Everything in Silver",
-            "Create up to 3 communities, with 3 moderators each",
+            "Everything in Member",
             "5 team seats included",
             "Shared company profile",
             "Shared contact record",

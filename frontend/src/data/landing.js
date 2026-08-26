@@ -131,37 +131,39 @@ export const useCases = [
 ]
 
 /**
- * Who the platform is for — the four community roles.
- *
- * `desc` is what the role actually does in a transaction; `points` are what
- * that role comes to a community *for*, which is the reason they would join.
- * These are the same four roles community creation is described against on the
- * community-roles page.
+ * Who the platform is for. The five roles mirror `roleOptions` in
+ * ./onboarding.js — the same list a new member picks from at sign-up.
  */
 export const userTypes = [
   {
     icon: 'home',
-    title: 'Developer',
-    desc: 'You acquire land and property, develop or redevelop projects, and run construction and delivery.',
-    points: ['Find investors and lenders', 'Bring in partners and contractors', 'Raise capital scheme by scheme'],
+    title: 'Developers & Sponsors',
+    desc: 'You build or convert property and raise the capital for it.',
+    points: ['Reach investor groups by market', 'A data room per scheme', 'Underwrite before you commit'],
   },
   {
     icon: 'investors',
-    title: 'Investor',
-    desc: 'You put capital into real-estate deals and expect a return on it.',
-    points: ['Find investment opportunities', 'Meet co-investors', 'See who is behind a deal'],
+    title: 'Investors & LPs',
+    desc: 'You put capital into other people’s projects.',
+    points: ['Deal flow filtered to your mandate', 'Sponsor profiles and track records', 'One record of what you were shown'],
   },
   {
     icon: 'contacts',
-    title: 'Broker',
-    desc: 'You connect buyers, sellers, investors and lenders, and get the transaction done.',
-    points: ['Share deals with the right side', 'Find buyers and investors', 'Connect the parties around a deal'],
+    title: 'Brokers & Agents',
+    desc: 'You introduce buyers, sellers and tenants.',
+    points: ['Buyers by market and asset class', 'Mandates and contacts in one CRM', 'Share particulars securely'],
   },
   {
     icon: 'plans',
-    title: 'Lender',
-    desc: 'You provide financing and capital for real-estate transactions.',
-    points: ['Find borrowers and developers', 'See financing opportunities', 'Meet the sponsors behind them'],
+    title: 'Lenders',
+    desc: 'You provide construction or acquisition finance.',
+    points: ['Requests that fit your box', 'Complete files, not fragments', 'Benchmark against market cap rates'],
+  },
+  {
+    icon: 'profile',
+    title: 'Service providers',
+    desc: 'Architecture, legal, PM, valuation and similar.',
+    points: ['Be found by people mid-deal', 'Publish coverage and credentials', 'Join the communities you serve'],
   },
 ]
 
@@ -229,30 +231,18 @@ export const trust = [
   },
 ]
 
-/**
- * About us — who is building this and how.
- *
- * `origin` is the line the whole product came from, so it is set apart from the
- * argument rather than buried in it; `points` are the three things worth
- * knowing about how the thing gets built, one claim each.
- */
+/** About us — who is building this and how. */
 export const about = {
   title: 'Built by people who were running deals across six tools',
-  lead: 'Deal Network is being built for the people who actually put property deals together — developers, investors, brokers, lenders and the professionals around them.',
-  origin: 'It started from a simple irritation: a single transaction spread across an inbox, a spreadsheet, a file-sharing account and three chat groups, with nobody sure which version was current.',
+  body: [
+    'Deal Network is being built for the people who actually put property deals together — developers, investors, brokers, lenders and the professionals around them. It started from a simple irritation: a single transaction spread across an inbox, a spreadsheet, a file-sharing account and three chat groups, with nobody sure which version was current.',
+    'We are deliberately small, and deliberately public about the plan. The roadmap above is the real one — a working network first, then the CRM and the data room, then the analytics and AI layers on top. We would rather ship a phase that works than announce a feature that does not exist yet.',
+    'Early access is invitation and referral only while we grow the first few hundred members, because a network of the right people beats a network of a lot of people.',
+  ],
   points: [
-    {
-      title: 'Deliberately small, deliberately public',
-      text: 'We are a small team, and the roadmap above is the real one — a working network first, then the CRM and the data room, then the analytics and AI layers on top.',
-    },
-    {
-      title: 'Shipped, not announced',
-      text: 'We would rather ship a phase that works than announce a feature that does not exist yet. Open any phase card on this page and it tells you what is live and what is still ahead.',
-    },
-    {
-      title: 'Invitation and referral only',
-      text: 'Early access stays closed while we grow the first few hundred members. A network of the right people beats a network of a lot of people — and the difference shows the first time you need an introduction to a lender who actually writes in your market.',
-    },
+    { n: 'Phase 1', l: 'Live now — profiles, communities, networking' },
+    { n: '7 phases', l: 'Published roadmap, through to native apps' },
+    { n: 'Invite only', l: 'How members join during early access' },
   ],
 }
 

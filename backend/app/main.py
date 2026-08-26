@@ -145,7 +145,6 @@ app.add_middleware(
     # SPA would get the 403 but not what to upgrade to.
     expose_headers=[
         "X-Required-Plan", "X-Required-Feature", "X-Required-Phase", "X-Contact-Limit",
-        "X-Community-Limit",
     ],
 )
 
