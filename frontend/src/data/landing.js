@@ -6,9 +6,9 @@
  */
 
 export const heroStats = [
-  { n: '3,770', l: 'Members' },
-  { n: '8', l: 'Communities' },
-  { n: '12', l: 'Markets' },
+  { n: '50', l: 'Members' },
+  { n: '2', l: 'Communities' },
+  { n: '4', l: 'Markets' },
 ]
 
 export const benefits = [

@@ -6,18 +6,32 @@
  * token once, then replays the original request.
  */
 
-export const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '')
+export const API_URL = (
+  import.meta.env.VITE_API_URL ||
+  (typeof window !== 'undefined' && window.location.port === '5176'
+    ? `${window.location.protocol}//${window.location.hostname}:8002`
+    : 'http://localhost:8000')
+).replace(/\/$/, '')
 
 const ACCESS_KEY = 'dn.accessToken'
 const REFRESH_KEY = 'dn.refreshToken'
 
-/** Thrown for any non-2xx response. `status` lets callers branch on 401/503. */
+/**
+ * Thrown for any non-2xx response. `status` lets callers branch on 401/503.
+ *
+ * `headers` is kept because the API puts the *reason* for a refusal there —
+ * X-Required-Plan, X-Contact-Limit, X-Community-Limit — so a message can name
+ * the plan that lifts a limit instead of guessing. Those names are listed in
+ * `expose_headers` on the backend's CORS config; without that a browser cannot
+ * read them at all.
+ */
 export class ApiError extends Error {
-  constructor(message, status, body) {
+  constructor(message, status, body, headers = null) {
     super(message)
     this.name = 'ApiError'
     this.status = status
     this.body = body
+    this.headers = headers
   }
 }
 
@@ -68,6 +82,9 @@ async function parse(response) {
 function messageFrom(body, fallback) {
   if (!body) return fallback
   if (typeof body === 'string') return body
+  // /api/v1 answers {"error": {code, message, details}}; the pre-v1 routes
+  // answer {"detail": "..."}. Both reach here.
+  if (typeof body.error?.message === 'string') return body.error.message
   if (typeof body.detail === 'string') return body.detail
   // FastAPI validation errors come back as a list of {loc, msg}.
   if (Array.isArray(body.detail)) {
@@ -76,8 +93,13 @@ function messageFrom(body, fallback) {
   return fallback
 }
 
-async function rawRequest(path, { method = 'GET', body, auth = true, headers = {} } = {}) {
-  const init = { method, headers: { ...headers } }
+async function rawRequest(
+  path, { method = 'GET', body, auth = true, headers = {}, signal } = {},
+) {
+  // `signal` lets a caller cancel an in-flight request. The search box needs it:
+  // it fires per keystroke, and without cancellation a slow early response can
+  // land after a fast later one and overwrite fresher results.
+  const init = { method, headers: { ...headers }, ...(signal ? { signal } : {}) }
 
   if (body !== undefined) {
     init.headers['Content-Type'] = 'application/json'
@@ -90,13 +112,18 @@ async function rawRequest(path, { method = 'GET', body, auth = true, headers = {
   let response
   try {
     response = await fetch(`${API_URL}${path}`, init)
-  } catch {
+  } catch (error) {
+    // A cancelled request is not a failure — re-throw so callers can ignore it
+    // rather than showing "cannot reach the API" for their own abort.
+    if (error?.name === 'AbortError') throw error
     throw new ApiError(`Cannot reach the API at ${API_URL}. Is the backend running?`, 0, null)
   }
 
   const payload = await parse(response)
   if (!response.ok) {
-    throw new ApiError(messageFrom(payload, response.statusText), response.status, payload)
+    throw new ApiError(
+      messageFrom(payload, response.statusText), response.status, payload, response.headers,
+    )
   }
   return payload
 }

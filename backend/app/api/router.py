@@ -15,7 +15,8 @@ from fastapi import APIRouter, Depends
 
 from app.api.deps import require_plan_selected, require_terms_accepted
 from app.api.routes import (
-    communities, contacts, investors, media, onboarding, plans, posts, terms, users,
+    communities, contacts, investors, media, notifications, onboarding, plans, posts, search,
+    terms, users,
 )
 
 terms_gate = [Depends(require_terms_accepted)]
@@ -43,3 +44,7 @@ api_router.include_router(posts.router, dependencies=gated)
 api_router.include_router(media.router, dependencies=gated)
 api_router.include_router(contacts.router, dependencies=gated)
 api_router.include_router(investors.router, dependencies=gated)
+# One search across people, communities and your own contacts.
+api_router.include_router(search.router, dependencies=gated)
+# The bell, and the internal presenter notes beside it.
+api_router.include_router(notifications.router, dependencies=gated)

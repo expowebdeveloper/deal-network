@@ -1,15 +1,16 @@
 /* ============================================================
    PROFILE
    ============================================================ */
-.pcover{height:132px;border-radius:var(--r-lg) var(--r-lg) 0 0;background:linear-gradient(120deg,var(--green-950),var(--green-700) 45%,var(--lime-edge))}
+/* Navy into emerald: the one place the two brand colours meet at size. */
+.pcover{height:140px;border-radius:var(--r-lg) var(--r-lg) 0 0;background:linear-gradient(120deg,var(--navy-950) 0%,var(--navy-700) 48%,var(--emerald-700) 100%)}
 .phead{padding:0 24px 20px;background:var(--surface);border:1px solid var(--line);border-top:none;border-radius:0 0 var(--r-lg) var(--r-lg)}
 .phead-top{display:flex;align-items:flex-end;gap:17px;margin-top:-42px;margin-bottom:15px}
 .phead-top .who{flex:1;padding-bottom:5px}
-.phead-top h1{font-size:22px;font-weight:740;letter-spacing:-.028em}
+.phead-top h1{font-size:23px;font-weight:740;letter-spacing:-.03em;color:var(--ink)}
 .phead-top .rl{font-size:13.5px;color:var(--ink-2);margin-top:3px;font-weight:560}
 .phead-top .lc{font-size:12.5px;color:var(--muted);margin-top:2px}
-.pstats{display:flex;gap:26px;padding-top:15px;border-top:1px solid var(--line-2)}
-.pstat .n{font-size:17px;font-weight:730;letter-spacing:-.024em}
+.pstats{display:flex;gap:30px;padding-top:16px;border-top:1px solid var(--line-2)}
+.pstat .n{font-size:18px;font-weight:730;letter-spacing:-.026em;color:var(--ink)}
 .pstat .l{font-size:11.5px;color:var(--muted);margin-top:1px}
 
 .vis-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-top:1px solid var(--line-2)}
@@ -17,8 +18,8 @@
 .vis-row .info{flex:1;min-width:0}
 .vis-row .k{font-size:13px;font-weight:620;letter-spacing:-.012em}
 .vis-row .v{font-size:12.5px;color:var(--muted);margin-top:2px}
-.vis-seg{display:flex;gap:2px;padding:2px;background:var(--canvas);border:1px solid var(--line);border-radius:7px;flex:none}
-.vis-opt{padding:4px 10px;border-radius:5px;font-size:11.5px;font-weight:650;color:var(--muted);transition:all .13s;white-space:nowrap}
+.vis-seg{display:flex;gap:2px;padding:3px;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;flex:none}
+.vis-opt{padding:5px 11px;border-radius:6px;font-size:11.5px;font-weight:650;color:var(--muted);transition:all .15s ease;white-space:nowrap}
 .vis-opt:hover{color:var(--ink)}
 /* Which one is selected has to be obvious from colour, not just a shadow —
    a white-on-near-white pill was under 1.2:1 against its own track. */
@@ -29,3 +30,52 @@
 .pvis-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
 .pvis-head h2{font-size:15px;font-weight:720;letter-spacing:-.02em}
 .pvis-head p{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.55}
+
+/* ---------------------------------------------------------------------------
+   Another member's profile (/members/:id) — read-only.
+
+   Deliberately quieter than /profile: no Edit, no Field visibility panel, and
+   fields the member kept private read as "Not shared" rather than being blank,
+   so the absence is legible instead of looking like missing data.
+   --------------------------------------------------------------------------- */
+
+.mp-back{margin-bottom:14px}
+
+.mp-head{padding:0;overflow:hidden;margin-bottom:16px}
+.mp-cover{height:104px;background:linear-gradient(120deg,var(--navy-900),var(--navy-600))}
+.mp-id{display:flex;align-items:flex-start;gap:16px;padding:0 20px 18px;margin-top:-34px}
+.mp-id .avatar{border:3px solid var(--surface);flex:0 0 auto}
+.mp-name{flex:1;min-width:0;padding-top:38px}
+.mp-name h1{margin:0;font-size:22px;font-weight:730;letter-spacing:-.024em;color:var(--ink)}
+.mp-role{margin-top:3px;font-size:13px;font-weight:620;color:var(--ink-2)}
+.mp-loc{margin-top:2px;font-size:12.5px;color:var(--muted)}
+.mp-id > .btn{margin-top:44px;flex:0 0 auto}
+
+.mp-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  padding:16px 20px;border-top:1px solid var(--line);
+}
+.mp-stats b{display:block;font-size:20px;font-weight:730;letter-spacing:-.022em;color:var(--ink)}
+.mp-stats span{font-size:11.5px;color:var(--muted)}
+
+.mp-block{padding:18px 20px;margin-bottom:16px}
+.mp-block h2{margin:0 0 12px;font-size:14px;font-weight:700;color:var(--ink)}
+.mp-block p{margin:0;font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+
+.mp-facts{margin:0;display:grid;gap:11px}
+.mp-facts > div{display:flex;gap:16px;align-items:baseline}
+.mp-facts dt{flex:0 0 108px;font-size:12px;font-weight:640;color:var(--muted)}
+.mp-facts dd{margin:0;font-size:13.5px;color:var(--ink)}
+.mp-withheld{color:var(--faint);font-style:italic}
+
+.mp-note{
+  margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+  font-size:11.5px;line-height:1.6;color:var(--faint);
+}
+
+@media (max-width:720px){
+  .mp-id{flex-wrap:wrap}
+  .mp-name{padding-top:8px;flex-basis:100%}
+  .mp-id > .btn{margin-top:0}
+  .mp-stats{grid-template-columns:repeat(2,1fr)}
+}
