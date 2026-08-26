@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Modal, { ModalHead, ModalTitle, ModalBody, ModalFoot } from '../ui/Modal'
 import Field from '../ui/Field'
 import { useApp } from '../../context/AppContext'
-import { createCommunity } from '../../lib/communities'
+import { createCommunity, communityErrorMessage } from '../../lib/communities'
 
 const REGIONS = ['Mohali, IN', 'Bangalore, IN', 'New York, US', 'Bay Area, US']
 const ASSET_CLASSES = ['Residential', 'Mixed-use', 'Medical', 'Industrial', 'Retail', 'Hospitality']
@@ -52,7 +52,7 @@ export default function CreateCommunityModal({ onCreated }) {
       onCreated?.()
       closeModal()
     } catch (err) {
-      setError(err.message)
+      setError(communityErrorMessage(err))
       setSaving(false)
     }
   }

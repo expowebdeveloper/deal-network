@@ -14,6 +14,8 @@
 @import './profile.css';
 @import './states.css';
 @import './modal.css';
+/* After modal.css: .co-points sits inside the checkout dialog. */
+@import './billing.css';
 @import './flow.css';
 @import './presenter.css';
 @import './responsive.css';

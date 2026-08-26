@@ -2,10 +2,15 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Screen, { PageHead } from '../layout/Screen'
 import Chip from '../ui/Chip'
 import Facepile from '../ui/Facepile'
+import Avatar from '../ui/Avatar'
+import CommunityMenu from '../ui/CommunityMenu'
 import { Loading, Empty, ErrorState } from '../ui/States'
 import { PlusIcon } from '../icons/Icons'
 import { useApp } from '../../context/AppContext'
-import { listCommunities, joinCommunity, leaveCommunity, memberLabel } from '../../lib/communities'
+import { useSearchParams } from 'react-router-dom'
+import {
+  listCommunities, joinCommunity, leaveCommunity, memberLabel, isDraft,
+} from '../../lib/communities'
 
 const FILTERS = [
   { key: 'all', label: 'All', group: 'Type' },
@@ -19,15 +24,36 @@ function CommunityCard({ community, onOpen, onJoin, onLeave, busy }) {
     <article className="card ccard" onClick={onOpen}>
       <div className={`ccard-banner ${community.banner}`}>
         <span className="kind">{community.kind === 'region' ? 'MARKET' : 'ASSET CLASS'}</span>
+        {isDraft(community) && <span className="ccard-draft">DRAFT</span>}
       </div>
       <div className="ccard-body">
-        <h3>{community.name}</h3>
+        <div className="ccard-title">
+          {community.logoUrl && (
+            <Avatar
+              initials={community.initials}
+              color={community.banner.replace('b', 'a')}
+              size="sm"
+              src={community.logoUrl}
+              alt=""
+            />
+          )}
+          <h3>{community.name}</h3>
+        </div>
         <div className="desc">{community.desc}</div>
         <div className="ccard-foot">
           <Facepile people={community.faces} />
           <span className="ccard-count">{memberLabel(community.memberCount)}</span>
 
-          {community.joined ? (
+          {isDraft(community) ? (
+            // Nobody can join a draft, so the card offers the only thing that
+            // makes sense here: opening it to finish setting it up.
+            <button
+              className="btn btn-dark btn-sm ccard-join"
+              onClick={(e) => { e.stopPropagation(); onOpen() }}
+            >
+              Finish setup
+            </button>
+          ) : community.joined ? (
             <button
               className="btn btn-ghost btn-sm ccard-join"
               data-busy={busy}
@@ -62,6 +88,7 @@ function CommunityCard({ community, onOpen, onJoin, onLeave, busy }) {
 
 export default function Communities() {
   const { openModal } = useApp()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [filter, setFilter] = useState('all')
   // Guards against a slow earlier filter response landing after a newer one.
   const requestSeq = useRef(0)
@@ -86,6 +113,24 @@ export default function Communities() {
     load(filter)
   }, [filter, load])
 
+  // A search result or link navigates to /communities?open=<slug> or ?settings=<slug>
+  useEffect(() => {
+    const slug = searchParams.get('open')
+    const settingsSlug = searchParams.get('settings')
+
+    if (slug) {
+      openModal('community', { slug, onChanged: () => load(filter) })
+      const next = new URLSearchParams(searchParams)
+      next.delete('open')
+      setSearchParams(next, { replace: true })
+    } else if (settingsSlug) {
+      openModal('community-settings', { slug: settingsSlug, onChanged: () => load(filter) })
+      const next = new URLSearchParams(searchParams)
+      next.delete('settings')
+      setSearchParams(next, { replace: true })
+    }
+  }, [searchParams, setSearchParams, openModal, load, filter])
+
   async function handleJoin(community) {
     setBusySlug(community.slug)
     setNotice(null)
@@ -102,17 +147,34 @@ export default function Communities() {
     }
   }
 
-  async function handleLeave(community) {
+  async function performLeave(community) {
     setBusySlug(community.slug)
     setNotice(null)
     try {
       await leaveCommunity(community.slug)
       await load(filter)
-    } catch (error) {
-      setNotice(error.message)
     } finally {
       setBusySlug(null)
     }
+  }
+
+  function handleLeave(community) {
+    // Withdrawing a request you have not been approved for yet costs nothing and
+    // can be redone in one click, so only actually leaving is worth a prompt.
+    if (!community.joined) {
+      performLeave(community).catch((error) => setNotice(error.message))
+      return
+    }
+    openModal('confirm', {
+      title: `Leave ${community.name}?`,
+      message: 'You will lose access to its discussion and members. '
+        + `Rejoining is ${community.joinPolicy === 'open'
+          ? 'one click away.'
+          : 'subject to approval again.'}`,
+      confirmLabel: 'Leave community',
+      tone: 'danger',
+      onConfirm: () => performLeave(community),
+    })
   }
 
   const typeFilters = FILTERS.filter((f) => f.group === 'Type')

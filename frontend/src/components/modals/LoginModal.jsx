@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import Modal from '../ui/Modal'
 import { useApp } from '../../context/AppContext'
 import { BrandMark, GoogleIcon, AppleIcon, CloseIcon } from '../icons/Icons'
-import { fetchProviders, startOAuth } from '../../lib/api'
+import { fetchProviders } from '../../lib/api'
+import { signupIntent, startOAuthWithIntent } from '../../lib/billing'
 import { loginStats } from '../../data/user'
 
 /** Messages the backend can hand back on /auth/callback#error=… */
@@ -27,8 +28,12 @@ function describeError(code) {
  *
  * `error` is the code the OAuth callback bounced back with — /login?error=… is
  * where a failed round trip lands, and the landing page opens this with it.
+ *
+ * `signupIntentPlan` is set when the visitor reached here by picking a plan on
+ * the pricing page. The plan itself is already held server-side; this only names
+ * it so the dialog can say what they are signing up to.
  */
-export default function LoginModal({ error = null, onClose }) {
+export default function LoginModal({ error = null, onClose, signupIntentPlan = null }) {
   const { closeModal, openModal } = useApp()
 
   // null = we do not know which providers exist — either still checking, or the
@@ -74,7 +79,10 @@ export default function LoginModal({ error = null, onClose }) {
     }
     setBusy(provider)
     setProblem(null)
-    startOAuth(provider) // full-page redirect to the backend, then on to the provider
+    // The pending plan choice rides along, so a visitor who picked Member on the
+    // pricing page arrives at checkout rather than on the free tier. The backend
+    // folds it into the signed OAuth state.
+    startOAuthWithIntent(provider, signupIntent.get())
   }
 
   function close() {
@@ -126,7 +134,11 @@ export default function LoginModal({ error = null, onClose }) {
 
           <div className="login-form">
             <h2>Sign in</h2>
-            <p className="sub">Use the account you already work from.</p>
+            <p className="sub">
+              {signupIntentPlan && signupIntentPlan !== 'early_access'
+                ? 'Sign in to continue to payment. Your plan is held for you.'
+                : 'Use the account you already work from.'}
+            </p>
 
             {problem && <div className="login-alert" role="alert">{problem}</div>}
 

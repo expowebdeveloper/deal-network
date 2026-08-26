@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import uuid
+
 from pydantic import BaseModel
 
 from app.models.base import PlanTier
