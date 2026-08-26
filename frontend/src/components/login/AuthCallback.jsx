@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useApp } from '../../context/AppContext'
 import { BrandMark } from '../icons/Icons'
 import { tokens } from '../../lib/api'
+import { signupIntent } from '../../lib/billing'
 
 /**
  * Landing spot for the backend's OAuth redirect.
@@ -25,9 +26,14 @@ export default function AuthCallback() {
     const error = params.get('error')
     const accessToken = params.get('access_token')
     const refreshToken = params.get('refresh_token')
+    // The plan chosen before signing up, echoed back from the signed OAuth
+    // state. The Plans screen spends it — after the terms, which come first.
+    const intent = params.get('signup_intent')
 
     // Drop the fragment either way, so tokens are not left in the URL bar.
     window.history.replaceState(null, '', window.location.pathname)
+
+    if (intent) signupIntent.set(intent)
 
     if (error) {
       navigate(`/login?error=${encodeURIComponent(error)}`, { replace: true })

@@ -10,19 +10,19 @@ function Stroke({ width = 2, children, ...rest }) {
 }
 
 /**
- * The mark: a lime tile with the house cut in deep green.
+ * The mark: a lime tile with the house cut in deep navy.
  *
  * Lime is the palette's highlight, and this is the one thing on screen that has
- * to read on the light page and on the dark green sidebar alike — the glyph
- * sits at 11:1 on the tile either way.
+ * to read on the off-white page and on the navy sidebar alike — the glyph sits
+ * at 11:1 on the tile either way.
  */
 export function BrandMark(props) {
   return (
     <svg className="brand-mark" viewBox="0 0 32 32" fill="none" {...props}>
-      <rect width="32" height="32" rx="8" fill="var(--lime,#A3E635)" />
-      <path d="M8 21V13.4L16 8l8 5.4V21" stroke="var(--on-lime,#06231A)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M13 21v-4.6h6V21" stroke="var(--on-lime,#06231A)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="16" cy="12.6" r="1.5" fill="var(--on-lime,#06231A)" />
+      <rect width="32" height="32" rx="8" fill="var(--lime,#B7E83F)" />
+      <path d="M8 21V13.4L16 8l8 5.4V21" stroke="var(--on-lime,#0B2533)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M13 21v-4.6h6V21" stroke="var(--on-lime,#0B2533)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="16" cy="12.6" r="1.5" fill="var(--on-lime,#0B2533)" />
     </svg>
   )
 }
@@ -88,6 +88,11 @@ export const DocumentIcon = (p) => (
     <path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9z" /><path d="M13 3v6h6" />
   </Stroke>
 )
+export const VideoIcon = (p) => (
+  <Stroke width={1.9} {...p}>
+    <rect x="3" y="5.5" width="13" height="13" rx="2" /><path d="m16 10.5 5-3v9l-5-3z" />
+  </Stroke>
+)
 export const PinIcon = (p) => (
   <Stroke width={1.9} {...p}><circle cx="12" cy="10" r="3" /><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11" /></Stroke>
 )
@@ -117,6 +122,30 @@ export const DragIcon = (p) => (
 )
 export const ArrowRightIcon = (p) => <Stroke {...p}><path d="M4 12h15M14 7l5 5-5 5" /></Stroke>
 export const ArrowDownIcon = (p) => <Stroke {...p}><path d="M12 4v15M7 14l5 5 5-5" /></Stroke>
+export const MoreVerticalIcon = (p) => (
+  <Stroke width={1.9} {...p}>
+    <circle cx="12" cy="5" r="1.6" fill="currentColor" />
+    <circle cx="12" cy="12" r="1.6" fill="currentColor" />
+    <circle cx="12" cy="19" r="1.6" fill="currentColor" />
+  </Stroke>
+)
+export const CameraIcon = (p) => (
+  <Stroke width={1.9} {...p}>
+    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+    <circle cx="12" cy="13" r="4" />
+  </Stroke>
+)
+export const TrashIcon = (p) => (
+  <Stroke width={1.9} {...p}>
+    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+  </Stroke>
+)
+export const SettingsIcon = (p) => (
+  <Stroke width={1.9} {...p}>
+    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+    <circle cx="12" cy="12" r="3" />
+  </Stroke>
+)
 
 /* --- OAuth --- */
 export function GoogleIcon(props) {

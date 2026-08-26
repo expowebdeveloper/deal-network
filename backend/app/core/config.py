@@ -50,8 +50,12 @@ class Settings(BaseSettings):
 
     # Uploads. Paths are resolved relative to the backend directory.
     upload_dir: str = "uploads"
-    max_image_bytes: int = 10 * 1024 * 1024
-    max_document_bytes: int = 25 * 1024 * 1024
+    # Per-type ceilings for a single upload, overridable in .env. These are what
+    # this deployment will carry; the plan's `files.max_file_size_bytes` is a
+    # separate ceiling and the smaller of the two always wins (services/files.py).
+    max_image_bytes: int = 10 * 1024 * 1024       # MAX_IMAGE_BYTES
+    max_video_bytes: int = 30 * 1024 * 1024       # MAX_VIDEO_BYTES
+    max_document_bytes: int = 25 * 1024 * 1024    # MAX_DOCUMENT_BYTES
 
     smtp_host: str = "smtp.gmail.com"
     smtp_port: int = 587
@@ -60,6 +64,29 @@ class Settings(BaseSettings):
     smtp_from_name: str = "Deal Network"
     smtp_starttls: bool = True
     email_enabled: bool = True
+
+    # --- Stripe ----------------------------------------------------------
+    # All optional: with no secret key the billing endpoints answer 503
+    # BILLING_NOT_CONFIGURED and the rest of the app runs untouched, so the
+    # stack still boots on a machine that has no Stripe account yet.
+    stripe_secret_key: str = ""
+    stripe_publishable_key: str = ""
+    stripe_webhook_secret: str = ""
+    # Recurring Price ids (price_…, not product ids) from the Stripe dashboard.
+    stripe_price_member: str = ""
+    stripe_price_professional: str = ""
+    # Point the SDK somewhere other than api.stripe.com. Only for `stripe-mock`,
+    # Stripe's own fake API, which makes the billing path testable in CI without
+    # an account. Must stay empty in production — it is the difference between
+    # talking to Stripe and talking to something claiming to be Stripe.
+    stripe_api_base: str = ""
+
+    # Where Stripe sends the browser back to. Appended to frontend_url.
+    stripe_success_path: str = "/billing/success"
+    stripe_cancel_path: str = "/plans"
+    stripe_portal_return_path: str = "/plans"
+    # How long a pre-signup plan choice stays spendable (backend_flow.md 7.1).
+    signup_intent_ttl_minutes: int = 60
 
     @field_validator("jwt_secret_key")
     @classmethod
@@ -111,6 +138,46 @@ class Settings(BaseSettings):
     @property
     def is_production(self) -> bool:
         return self.app_env.lower() in {"production", "prod"}
+
+    @property
+    def stripe_enabled(self) -> bool:
+        """Whether the billing endpoints can talk to Stripe at all."""
+        return bool(self.stripe_secret_key)
+
+    @property
+    def stripe_webhook_ready(self) -> bool:
+        """Whether an inbound webhook can have its signature verified.
+
+        Without the signing secret the webhook endpoint refuses every delivery
+        rather than trusting an unauthenticated POST that grants paid plans.
+        """
+        return bool(self.stripe_secret_key and self.stripe_webhook_secret)
+
+    @property
+    def stripe_live_mode(self) -> bool:
+        return self.stripe_secret_key.startswith("sk_live_")
+
+    def stripe_price_for(self, plan: str) -> str:
+        """The configured Price id for a paid tier, or "" when unset."""
+        return {
+            "member": self.stripe_price_member,
+            "professional": self.stripe_price_professional,
+        }.get(plan, "")
+
+    @property
+    def stripe_plan_by_price(self) -> dict[str, str]:
+        """Price id -> plan tier, for reading a Stripe subscription back."""
+        return {
+            price: plan
+            for plan, price in (
+                ("member", self.stripe_price_member),
+                ("professional", self.stripe_price_professional),
+            )
+            if price
+        }
+
+    def frontend_link(self, path: str) -> str:
+        return f"{self.frontend_url.rstrip('/')}/{path.lstrip('/')}"
 
 
 @lru_cache
