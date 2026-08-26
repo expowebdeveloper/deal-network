@@ -1,0 +1,77 @@
+/* ---------------------------------------------------------------------------
+   Billing: the Stripe return page, and the extra bits on the checkout modal.
+
+   The return page is a full-screen interstitial like .auth-callback — the member
+   arrives here from Stripe's domain and leaves for the app a second later, so it
+   is not part of the shell chrome.
+   --------------------------------------------------------------------------- */
+
+.billing-return{
+  position:fixed;inset:0;z-index:200;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
+  padding:24px;
+  background:var(--surface);
+}
+.billing-return .brand-mark{width:40px;height:40px}
+
+.br-panel{
+  width:100%;max-width:440px;
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;
+}
+.br-panel h1{
+  font-size:20px;font-weight:700;letter-spacing:-.024em;color:var(--ink);
+  margin:4px 0 0;
+}
+.br-panel p{font-size:13.5px;line-height:1.65;color:var(--muted);margin:0}
+.br-note{
+  margin-top:6px;padding-top:12px;
+  border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--faint)
+}
+
+.br-actions{display:flex;gap:10px;margin-top:18px}
+
+/* Status marker. One shape, three meanings. */
+.br-icon{
+  display:grid;place-items:center;
+  width:48px;height:48px;border-radius:50%;
+  border:1px solid var(--line-strong);
+}
+.br-icon svg{width:20px;height:20px}
+.br-icon.ok{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}
+.br-icon.wait{background:var(--gold-soft);border-color:var(--gold-line);color:var(--gold)}
+.br-icon.bad{background:var(--danger-soft);border-color:var(--danger-line);color:var(--danger)}
+
+/* Confirming. Same 44px box as .br-icon so the layout does not jump when the
+   spinner is replaced by a result. */
+.br-spinner{
+  width:48px;height:48px;border-radius:50%;
+  border:2px solid var(--line);
+  border-top-color:var(--accent);
+  animation:br-spin .7s linear infinite;
+}
+@keyframes br-spin{to{transform:rotate(360deg)}}
+
+@media (prefers-reduced-motion:reduce){
+  .br-spinner{animation-duration:2.4s}
+}
+
+/* ---------------------------------------------------------------------------
+   Checkout modal — the reassurance list under the price summary. There is no
+   card form here on purpose; the card is entered on Stripe's own page.
+   --------------------------------------------------------------------------- */
+
+/* Why a paid tier's button is greyed out. Sits under it on the plan card. */
+.plan-unavailable{
+  margin:10px 0 0;
+  font-size:11.5px;line-height:1.55;color:var(--faint);text-align:center;
+}
+
+.co-points{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+.co-points li{
+  display:flex;gap:10px;align-items:flex-start;
+  font-size:12.5px;line-height:1.6;color:var(--muted);
+}
+.co-points svg{
+  flex:0 0 auto;width:15px;height:15px;margin-top:1px;color:var(--accent);
+}

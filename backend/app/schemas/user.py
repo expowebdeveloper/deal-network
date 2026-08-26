@@ -24,7 +24,10 @@ class UserSummary(ORMModel):
 
 
 class UserProfile(UserSummary):
-    email: EmailStr
+    # Optional because field visibility can withhold it: `contact` defaults to
+    # Private, so another member's profile usually comes back without an email.
+    # It is always present on /api/me — your own profile is never filtered.
+    email: EmailStr | None = None
     title: str | None = None
     focus: str | None = None
     bio: str | None = None

@@ -40,11 +40,6 @@ ROLE_OPTIONS: list[dict] = [
         "title": "Lender",
         "description": "I provide construction or acquisition finance",
     },
-    {
-        "id": MemberRole.service_provider,
-        "title": "Service provider",
-        "description": "Architecture, legal, PM, valuation and similar",
-    },
 ]
 
 MARKET_OPTIONS = ["Mohali, IN", "Bangalore, IN", "New York, US", "Bay Area, US"]

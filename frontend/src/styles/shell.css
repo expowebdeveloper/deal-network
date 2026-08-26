@@ -3,7 +3,9 @@
    ============================================================ */
 #app{
   position:fixed;inset:0;
-  display:grid;grid-template-columns:236px 1fr;
+  height:100vh;max-height:100vh;
+  display:grid;grid-template-columns:248px 1fr;grid-template-rows:100%;
+  overflow:hidden;
   animation:appIn .42s cubic-bezier(.4,0,.2,1);
 }
 #app.app-locked,
@@ -12,78 +14,124 @@
 }
 @keyframes appIn{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
 
-/* Sidebar */
+/* ------------------------------------------------------------
+   Sidebar — the app's one large navy surface. It is structure, not
+   accent: nothing in here competes with the screen beside it.
+   ------------------------------------------------------------ */
 .sidebar{
-  background:linear-gradient(180deg,var(--green-800),var(--green-950) 62%);
-  color:rgba(255,255,255,.72);
+  background:linear-gradient(180deg,var(--navy-900) 0%,var(--navy-950) 100%);
+  color:rgba(255,255,255,.70);
   display:flex;flex-direction:column;
-  border-right:1px solid rgba(163,230,53,.14);
+  height:100%;min-height:0;overflow:hidden;
+  border-right:1px solid rgba(255,255,255,.07);
 }
-.sb-head{padding:17px 18px 15px;display:flex;align-items:center;gap:10px;color:#fff}
-.sb-nav{flex:1;overflow-y:auto;padding:6px 10px 12px}
-.sb-group{margin-bottom:6px}
+.sb-head{
+  padding:20px 18px 18px;display:flex;align-items:center;gap:11px;color:#fff;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.sb-head .brand-name{font-size:16px;font-weight:700;letter-spacing:-.022em}
+.sb-nav{flex:1;overflow-y:auto;padding:12px 12px 16px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent}
+.sb-group{margin-bottom:4px}
 .sb-label{
-  font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
-  color:rgba(255,255,255,.62);padding:12px 8px 6px;
+  font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:rgba(255,255,255,.52);padding:14px 10px 7px;
 }
 .sb-item{
-  display:flex;align-items:center;gap:10px;
-  width:100%;padding:8px 9px;margin-bottom:1px;
-  border-radius:var(--r-sm);font-size:13.5px;font-weight:550;
-  color:rgba(255,255,255,.68);transition:all .13s ease;text-align:left;
+  position:relative;
+  display:flex;align-items:center;gap:11px;
+  width:100%;padding:9px 11px;margin-bottom:2px;
+  border-radius:var(--r-sm);font-size:13.5px;font-weight:500;letter-spacing:-.006em;
+  color:rgba(255,255,255,.70);
+  transition:background-color .15s ease,color .15s ease;text-align:left;
 }
-.sb-item svg{width:17px;height:17px;flex:none;opacity:.82}
-.sb-item:hover{background:rgba(255,255,255,.08);color:#fff}
-/* The current screen is a lime highlight — the one place the sidebar uses it. */
-.sb-item.on{background:rgba(163,230,53,.15);color:var(--lime);font-weight:650}
-.sb-item.on svg{opacity:1}
-.sb-item.locked{opacity:.55;cursor:default}
-.sb-item.locked:hover{background:transparent;color:rgba(255,255,255,.68)}
-.sb-count{margin-left:auto;font-size:11px;font-weight:700;color:rgba(255,255,255,.6)}
+.sb-item svg{width:18px;height:18px;flex:none;opacity:.75;transition:opacity .15s ease}
+.sb-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.sb-item:hover svg{opacity:1}
+/* The current screen: a lifted panel with a lime rail down its edge. Lime
+   appears once in the whole sidebar, which is what makes it findable. */
+.sb-item.on{background:rgba(255,255,255,.11);color:#fff;font-weight:640;box-shadow:inset 3px 0 0 var(--lime)}
+.sb-item.on svg{opacity:1;color:var(--lime)}
+.sb-item.locked{opacity:.52;cursor:default}
+.sb-item.locked:hover{background:transparent;color:rgba(255,255,255,.70)}
+.sb-item.locked:hover svg{opacity:.75}
+.sb-count{
+  margin-left:auto;font-size:11px;font-weight:700;
+  color:rgba(255,255,255,.80);background:rgba(255,255,255,.12);
+  min-width:20px;padding:1px 6px;border-radius:99px;text-align:center;
+}
 .sb-soon{
-  margin-left:auto;font-size:9.5px;font-weight:800;letter-spacing:.05em;
-  padding:2px 6px;border-radius:4px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.66);
+  margin-left:auto;font-size:9.5px;font-weight:800;letter-spacing:.06em;
+  padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.10);color:rgba(255,255,255,.60);
 }
-.sb-foot{padding:12px 14px;border-top:1px solid rgba(163,230,53,.12)}
-.sb-user{display:flex;align-items:center;gap:10px;padding:6px;border-radius:var(--r-sm);transition:background .13s}
-.sb-user:hover{background:rgba(255,255,255,.06)}
-.sb-user .nm{font-size:12.5px;font-weight:650;color:#fff;line-height:1.3}
-.sb-user .rl{font-size:11px;color:rgba(255,255,255,.62);line-height:1.3}
+.sb-foot{padding:12px;border-top:1px solid rgba(255,255,255,.07)}
+.sb-user{
+  display:flex;align-items:center;gap:11px;width:100%;
+  padding:9px 10px;border-radius:var(--r-sm);transition:background-color .15s ease;
+}
+.sb-user:hover{background:rgba(255,255,255,.07)}
+.sb-user .txt{min-width:0;text-align:left}
+.sb-user .nm{font-size:12.5px;font-weight:650;color:#fff;line-height:1.35;letter-spacing:-.008em}
+.sb-user .rl{font-size:11px;color:rgba(255,255,255,.55);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* Main column */
-.maincol{display:flex;flex-direction:column;min-width:0;background:var(--canvas)}
+/* ------------------------------------------------------------
+   Main column
+   ------------------------------------------------------------ */
+.maincol{display:flex;flex-direction:column;min-width:0;min-height:0;height:100%;overflow:hidden;background:var(--canvas)}
 .topbar{
-  height:56px;flex:none;
+  height:60px;flex:none;
   display:flex;align-items:center;gap:12px;
-  padding:0 20px;background:var(--surface);border-bottom:1px solid var(--line);
+  padding:0 24px;background:var(--surface);border-bottom:1px solid var(--line);
 }
 .searchbox{
-  display:flex;align-items:center;gap:8px;
-  width:300px;max-width:38vw;height:34px;padding:0 11px;
+  display:flex;align-items:center;gap:9px;
+  width:320px;max-width:38vw;height:36px;padding:0 12px;
   background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-sm);
   color:var(--faint);font-size:13px;
+  transition:border-color .15s ease,box-shadow .15s ease,background-color .15s ease;
 }
-.searchbox input{flex:1;border:none;background:none;height:100%;font-size:13px;color:var(--ink)}
+.searchbox:focus-within{border-color:var(--accent);background:var(--surface);box-shadow:var(--ring)}
+.searchbox input{flex:1;border:none;background:none;height:100%;font-size:13px;color:var(--ink);min-width:0}
+.searchbox input::placeholder{color:var(--faint)}
 .searchbox input:focus{outline:none}
 .topbar-sp{flex:1}
 .icon-btn{
-  width:34px;height:34px;border-radius:var(--r-sm);
-  display:grid;place-items:center;color:var(--muted);transition:all .13s;
+  width:36px;height:36px;border-radius:var(--r-sm);
+  display:grid;place-items:center;color:var(--muted);
+  transition:background-color .15s ease,color .15s ease;
 }
-.icon-btn:hover{background:var(--line-2);color:var(--ink)}
+.icon-btn:hover{background:var(--surface-2);color:var(--ink)}
 .icon-btn svg{width:18px;height:18px}
-.icon-btn.on{background:var(--accent);color:var(--on-dark)}
+.icon-btn.on{background:var(--accent-soft);color:var(--accent-deep)}
 
-.screenwrap{flex:1;overflow-y:auto;overflow-x:hidden}
+.screenwrap{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--line-strong) transparent}
+.screenwrap::-webkit-scrollbar{width:10px}
+.screenwrap::-webkit-scrollbar-track{background:transparent}
+.screenwrap::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;border:3px solid var(--canvas)}
+.screenwrap::-webkit-scrollbar-thumb:hover{background:var(--line-strong)}
+.sb-nav::-webkit-scrollbar{width:6px}
+.sb-nav::-webkit-scrollbar-track{background:transparent}
+.sb-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:99px}
+.sb-nav::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.30)}
 .screen{display:none;animation:screenIn .26s ease}
 .screen.on{display:block}
 @keyframes screenIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.page{max-width:1180px;margin:0 auto;padding:26px 28px 60px}
-.page-narrow{max-width:900px}
+/* Wide enough to actually use a 1080p screen — at 1200px the app sat in a
+   1136px column with ~230px of dead gutter either side. Layouts whose line
+   length matters (the feed, the plan cards, a read-only profile) cap
+   themselves below; grids and tables take the full width. */
+.page{max-width:1680px;margin:0 auto;padding:32px 36px 72px}
+.page-narrow{max-width:920px}
+/* Screens that are prose or a small fixed set of cards keep a measure, and
+   they cap the page itself so the heading stays aligned with the content
+   under it. Grids and tables (communities, members, contacts) take it all. */
+[data-screen="home"] .page{max-width:1280px}
+[data-screen="investors"] .page{max-width:1400px}
+[data-screen="plans"] .page{max-width:1240px}
+[data-screen="member-profile"] .page{max-width:1040px}
 
-.page-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:22px}
-.page-head h1{font-size:24px;font-weight:730;letter-spacing:-.028em;line-height:1.25}
-.page-head p{font-size:13.5px;color:var(--muted);margin-top:4px;max-width:66ch;line-height:1.6}
+.page-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:26px}
+.page-head h1{font-size:26px;font-weight:700;letter-spacing:-.028em;line-height:1.2;color:var(--ink)}
+.page-head p{font-size:14px;color:var(--muted);margin-top:6px;max-width:68ch;line-height:1.6}
 .page-head .sp{flex:1}
 
 /* ============================================================
@@ -95,13 +143,136 @@
   grid-template-columns:repeat(5,1fr);
   background:var(--surface);border-top:1px solid var(--line);
   padding-bottom:env(safe-area-inset-bottom,0);
-  box-shadow:0 -1px 8px rgba(4,31,23,.06);
+  box-shadow:0 -2px 12px rgba(11,37,51,.06);
 }
 .bn-item{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  padding:9px 2px 8px;font-size:9.5px;font-weight:650;letter-spacing:-.005em;
-  color:var(--faint);transition:color .13s;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  padding:10px 2px 9px;font-size:9.5px;font-weight:650;letter-spacing:-.004em;
+  color:var(--faint);transition:color .15s ease;
 }
 .bn-item svg{width:21px;height:21px}
-.bn-item.on{color:var(--accent)}
-.topbar-brand{display:none;align-items:center;gap:8px;font-size:15px;font-weight:730;letter-spacing:-.024em}
+.bn-item.on{color:var(--accent-deep)}
+.topbar-brand{display:none;align-items:center;gap:9px;font-size:15px;font-weight:700;letter-spacing:-.024em}
+
+/* ---------------------------------------------------------------------------
+   Header search — the dropdown over people, communities and your contacts.
+   --------------------------------------------------------------------------- */
+
+.searchbox.gs{position:relative}
+
+.gs-panel{
+  position:absolute;top:calc(100% + 8px);left:0;z-index:120;
+  /* Wider than the input: a result line is a name plus context, and at the
+     input's width the context is all ellipsis and tells the member nothing. */
+  min-width:min(460px,calc(100vw - 32px));
+  max-height:min(70vh,460px);overflow-y:auto;
+  background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--shadow-lg);
+  padding:6px;
+}
+
+.gs-note{padding:16px 12px;font-size:12.5px;color:var(--muted);text-align:center}
+
+.gs-group + .gs-group{margin-top:4px;padding-top:6px;border-top:1px solid var(--line-2)}
+.gs-label{
+  padding:7px 10px 5px;
+  font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--faint);
+}
+
+.gs-row{
+  display:flex;align-items:center;gap:10px;width:100%;
+  padding:8px 10px;border:0;border-radius:7px;
+  background:none;text-align:left;cursor:pointer;font:inherit;color:inherit;
+  transition:background-color .12s ease;
+}
+/* Hover and keyboard cursor look identical on purpose — the arrow keys and the
+   mouse are selecting the same thing, so they should not look like two states. */
+.gs-row:hover,.gs-row.on{background:var(--surface-2)}
+.gs-row.on{box-shadow:inset 0 0 0 1px var(--line)}
+
+.gs-name{font-size:13px;font-weight:640;color:var(--ink);white-space:nowrap;letter-spacing:-.008em}
+.gs-sub{
+  flex:1;min-width:0;
+  font-size:11.5px;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;
+}
+
+@media (max-width:720px){
+  .gs-panel{position:fixed;left:8px;right:8px;top:60px}
+  .gs-sub{display:none}
+}
+
+/* A contact arrived at from search. Fades out so it draws the eye once and
+   then stops competing with the rest of the table. */
+tr.row-focus > td{background:var(--lime-soft);animation:row-focus-fade 2.4s ease-out 1.2s forwards}
+@keyframes row-focus-fade{to{background:transparent}}
+@media (prefers-reduced-motion:reduce){
+  tr.row-focus > td{animation:none}
+}
+
+/* ---------------------------------------------------------------------------
+   Notification bell.
+   --------------------------------------------------------------------------- */
+
+.nb{position:relative}
+
+.nb-badge{
+  position:absolute;top:0;right:0;
+  min-width:16px;height:16px;padding:0 4px;
+  display:grid;place-items:center;
+  background:var(--danger);color:#fff;
+  font-size:9.5px;font-weight:750;line-height:1;
+  border-radius:99px;border:2px solid var(--surface);
+  pointer-events:none;
+}
+
+.nb-panel{
+  position:absolute;top:calc(100% + 8px);right:0;z-index:130;
+  width:min(380px,calc(100vw - 24px));
+  max-height:min(70vh,460px);overflow-y:auto;
+  background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--shadow-lg);
+}
+
+.nb-head{
+  position:sticky;top:0;z-index:1;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 15px;background:var(--surface);
+  border-bottom:1px solid var(--line-2);
+  font-size:12.5px;font-weight:700;color:var(--ink);letter-spacing:-.008em;
+}
+.nb-all{
+  border:0;background:none;cursor:pointer;
+  font:inherit;font-weight:640;font-size:11.5px;color:var(--accent-deep);
+}
+.nb-all:hover{text-decoration:underline}
+
+.nb-note{padding:24px 16px;font-size:12.5px;line-height:1.6;color:var(--muted);text-align:center}
+
+.nb-row{
+  display:flex;gap:11px;align-items:flex-start;width:100%;
+  padding:12px 15px;border:0;border-bottom:1px solid var(--line-2);
+  background:none;text-align:left;cursor:pointer;font:inherit;color:inherit;
+  transition:background-color .12s ease;
+}
+.nb-row:last-child{border-bottom:0}
+.nb-row:hover{background:var(--surface-2)}
+/* Unread is a tint plus a rail, not bold text — bold makes a long list shout. */
+.nb-row.unread{background:var(--accent-faint);box-shadow:inset 3px 0 0 var(--accent)}
+.nb-row.unread:hover{background:var(--accent-soft)}
+
+.nb-dot{
+  flex:0 0 auto;width:28px;height:28px;border-radius:50%;
+  background:var(--surface-2);border:1px solid var(--line);
+}
+.nb-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.nb-title{font-size:12.5px;font-weight:640;color:var(--ink);line-height:1.45;letter-spacing:-.008em}
+.nb-body{font-size:11.5px;color:var(--muted);line-height:1.55}
+.nb-when{font-size:10.5px;color:var(--faint);margin-top:2px}
+
+@media (max-width:720px){
+  .nb-panel{position:fixed;left:8px;right:8px;width:auto;top:60px}
+}

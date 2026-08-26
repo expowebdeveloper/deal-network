@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Subscription Plans &amp; Feature Matrix</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root{
+    --navy-dark:#122536;
+    --navy:#1F3B4D;
+    --teal:#2F7D6E;
+    --teal-light:#DCEEEA;
+    --paper:#F7F8F7;
+    --paper-2:#EFF2F1;
+    --ink:#1B2426;
+    --ink-soft:#4B5A5D;
+    --line:#D8E0DE;
+    --gold:#A6822F;
+    --gold-light:#FBF4E4;
+    --silver:#7C8894;
+    --silver-light:#EEF1F3;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.5;}
+  .wrap{max-width:1180px;margin:0 auto;padding:64px 32px 120px;}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;color:var(--navy-dark);margin:0;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--teal);font-weight:600;margin-bottom:14px;display:block;
+  }
+  .hero{padding-bottom:48px;border-bottom:1px solid var(--line);margin-bottom:56px;}
+  .hero h1{font-size:40px;font-weight:700;line-height:1.15;max-width:760px;letter-spacing:-.01em;}
+  .hero p{font-size:17px;color:var(--ink-soft);max-width:680px;margin-top:18px;}
+
+  section{margin-bottom:64px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:26px;}
+  .sec-num{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--teal);
+    border:1px solid var(--teal);border-radius:20px;padding:3px 11px;font-weight:600;
+  }
+  .sec-head h2{font-size:24px;font-weight:700;}
+  .sec-intro{color:var(--ink-soft);font-size:15px;max-width:760px;margin-bottom:28px;}
+
+  /* Tier cards */
+  .tier-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+  .tier-card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:28px 24px;position:relative;}
+  .tier-card.silver{border-top:4px solid var(--silver);}
+  .tier-card.gold{border-top:4px solid var(--gold);box-shadow:0 8px 28px rgba(166,130,47,.12);}
+  .tier-card.free{border-top:4px solid var(--line);}
+  .tier-name{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;}
+  .tier-price{font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:700;color:var(--navy-dark);margin:6px 0 2px;}
+  .tier-price span{font-size:14px;font-weight:500;color:var(--ink-soft);}
+  .tier-for{font-size:13px;color:var(--ink-soft);margin-bottom:18px;}
+  .tier-list{list-style:none;padding:0;margin:0;font-size:13.5px;}
+  .tier-list li{padding:7px 0;border-top:1px solid var(--paper-2);color:var(--ink);}
+  .tier-list li:first-child{border-top:none;}
+  .tier-list b{color:var(--navy);}
+
+  /* Feature matrix */
+  .matrix-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;}
+  table.matrix{width:100%;border-collapse:collapse;background:var(--white);font-size:13.5px;min-width:820px;}
+  table.matrix th{
+    background:var(--navy-dark);color:var(--white);text-align:left;padding:14px 18px;
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;
+  }
+  table.matrix th.tier-th{text-align:center;}
+  table.matrix td{padding:13px 18px;border-top:1px solid var(--paper-2);vertical-align:top;}
+  table.matrix td.tier-td{text-align:center;color:var(--ink-soft);}
+  table.matrix tr.pillar-row td{
+    background:var(--teal-light);font-weight:700;color:var(--navy);font-family:'Space Grotesk',sans-serif;
+    font-size:13px;padding:9px 18px;
+  }
+  table.matrix td.feat{font-weight:600;color:var(--ink);min-width:180px;}
+  table.matrix td.gold-cell{background:var(--gold-light);color:var(--navy);font-weight:600;}
+
+  /* Role spotlight */
+  .role-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .rcard{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:18px;}
+  .rcard .rname{font-weight:700;color:var(--navy);font-size:14px;margin-bottom:8px;}
+  .rcard p{font-size:12.5px;color:var(--ink-soft);margin:0;}
+
+  /* Community deep-dive callout */
+  .qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .qa-card{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:20px 22px;}
+  .qa-card .q{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14.5px;color:var(--navy);margin-bottom:8px;}
+  .qa-card .a{font-size:13.5px;color:var(--ink-soft);margin:0;}
+  .qa-card .a b{color:var(--ink);}
+
+  /* Add-ons */
+  .addon-table{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  .addon-table th{
+    background:var(--navy-dark);color:var(--white);text-align:left;padding:12px 18px;
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;
+  }
+  .addon-table td{padding:13px 18px;font-size:13.5px;border-top:1px solid var(--paper-2);}
+  .addon-table tr:nth-child(even) td{background:var(--paper);}
+  .addon-table td.price{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--teal);white-space:nowrap;}
+  .avail-pill{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:20px;
+    background:var(--silver-light);color:var(--silver);display:inline-block;margin:2px 4px 2px 0;
+  }
+  .avail-pill.gold{background:var(--gold-light);color:var(--gold);}
+
+  .footnote{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);font-size:12.5px;color:#8B98A0;}
+
+  @media (max-width:900px){
+    .tier-row{grid-template-columns:1fr;}
+    .role-cards{grid-template-columns:1fr 1fr;}
+    .qa-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <span class="eyebrow">Draft for review &middot; Subscription Plans</span>
+    <h1>One subscription, five feature pillars: Community, Data Room, Underwriting, Analytics, AI</h1>
+    <p>Freemium, Silver ($25/mo) and Gold ($100/mo) aren't community-only plans &mdash; every tier is a ceiling across all five product areas at once. This is a proposal that turns the PRD's phase-by-phase feature list into three purchasable plans plus add-ons. Numbers are a starting point for discussion, not final.</p>
+  </div>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>The three plans, at a glance</h2></div>
+    <div class="tier-row">
+      <div class="tier-card free">
+        <div class="tier-name">Freemium</div>
+        <div class="tier-price">$0</div>
+        <div class="tier-for">For browsing the network before committing</div>
+        <ul class="tier-list">
+          <li>Join unlimited communities, can't create one</li>
+          <li>Basic profile &amp; connections, no CRM pipeline</li>
+          <li>View-only on shared data room items</li>
+          <li>Underwriting locked</li>
+          <li>Public market benchmarks only</li>
+          <li>No AI agent access</li>
+        </ul>
+      </div>
+      <div class="tier-card silver">
+        <div class="tier-name">Silver</div>
+        <div class="tier-price">$25 <span>/ month</span></div>
+        <div class="tier-for">For an active developer, investor, broker or lender</div>
+        <ul class="tier-list">
+          <li><b>1</b> community &middot; up to <b>150</b> members</li>
+          <li>Full CRM &middot; up to <b>250</b> contacts</li>
+          <li>Own data room &middot; <b>10GB</b>, expiring links</li>
+          <li>Basic underwriting &middot; <b>10</b> deals/mo</li>
+          <li>Own-deal dashboard + benchmark view</li>
+          <li>1 AI provider &middot; <b>$10</b>/mo spend cap</li>
+        </ul>
+      </div>
+      <div class="tier-card gold">
+        <div class="tier-name">Gold</div>
+        <div class="tier-price">$100 <span>/ month</span></div>
+        <div class="tier-for">For power users and small teams</div>
+        <ul class="tier-list">
+          <li>Up to <b>3</b> communities &middot; up to <b>500</b> members each</li>
+          <li>Unlimited contacts + advanced permissions</li>
+          <li>Data room &middot; <b>100GB</b>, advanced access control</li>
+          <li>Advanced underwriting &middot; unlimited deals</li>
+          <li>Full analytics + private/internal data views</li>
+          <li><b>$50</b>/mo AI spend cap + explainability + audit log</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>Full feature matrix</h2></div>
+    <p class="sec-intro">Every plan is measured across all five pillars &mdash; a Silver subscriber gets the Silver ceiling on Community <em>and</em> Data Room <em>and</em> Underwriting <em>and</em> Analytics <em>and</em> AI, all at once, not a pick-one menu.</p>
+    <div class="matrix-wrap">
+    <table class="matrix">
+      <tr><th>Feature</th><th class="tier-th">Freemium</th><th class="tier-th">Silver &middot; $25</th><th class="tier-th">Gold &middot; $100</th></tr>
+
+      <tr class="pillar-row"><td colspan="4">Community &amp; Networking</td></tr>
+      <tr><td class="feat">Create a community</td><td class="tier-td">&mdash;</td><td class="tier-td">1</td><td class="tier-td gold-cell">Up to 3</td></tr>
+      <tr><td class="feat">Members per community</td><td class="tier-td">&mdash;</td><td class="tier-td">150</td><td class="tier-td gold-cell">500</td></tr>
+      <tr><td class="feat">Moderator seats</td><td class="tier-td">&mdash;</td><td class="tier-td">0</td><td class="tier-td gold-cell">Up to 3</td></tr>
+      <tr><td class="feat">Join / browse communities</td><td class="tier-td">Unlimited</td><td class="tier-td">Unlimited</td><td class="tier-td gold-cell">Unlimited</td></tr>
+
+      <tr class="pillar-row"><td colspan="4">CRM &amp; Contacts</td></tr>
+      <tr><td class="feat">Contact pipeline</td><td class="tier-td">&mdash;</td><td class="tier-td">Up to 250</td><td class="tier-td gold-cell">Unlimited</td></tr>
+      <tr><td class="feat">Roles &amp; permissions</td><td class="tier-td">&mdash;</td><td class="tier-td">Basic</td><td class="tier-td gold-cell">Advanced (team access)</td></tr>
+
+      <tr class="pillar-row"><td colspan="4">Data Room</td></tr>
+      <tr><td class="feat">Own data room</td><td class="tier-td">View shared items only</td><td class="tier-td">10GB storage</td><td class="tier-td gold-cell">100GB storage</td></tr>
+      <tr><td class="feat">External-viewer invites</td><td class="tier-td">&mdash;</td><td class="tier-td">10 / month</td><td class="tier-td gold-cell">Unlimited</td></tr>
+      <tr><td class="feat">Access provisioning</td><td class="tier-td">&mdash;</td><td class="tier-td">Standard share links</td><td class="tier-td gold-cell">Per-file / per-folder control</td></tr>
+
+      <tr class="pillar-row"><td colspan="4">Underwriting</td></tr>
+      <tr><td class="feat">Underwriting sandbox</td><td class="tier-td">Locked</td><td class="tier-td">10 deals / month</td><td class="tier-td gold-cell">Unlimited</td></tr>
+      <tr><td class="feat">Templates, rate cap calc, exports</td><td class="tier-td">&mdash;</td><td class="tier-td">Included</td><td class="tier-td gold-cell">Included</td></tr>
+      <tr><td class="feat">Sensitivity analysis &amp; insight flags</td><td class="tier-td">&mdash;</td><td class="tier-td">&mdash;</td><td class="tier-td gold-cell">Included</td></tr>
+
+      <tr class="pillar-row"><td colspan="4">Analytics</td></tr>
+      <tr><td class="feat">Market benchmarks</td><td class="tier-td">Public data only</td><td class="tier-td">Own deals vs. market</td><td class="tier-td gold-cell">Full dashboard + exports</td></tr>
+      <tr><td class="feat">Area / market aggregates</td><td class="tier-td">&mdash;</td><td class="tier-td">&mdash;</td><td class="tier-td gold-cell">Included</td></tr>
+      <tr><td class="feat">Private / internal data views</td><td class="tier-td">&mdash;</td><td class="tier-td">&mdash;</td><td class="tier-td gold-cell">Included</td></tr>
+
+      <tr class="pillar-row"><td colspan="4">AI / Bot Layer</td></tr>
+      <tr><td class="feat">Bring-your-own AI connect</td><td class="tier-td">&mdash;</td><td class="tier-td">1 provider</td><td class="tier-td gold-cell">1 provider</td></tr>
+      <tr><td class="feat">Monthly AI spend cap</td><td class="tier-td">&mdash;</td><td class="tier-td">$10</td><td class="tier-td gold-cell">$50</td></tr>
+      <tr><td class="feat">Personalised recs + explainability</td><td class="tier-td">&mdash;</td><td class="tier-td">&mdash;</td><td class="tier-td gold-cell">Included</td></tr>
+      <tr><td class="feat">Audit log access</td><td class="tier-td">&mdash;</td><td class="tier-td">&mdash;</td><td class="tier-td gold-cell">Included</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>Same tiers, every role</h2></div>
+    <p class="sec-intro">Feature ceilings don't change by role &mdash; a Developer and an Investor on Gold have the same limits. What changes is which pillar they'll actually push against first.</p>
+    <div class="role-cards">
+      <div class="rcard"><div class="rname">Developer</div><p>Leans on Community + Underwriting hardest &mdash; likely to hit the deal-count cap before the data-room storage cap.</p></div>
+      <div class="rcard"><div class="rname">Investor</div><p>Leans on Analytics + Data Room &mdash; benchmark views and external-viewer invites matter more than community creation.</p></div>
+      <div class="rcard"><div class="rname">Broker</div><p>Leans on Community + CRM &mdash; contact cap and member cap are the likely upgrade triggers.</p></div>
+      <div class="rcard"><div class="rname">Lender</div><p>Leans on Underwriting + Analytics &mdash; sensitivity analysis and private data views are Gold-gated features they'll want early.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Your specific questions, answered</h2></div>
+    <div class="qa-grid">
+      <div class="qa-card">
+        <div class="q">Can a Developer create only one community?</div>
+        <p class="a">Yes, on Silver. That's a deliberate single-community ceiling &mdash; it's the plan's main upsell lever.</p>
+      </div>
+      <div class="qa-card">
+        <div class="q">What do they do to create a second one?</div>
+        <p class="a">Two paths: buy the <b>Extra Community</b> add-on (+$15/mo) and stay on Silver, or upgrade to Gold, which includes 3 communities outright.</p>
+      </div>
+      <div class="qa-card">
+        <div class="q">How many members are allowed in a Gold ($100) community?</div>
+        <p class="a">Up to <b>500</b> members per community. Beyond that, the <b>Extra Members</b> add-on raises the cap in blocks of 100.</p>
+      </div>
+      <div class="qa-card">
+        <div class="q">If a Developer signs up, what do they actually get?</div>
+        <p class="a">Whatever their tier includes across <b>all five pillars</b> &mdash; not a Developer-specific bundle. See Section&nbsp;02 for the exact ceiling at their tier.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>Add-ons catalog</h2></div>
+    <p class="sec-intro">À la carte upgrades for when a plan ceiling is close but a full tier jump isn't worth it yet.</p>
+    <table class="addon-table">
+      <tr><th>Add-on</th><th>What it does</th><th>Price</th><th>Available on</th></tr>
+      <tr>
+        <td>Extra Community</td>
+        <td>+1 community slot beyond the plan's included count</td>
+        <td class="price">+$15 / mo</td>
+        <td><span class="avail-pill">Silver</span><span class="avail-pill gold">Gold</span></td>
+      </tr>
+      <tr>
+        <td>Extra Members</td>
+        <td>+100 members on one community</td>
+        <td class="price">+$10 / mo</td>
+        <td><span class="avail-pill">Silver</span><span class="avail-pill gold">Gold</span></td>
+      </tr>
+      <tr>
+        <td>Extra Data Room Storage</td>
+        <td>+25GB of data room storage</td>
+        <td class="price">+$5 / mo</td>
+        <td><span class="avail-pill">Silver</span><span class="avail-pill gold">Gold</span></td>
+      </tr>
+      <tr>
+        <td>Extra AI Spend Cap</td>
+        <td>+$25 of monthly AI usage headroom</td>
+        <td class="price">+$10 / mo</td>
+        <td><span class="avail-pill">Silver</span><span class="avail-pill gold">Gold</span></td>
+      </tr>
+      <tr>
+        <td>Extra Underwriting Runs</td>
+        <td>+10 deals/month (Gold is already unlimited)</td>
+        <td class="price">+$10 / mo</td>
+        <td><span class="avail-pill">Silver</span></td>
+      </tr>
+      <tr>
+        <td>Additional Moderator Seat</td>
+        <td>+1 moderator on a Gold community</td>
+        <td class="price">+$5 / mo</td>
+        <td><span class="avail-pill gold">Gold</span></td>
+      </tr>
+      <tr>
+        <td>Priority Support &amp; Onboarding</td>
+        <td>Faster response times + a guided setup session</td>
+        <td class="price">+$20 / mo</td>
+        <td><span class="avail-pill">Silver</span><span class="avail-pill gold">Gold</span></td>
+      </tr>
+    </table>
+  </section>
+
+  <div class="footnote">
+    Draft v1 &middot; Subscription plan proposal mapping the PRD's Phase 1&ndash;5 feature set (Community/Networking, Data Room, Underwriting, Analytics, AI) onto three purchasable tiers plus add-ons. All limits, prices and add-on rates are a starting proposal for discussion &mdash; none are final or committed.
+  </div>
+
+</div>
+</body>
+</html>

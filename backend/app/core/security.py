@@ -60,10 +60,19 @@ def create_refresh_token(user_id: uuid.UUID | str) -> str:
     )
 
 
-def create_oauth_state(provider: str, redirect_to: str | None = None) -> str:
-    """Short-lived signed state, checked on the OAuth callback to stop CSRF."""
+def create_oauth_state(
+    provider: str, redirect_to: str | None = None, signup_intent: str | None = None
+) -> str:
+    """Short-lived signed state, checked on the OAuth callback to stop CSRF.
+
+    `signup_intent` rides along so the plan chosen on the pricing page survives
+    the round trip to Google or Apple. It is carried inside the *signed* state
+    rather than as a query parameter for the same reason the plan is held
+    server-side at all (backend_flow.md 7.1): a value the browser can edit must
+    not be what decides which tier an account is offered.
+    """
     return _encode(
-        {"provider": provider, "redirect_to": redirect_to},
+        {"provider": provider, "redirect_to": redirect_to, "signup_intent": signup_intent},
         timedelta(minutes=10),
         "oauth_state",
     )

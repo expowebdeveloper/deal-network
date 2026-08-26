@@ -2,15 +2,16 @@
    LOADING / EMPTY / ERROR
    ============================================================ */
 .state-block{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
-  padding:44px 22px;text-align:center;
-  background:var(--surface);border:1px dashed var(--line);border-radius:var(--r-lg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  padding:52px 24px;text-align:center;
+  background:var(--surface);border:1px dashed var(--line-strong);border-radius:var(--r-lg);
 }
-.state-block h3{font-size:14.5px;font-weight:700;letter-spacing:-.018em}
-.state-block p{font-size:12.5px;color:var(--muted);line-height:1.55;max-width:46ch}
+.state-block h3{font-size:15px;font-weight:700;letter-spacing:-.018em;color:var(--ink)}
+.state-block p{font-size:13px;color:var(--muted);line-height:1.6;max-width:46ch}
 .state-error{background:var(--danger-soft);border-color:var(--danger-line)}
 .state-error h3{color:var(--danger)}
 .state-error p{color:var(--danger)}
+.state-error svg{color:var(--danger)}
 
 .spinner{
   width:20px;height:20px;border-radius:50%;
@@ -28,15 +29,16 @@
 /* Banner colour picker in the create-community form */
 .banner-picker{display:flex;gap:7px;margin-top:3px}
 .banner-swatch{
-  width:38px;height:26px;border-radius:5px;border:2px solid transparent;
-  cursor:pointer;transition:transform .12s,border-color .12s;
+  width:40px;height:28px;border-radius:7px;border:2px solid transparent;
+  box-shadow:0 0 0 1px var(--line);
+  cursor:pointer;transition:transform .14s ease,box-shadow .14s ease;
 }
-.banner-swatch:hover{transform:translateY(-1px)}
-.banner-swatch.on{border-color:var(--ink)}
+.banner-swatch:hover{transform:translateY(-2px);box-shadow:0 0 0 1px var(--line-strong),var(--shadow-sm)}
+.banner-swatch.on{border-color:var(--surface);box-shadow:0 0 0 2px var(--accent)}
 
 /* Small inline error inside a modal */
 .inline-error{
-  padding:10px 12px;margin-bottom:14px;
+  padding:11px 13px;margin-bottom:14px;
   background:var(--danger-soft);border:1px solid var(--danger-line);border-radius:var(--r-sm);
   font-size:12.5px;line-height:1.5;color:var(--danger);
 }
@@ -49,13 +51,15 @@
 .topbar-brand-always{display:flex}
 
 /* Informational, not a warning — amber stays reserved for things that are
-   actually going wrong, like a contact allowance running out. */
+   actually going wrong, like a contact allowance running out. Same emerald
+   rail as .earlybar, so the two notices read as one kind of thing. */
 .gate-bar{
-  display:flex;gap:13px;align-items:flex-start;
-  padding:15px 17px;margin-bottom:24px;
-  background:linear-gradient(100deg,var(--accent-soft),var(--lime-soft));
-  border:1px solid var(--line);border-radius:var(--r-lg);
+  display:flex;gap:14px;align-items:flex-start;
+  padding:16px 18px;margin-bottom:26px;
+  background:var(--accent-faint);
+  border:1px solid var(--accent-soft);border-left:3px solid var(--accent);
+  border-radius:var(--r-lg);
 }
 .gate-bar svg{width:19px;height:19px;color:var(--accent);flex:none;margin-top:1px}
-.gate-bar h4{font-size:13.5px;font-weight:700;letter-spacing:-.015em;color:var(--accent-dark)}
-.gate-bar p{font-size:12.5px;color:var(--accent-dark);margin-top:3px;line-height:1.55;max-width:78ch}
+.gate-bar h4{font-size:13.5px;font-weight:700;letter-spacing:-.015em;color:var(--ink)}
+.gate-bar p{font-size:12.5px;color:var(--ink-2);margin-top:4px;line-height:1.6;max-width:78ch}

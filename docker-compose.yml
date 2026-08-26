@@ -1,0 +1,80 @@
+services:
+  # The stack brings its own database, so nothing on the host has to be running
+  # or reachable from the bridge network. Credentials come from ./.env, which is
+  # gitignored — see .env.example for the shape.
+  db:
+    image: postgres:16-alpine
+    container_name: dealnetwork-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - dealnetwork-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # The backend creates its tables on startup, so it must not start until
+      # Postgres is actually accepting connections — not merely running.
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dealnetwork-backend
+    ports:
+      - "8002:8000"
+    env_file:
+      # .env is the host-development config; .env.docker overrides only the
+      # values that differ in a container (CORS, callback URLs) and wins,
+      # because a later env_file takes precedence.
+      - ./backend/.env
+      - ./backend/.env.docker
+    environment:
+      # Set here rather than in a file so the password stays in ./.env only.
+      # `environment` beats `env_file`, so this is the URL the app uses.
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    volumes:
+      # Same reason as the frontend below: without the source mounted, the
+      # container serves whatever was baked into the image at build time and
+      # host edits never reach it. Dependencies live in system site-packages,
+      # not /app, so mounting over /app does not hide them.
+      - ./backend:/app
+      # Redundant while the line above is present, and kept deliberately: it is
+      # what makes uploads survive if the code mount is ever removed.
+      - ./backend/uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: dealnetwork-frontend
+    ports:
+      # The dev server is pinned to 5174 in vite.config.js (strictPort), so the
+      # container listens there — publish that, not 5173.
+      - "5176:5174"
+    environment:
+      # The browser talks to the published backend port, not to 8000 on the
+      # host, which is a different (locally run) API.
+      VITE_API_URL: http://localhost:8002
+    volumes:
+      # The image only has the source as of its last build, so without this the
+      # dev server hot-reloads a frozen copy and host edits never show up. The
+      # second entry is an anonymous volume that keeps the container's own
+      # node_modules from being shadowed by the host's.
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  dealnetwork-pgdata:
