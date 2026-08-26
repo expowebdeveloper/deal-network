@@ -40,6 +40,11 @@ class User(UUIDMixin, TimestampMixin, Base):
     profile_views: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    # Project staff, not a member role. Gates the internal presenter notes, which
+    # are notes *about* the client engagement and must not be editable by the
+    # members being shown them. Granted in the database, never through the API —
+    # an endpoint that grants staff is an endpoint that can be abused into it.
+    is_staff: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     onboarded: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 

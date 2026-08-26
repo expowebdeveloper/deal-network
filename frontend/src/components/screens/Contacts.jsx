@@ -5,6 +5,7 @@ import Avatar from '../ui/Avatar'
 import { Loading, Empty, ErrorState } from '../ui/States'
 import { PlusIcon, DragIcon, LockIcon } from '../icons/Icons'
 import { useApp } from '../../context/AppContext'
+import { useSearchParams } from 'react-router-dom'
 import {
   listContacts, fetchPipeline, moveContact, toContact, isUpgradeRequired,
 } from '../../lib/contacts'
@@ -13,7 +14,7 @@ import { STAGES, STAGE_CLASS } from '../../data/contacts'
 
 const isTouch = typeof window !== 'undefined' && window.matchMedia('(hover:none)').matches
 
-function ContactTable({ rows }) {
+function ContactTable({ rows, focusId = null }) {
   return (
     <div className="table-wrap">
       <table>
@@ -24,7 +25,15 @@ function ContactTable({ rows }) {
         </thead>
         <tbody>
           {rows.map((c) => (
-            <tr key={c.id}>
+            <tr
+              key={c.id}
+              // Search sends ?focus=<id>; the row marks itself so the member can
+              // see which one they picked out of a long table.
+              className={c.id === focusId ? 'row-focus' : undefined}
+              ref={c.id === focusId
+                ? (el) => el?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+                : undefined}
+            >
               <td>
                 <div className="td-name">
                   <Avatar initials={c.initials} color={c.color} size="sm" />
@@ -151,6 +160,10 @@ function PipelineLocked() {
 
 export default function Contacts() {
   const { openModal } = useApp()
+  const [searchParams] = useSearchParams()
+  // Set by a search result. Only ever highlights — the list is not filtered, so
+  // the member keeps their bearings in the full table.
+  const focusId = searchParams.get('focus')
   const [tab, setTab] = useState('list')
   const [state, setState] = useState({ status: 'loading', rows: [], error: null })
   const [plan, setPlan] = useState(null)
@@ -263,7 +276,7 @@ export default function Contacts() {
             People you meet through communities land here, and anyone you add yourself.
           </Empty>
         ) : (
-          <ContactTable rows={state.rows} />
+          <ContactTable rows={state.rows} focusId={focusId} />
         )
       )}
 

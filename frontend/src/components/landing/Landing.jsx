@@ -236,7 +236,7 @@ export default function Landing() {
         <div className="wrap">
           <div className="section-head">
             <span className="eyebrow">Who it is for</span>
-            <h2>Five sides of the same deal</h2>
+            <h2>Four sides of the same deal</h2>
             <p>
               A network only works when every side of the table is on it. You pick your role when
               you join, and the platform shapes itself around it.
@@ -349,17 +349,26 @@ export default function Landing() {
 
       <section className="landing-section" id="about">
         <div className="wrap">
-          {/* Centred like every other section on the page. The lead paragraph
-              carries the story; the rest sits in two readable columns under it,
-              which keeps the line length short without a sidebar. */}
-          <div className="section-head about-head">
-            <span className="eyebrow">About us</span>
-            <h2>{about.title}</h2>
-            <p>{about.body[0]}</p>
-          </div>
+          {/* The one editorial section on a page of card grids: the headline and
+              the origin note hold the left rail, the three claims about how this
+              gets built run down the right, split by hairlines rather than boxes. */}
+          <div className="about-grid">
+            <div className="about-intro">
+              <span className="eyebrow">About us</span>
+              <h2>{about.title}</h2>
+              <p className="about-lead">{about.lead}</p>
+              <p className="about-origin">{about.origin}</p>
+            </div>
 
-          <div className="about-cols">
-            {about.body.slice(1).map((para) => <p key={para}>{para}</p>)}
+            <ol className="about-points">
+              {about.points.map((p, i) => (
+                <li className="about-point" key={p.title}>
+                  <span className="about-num">{String(i + 1).padStart(2, '0')}</span>
+                  <h3>{p.title}</h3>
+                  <p>{p.text}</p>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </section>

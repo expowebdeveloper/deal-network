@@ -10,7 +10,7 @@ from sqlalchemy import func, or_, select
 from app.api.deps import GATES, CurrentUser, DbSession
 from app.models import (
     CommunityMember, Connection, ConnectionStatus, FieldVisibility, Mandate, MemberRole,
-    MembershipStatus, PlanSelection, User,
+    MembershipStatus, NotificationKind, PlanSelection, User,
 )
 from app.schemas.common import Message, Page
 from app.schemas.user import (
@@ -19,6 +19,8 @@ from app.schemas.user import (
 )
 from app.services import email as email_service
 from app.services import terms as terms_service
+from app.services import notifications
+from app.services import users as user_service
 from app.services.users import VISIBILITY_LABELS
 
 router = APIRouter(tags=["members"])
@@ -238,7 +240,15 @@ async def suggested_members(
 
 
 @router.get("/members/{user_id}", response_model=UserProfile, dependencies=GATES)
-async def read_member(user_id: uuid.UUID, db: DbSession, current_user: CurrentUser) -> User:
+async def read_member(
+    user_id: uuid.UUID, db: DbSession, current_user: CurrentUser
+) -> UserProfile:
+    """Another member's profile, filtered by what they chose to share.
+
+    The Field visibility panel is enforced here — see `users.visible_profile`.
+    A field the member marked Private comes back empty rather than being served
+    to whoever asked. Your own profile is never filtered.
+    """
     user = await db.get(User, user_id)
     if user is None or not user.is_active:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Member not found")
@@ -247,7 +257,12 @@ async def read_member(user_id: uuid.UUID, db: DbSession, current_user: CurrentUs
         user.profile_views += 1
         await db.commit()
         await db.refresh(user)
-    return user
+
+    # Filtered *after* the commit above, and into a separate dict — blanking
+    # attributes on the live ORM object would persist the blanks.
+    return UserProfile.model_validate(
+        await user_service.visible_profile(db, user, current_user.id)
+    )
 
 
 # --- Connections ----------------------------------------------------------
@@ -285,6 +300,14 @@ async def request_connection(
         requester_id=current_user.id, addressee_id=addressee.id, note=payload.note
     )
     db.add(connection)
+    # Staged before the commit so the notification and the request land together.
+    notifications.notify(
+        db, user_id=addressee.id, actor_id=current_user.id,
+        kind=NotificationKind.connection_request,
+        title=f"{current_user.name} wants to connect",
+        body=payload.note or (f"{current_user.company}" if current_user.company else None),
+        link="/members",
+    )
     await db.commit()
     await db.refresh(connection)
 
@@ -334,6 +357,12 @@ async def accept_connection(
         raise HTTPException(status.HTTP_409_CONFLICT, "Request is no longer pending")
 
     connection.status = ConnectionStatus.accepted
+    notifications.notify(
+        db, user_id=connection.requester_id, actor_id=current_user.id,
+        kind=NotificationKind.connection_accepted,
+        title=f"{current_user.name} accepted your connection request",
+        link=f"/members/{current_user.id}",
+    )
     await db.commit()
     await db.refresh(connection)
 

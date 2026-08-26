@@ -11,13 +11,14 @@ from __future__ import annotations
 
 import uuid
 
-from fastapi import APIRouter, File, HTTPException, Query, UploadFile, status
+from fastapi import APIRouter, File, HTTPException, Query, Request, UploadFile, status
 from sqlalchemy import func, select
 
 from app.api.deps import CurrentUser, DbSession
 from app.models import MediaAsset, MediaKind, PostAttachment
 from app.schemas.common import Message, Page
-from app.schemas.media import MediaOut
+from app.schemas.media import MediaOut, StorageUsageOut
+from app.services import files as file_service
 from app.services import storage
 
 router = APIRouter(prefix="/media", tags=["media"])
@@ -25,14 +26,36 @@ router = APIRouter(prefix="/media", tags=["media"])
 
 @router.post("", response_model=MediaOut, status_code=status.HTTP_201_CREATED)
 async def upload(
+    request: Request,
     current_user: CurrentUser,
     db: DbSession,
     file: UploadFile = File(..., description="Photo or document to attach to a post"),
 ) -> MediaAsset:
+    """Upload one file, within the member's plan.
+
+    Three size checks, narrowing: the body-size middleware rejects on
+    Content-Length before anything is parsed; `files.check_upload` applies the
+    plan's per-file ceiling and storage quota to the declared size; and
+    `save_upload` counts the bytes it actually writes, which is the only one a
+    lying client cannot get past.
+    """
+    declared = request.headers.get("content-length")
+    plan_ceiling = await file_service.check_upload(
+        db, current_user.id, int(declared) if declared and declared.isdigit() else None
+    )
+
     try:
-        stored = await storage.save_upload(file)
+        stored = await storage.save_upload(file, plan_ceiling=plan_ceiling)
     except storage.UploadError as exc:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
+
+    # Re-check the quota against the real size: `declared` covers the whole
+    # multipart envelope and a chunked upload declares nothing at all.
+    try:
+        await file_service.check_quota(db, current_user.id, stored.size_bytes)
+    except Exception:
+        storage.delete_stored(stored.stored_name)
+        raise
 
     asset = MediaAsset(
         owner_id=current_user.id,
@@ -51,6 +74,15 @@ async def upload(
         raise
     await db.refresh(asset)
     return asset
+
+
+@router.get("/usage", response_model=StorageUsageOut)
+async def read_usage(current_user: CurrentUser, db: DbSession) -> StorageUsageOut:
+    """How much of the plan's storage allowance is used.
+
+    Declared before /{id} would be, so "usage" is not read as an asset id.
+    """
+    return StorageUsageOut(**await file_service.usage(db, current_user.id))
 
 
 @router.get("", response_model=Page[MediaOut])

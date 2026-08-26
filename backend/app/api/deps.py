@@ -132,10 +132,34 @@ GATES = [Depends(require_terms_accepted), Depends(require_plan_selected)]
 
 
 async def _plan_of(db: DbSession, user_id) -> "PlanTier":  # noqa: F821
-    from app.models import PlanTier, Subscription  # imported here to avoid a cycle
+    """The tier whose entitlements apply, resolved by the entitlement service.
 
-    subscription = await db.scalar(select(Subscription).where(Subscription.user_id == user_id))
-    return subscription.plan if subscription else PlanTier.early_access
+    Deliberately not `subscription.plan`. That column records what was signed
+    up for; `effective_plan` answers what is currently entitled, which is not
+    the same thing once a payment has failed — a member whose card was declined
+    still has `plan = member` on the row. Reading the column directly here used
+    to let the pre-v1 routes hand out Member features on an unpaid subscription
+    while /api/v1 refused them.
+    """
+    from app.services import entitlements as entitlement_service
+
+    return await entitlement_service.effective_plan(db, user_id)
+
+
+#: The pre-v1 routes ask for capabilities by their plan-card name
+#: ("pipeline_board"); /api/v1 and the entitlement service use the dotted keys
+#: from community_role_and_subs.md section 4. Both name the same capability, so
+#: the old names resolve through the one matrix rather than a second copy of the
+#: plan rules. A name absent from this map falls back to the plan-card
+#: vocabulary in `entitlements.PLAN_ACCESS`, which is where the purely
+#: presentational ticks ("full_profile", "priority_support") live.
+LEGACY_FEATURE_KEYS: dict[str, str] = {
+    "create_communities": "community.create",
+    "pipeline_board": "crm.pipeline",
+    "introduction_requests": "crm.introduction_requests",
+    "team_seats": "team.seats",
+    "join_communities": "community.join",
+}
 
 
 def require_phase(phase: int):
@@ -174,6 +198,29 @@ def require_feature(feature: str):
     """
     async def dependency(db: DbSession, current_user: CurrentUser) -> User:
         from app.services import entitlements as entitlement_service
+
+        key = LEGACY_FEATURE_KEYS.get(feature)
+        if key is not None:
+            # One decision, made by the entitlement service: it resolves the
+            # tier, folds in any add-on that grants the capability, and names
+            # the plan that would unlock it. This route family keeps its own
+            # response shape — `{"detail": "upgrade_required"}` plus headers,
+            # which the SPA reads — but no longer its own copy of the rules.
+            decision = await entitlement_service.decide_feature(
+                db, current_user.id, key
+            )
+            if decision.allowed:
+                return current_user
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="upgrade_required",
+                headers={
+                    "X-Required-Plan": decision.upgrade_plan or "",
+                    "X-Required-Feature": feature,
+                    "X-Entitlement-Key": key,
+                    "X-Addon-Available": "1" if decision.addon_available else "0",
+                },
+            )
 
         plan = await _plan_of(db, current_user.id)
         if not entitlement_service.allows(plan, feature):
