@@ -5,7 +5,7 @@
   /* Above login (200), presenter (170) and the flow overlay (160) — the sample
      had this at 150, which hid modals opened from the flow view and login. */
   position:fixed;inset:0;z-index:220;
-  background:rgba(4,31,23,.55);backdrop-filter:blur(3px);
+  background:rgba(11,37,51,.55);backdrop-filter:blur(3px);
   display:grid;place-items:center;padding:26px;
   animation:fade .18s ease;
 }
@@ -17,18 +17,18 @@
 .modal-wide{max-width:800px}
 .modal-narrow{max-width:400px}
 @keyframes modalIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
-.modal-head{display:flex;align-items:flex-start;gap:14px;padding:21px 23px 17px;border-bottom:1px solid var(--line)}
+.modal-head{display:flex;align-items:flex-start;gap:14px;padding:22px 24px 18px;border-bottom:1px solid var(--line-2)}
 .modal-head .tt{flex:1;min-width:0}
-.modal-head h2{font-size:17.5px;font-weight:730;letter-spacing:-.024em;line-height:1.3}
-.modal-head p{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.55}
-.modal-body{padding:21px 23px;overflow-y:auto;flex:1}
+.modal-head h2{font-size:18px;font-weight:730;letter-spacing:-.026em;line-height:1.3;color:var(--ink)}
+.modal-head p{font-size:13px;color:var(--muted);margin-top:5px;line-height:1.6}
+.modal-body{padding:22px 24px;overflow-y:auto;flex:1}
 .modal-body-flush{padding:0}
-.modal-foot{display:flex;gap:9px;justify-content:flex-end;padding:15px 23px;border-top:1px solid var(--line);background:var(--surface-2)}
+.modal-foot{display:flex;gap:10px;justify-content:flex-end;padding:16px 24px;border-top:1px solid var(--line-2);background:var(--surface-2)}
 
 /* Confirmation modals (request sent / payment done) */
 .confirm-body{text-align:center;padding:34px 26px}
-.confirm-icon{width:52px;height:52px;border-radius:50%;background:var(--accent-soft);display:grid;place-items:center;margin:0 auto 15px}
-.confirm-icon svg{width:24px;height:24px;color:var(--accent)}
+.confirm-icon{width:56px;height:56px;border-radius:50%;background:var(--accent-soft);display:grid;place-items:center;margin:0 auto 16px}
+.confirm-icon svg{width:26px;height:26px;color:var(--accent-deep)}
 .confirm-body h2{font-size:17px;font-weight:730;letter-spacing:-.022em}
 .confirm-body p{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.6}
 .modal-foot-center{justify-content:center}
@@ -50,7 +50,7 @@
   width:100%;border:1px solid var(--line);border-radius:var(--r-sm);
   padding:9px 11px;font-size:13px;line-height:1.55;resize:vertical;min-height:52px;
 }
-.cm-composer textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.cm-composer textarea:focus{outline:none;border-color:var(--accent);box-shadow:var(--ring)}
 .cm-composer-foot{display:flex;justify-content:flex-end;margin-top:9px}
 
 /* Members tab */
@@ -59,6 +59,31 @@
 .cm-member:first-child{border-top:none}
 .cm-member .t{font-size:13px;font-weight:640;letter-spacing:-.012em}
 .cm-member .s{font-size:11.5px;color:var(--muted);margin-top:1px}
+
+/* Role control on the Members tab. Sized to sit level with the role badge it
+   replaces, so rows do not change height when one member is manageable. */
+.cm-role{
+  flex:none;appearance:none;cursor:pointer;
+  padding:4px 22px 4px 9px;border:1px solid var(--line-2);border-radius:999px;
+  background:var(--surface-2) url("data:image/svg+xml;charset=utf-8,\
+%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E\
+%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5' \
+stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 8px center;
+  font:inherit;font-size:11.5px;font-weight:600;color:var(--ink-2);
+}
+.cm-role:hover:not(:disabled){border-color:var(--line-strong)}
+.cm-role:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.cm-role:disabled{opacity:.55;cursor:progress}
+
+/* The confirmation after a role change. The refusal reuses .inline-error. */
+.cm-role-ok{
+  padding:10px 13px;margin-bottom:12px;border-radius:var(--r-sm);
+  background:var(--accent-soft);color:var(--accent-deep);
+  border:1px solid #CDE7DE;
+  font-size:12.5px;font-weight:600;
+}
+
+.cm-role-help{margin-top:14px;padding-top:12px;border-top:1px solid var(--line-2)}
 
 /* Checkout summary */
 .co-summary{padding:14px 16px;margin-bottom:19px;background:var(--surface-2);box-shadow:none}
@@ -73,7 +98,7 @@
 .connect-note-body{font-size:12.5px;line-height:1.75;color:var(--ink-2)}
 
 /* Onboarding: landing preview */
-.landing-hero{background:linear-gradient(155deg,var(--green-950),var(--green-800) 55%,var(--green-600));color:#fff;padding:44px 38px;text-align:center}
+.landing-hero{background:linear-gradient(155deg,var(--navy-950),var(--navy-800) 55%,var(--navy-600));color:#fff;padding:44px 38px;text-align:center}
 .landing-eyebrow{font-size:11px;font-weight:800;letter-spacing:.12em;color:rgba(255,255,255,.5)}
 .landing-hero h1{font-size:31px;font-weight:750;letter-spacing:-.032em;margin:13px auto 12px;max-width:16ch;line-height:1.16}
 .landing-hero p{font-size:14.5px;color:rgba(255,255,255,.66);max-width:52ch;margin:0 auto 22px;line-height:1.6}
@@ -91,8 +116,9 @@
 .terms-check span{font-size:13px;line-height:1.55}
 
 /* Onboarding: role picker */
-.role-opt{display:flex;gap:13px;align-items:center;width:100%;text-align:left;padding:14px 15px;margin-bottom:9px;cursor:pointer;transition:border-color .14s}
-.role-opt.on{border-color:var(--accent)}
+.role-opt{display:flex;gap:13px;align-items:center;width:100%;text-align:left;padding:15px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s ease,background-color .15s ease}
+.role-opt:hover{border-color:var(--line-strong)}
+.role-opt.on{border-color:var(--accent);background:var(--accent-faint)}
 .role-opt .t{font-size:13.5px;font-weight:660;letter-spacing:-.014em}
 .role-opt .d{font-size:12px;color:var(--muted);margin-top:2px}
 .radio{width:18px;height:18px;border:2px solid var(--line-strong);border-radius:50%;flex:none;transition:all .14s}
@@ -100,6 +126,933 @@
 
 /* Onboarding: wizard steps */
 .steps{display:flex;gap:5px;margin-top:11px}
-.step{flex:1;height:3px;border-radius:2px;background:var(--line-strong)}
-.step.on{background:var(--lime-edge)}
+.step{flex:1;height:4px;border-radius:99px;background:var(--line);transition:background-color .2s ease}
+.step.on{background:var(--accent)}
 .chip-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-top:3px}
+
+/* Confirm sheet — one short paragraph saying what is about to happen. */
+.confirm-message{font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+
+/* Told-you-cannot-post notice, standing where the composer would be. */
+.cm-locked{
+  padding:13px 15px;margin-bottom:14px;border-radius:var(--r);
+  background:var(--surface-2);border:1px dashed var(--line-strong);
+  font-size:12.5px;font-weight:560;color:var(--muted);text-align:center;
+}
+
+/* Settings tab — a stack of radio cards. */
+.cm-settings .sec-title{margin-top:0}
+.cm-choices{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.cm-choice{
+  display:flex;align-items:flex-start;gap:10px;cursor:pointer;
+  padding:11px 13px;border:1px solid var(--line-2);border-radius:var(--r);
+  background:var(--surface);
+}
+.cm-choice:hover{border-color:var(--line-strong)}
+.cm-choice.on{border-color:var(--accent);background:var(--accent-faint)}
+.cm-choice input{margin-top:2px;accent-color:var(--accent);cursor:pointer}
+.cm-choice input:disabled{cursor:progress}
+.cm-choice .t{display:block;font-size:13px;font-weight:640;letter-spacing:-.012em}
+.cm-choice .s{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+
+/* Community composer: attachment buttons sit left of Post. */
+.cm-composer-foot{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cm-composer-acts{display:flex;gap:2px;flex-wrap:wrap}
+.cm-composer .composer-files{margin-top:10px}
+.cm-composer video{width:100%;height:100%;object-fit:cover;display:block}
+
+/* --- Draft communities ---------------------------------------------------
+   A community that has been created but not published. The banner is the only
+   place the state is explained, so it carries the whole sentence rather than
+   just a label; the chip on the card is the shorthand for it. */
+.cm-draft{
+  display:flex;align-items:center;gap:16px;
+  padding:14px 16px;margin-bottom:16px;
+  background:var(--gold-soft);
+  border:1px solid var(--gold-line);
+  border-radius:var(--r);
+}
+.cm-draft > div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.cm-draft .t{font-size:13.5px;font-weight:700;color:var(--gold)}
+.cm-draft .s{font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.cm-draft .btn{flex:none}
+@media (max-width:560px){
+  .cm-draft{flex-direction:column;align-items:stretch}
+}
+
+/* --- Community identity (Settings) --------------------------------------
+   Picture beside the name, because they are one idea — how the community
+   presents itself — even though they save independently. */
+.cm-identity{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.cm-identity-pic{display:flex;flex-direction:column;align-items:center;gap:8px}
+.cm-identity-pic-actions{display:flex;flex-direction:column;gap:4px;align-items:stretch}
+.cm-identity-name{flex:1;min-width:240px;display:flex;flex-direction:column;gap:6px}
+.cm-identity-name label{
+  font-size:12px;font-weight:700;color:var(--muted);
+  letter-spacing:.02em;
+}
+.cm-identity-row{display:flex;gap:8px;align-items:center}
+.cm-identity-row .input{flex:1;min-width:0}
+
+/* ============================================================
+   COMMUNITY MENU DROPDOWN & THREE-DOT TRIGGER
+   ============================================================ */
+.ccard-banner-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 5;
+}
+
+.cmenu-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.cmenu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+}
+.cmenu-btn:hover, .cmenu-btn.active {
+  background: rgba(0, 0, 0, 0.72);
+  transform: scale(1.05);
+}
+
+.cmenu-wrap.header .cmenu-btn {
+  background: var(--surface-2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.cmenu-wrap.header .cmenu-btn:hover, .cmenu-wrap.header .cmenu-btn.active {
+  background: var(--accent-faint);
+  border-color: var(--accent);
+  color: var(--accent-deep);
+}
+
+.cmenu-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  z-index: 100;
+  width: 214px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-xl);
+  padding: 6px;
+  animation: dropdownPop 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cmenu-dropdown.align-right {
+  right: 0;
+}
+.cmenu-dropdown.align-left {
+  left: 0;
+}
+
+@keyframes dropdownPop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cmenu-header {
+  padding: 6px 8px 8px;
+  border-bottom: 1px solid var(--line-2);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cmenu-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+.cmenu-badge {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.cmenu-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cmenu-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: var(--r-sm, 6px);
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 560;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.14s ease;
+}
+.cmenu-item:hover {
+  background: var(--surface-2);
+}
+.cmenu-item.highlight {
+  color: var(--accent-deep);
+  font-weight: 640;
+}
+.cmenu-item.highlight:hover {
+  background: var(--accent-faint);
+}
+.cmenu-item.primary {
+  color: var(--accent-deep);
+}
+.cmenu-item.danger {
+  color: var(--danger);
+}
+.cmenu-item.danger:hover {
+  background: var(--danger-soft);
+}
+.cmenu-icon-text {
+  font-weight: 800;
+  font-size: 14px;
+  width: 16px;
+  text-align: center;
+}
+.cmenu-divider {
+  height: 1px;
+  background: var(--line-2);
+  margin: 4px 0;
+}
+
+/* ============================================================
+   FULL-HEIGHT DEDICATED SETTINGS SIDE DRAWER
+   ============================================================
+   Three bands, and they never scroll past each other: a navy header that says
+   what the panel is and which community it is acting on, an off-white body of
+   white cards, and a footer that stays put. The colour split is the app's own
+   rule — navy carries structure, the page behind a card is off-white — which
+   is what lets five sections of dense controls read as separate objects
+   instead of one long form divided by hairlines.
+   ------------------------------------------------------------ */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 230;
+  background: rgba(11, 37, 51, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: flex-end;
+  animation: fade 0.18s ease;
+}
+
+.side-drawer {
+  width: 100%;
+  max-width: 560px;
+  height: 100vh;
+  background: var(--canvas);
+  box-shadow: -8px 0 36px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* --- Header ---------------------------------------------------------------
+   White, not navy. The dark band put emerald type on a near-teal ground —
+   201° against 165° — and two hues that close together read as murk rather
+   than as an accent, whatever the contrast ratio says. On white the same
+   emerald is unmistakably emerald, so the state chip can carry the colour and
+   everything else can be type.
+
+   Three greys do the separating instead: white header, off-white body, white
+   cards. The hairline and the shadow under it are what hold the header above
+   the content as it scrolls.
+   ------------------------------------------------------------ */
+.drawer-head {
+  flex: none;
+  padding: 18px 22px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 1px 3px rgba(11, 37, 51, 0.04);
+}
+.drawer-head-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+.drawer-head-titles {
+  min-width: 0;
+}
+.drawer-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  /* Grey, not emerald: the eyebrow sits *under* the title in the reading
+     order, and dropping its colour is what puts it there. */
+  color: var(--faint);
+}
+.drawer-eyebrow svg {
+  width: 13px;
+  height: 13px;
+  color: var(--muted);
+}
+.drawer-head-titles h2 {
+  margin-top: 5px;
+  font-size: 22px;
+  font-weight: 780;
+  letter-spacing: -0.028em;
+  line-height: 1.15;
+  color: var(--ink);
+}
+.drawer-close-btn {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease,
+              transform 0.2s ease;
+}
+.drawer-close-btn svg { width: 17px; height: 17px; }
+.drawer-close-btn:hover {
+  background: var(--n-100);
+  border-color: var(--line-strong);
+  color: var(--ink);
+  transform: rotate(90deg);
+}
+.drawer-close-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* The community this panel is acting on. An off-white pill on a white header —
+   inset rather than raised, so it reads as context for the title rather than
+   as another thing to click. */
+.drawer-head-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  padding: 8px 10px 8px 8px;
+  border-radius: 999px;
+  background: var(--n-50);
+  border: 1px solid var(--line-2);
+}
+.drawer-head-identity .avatar {
+  flex: none;
+  box-shadow: 0 0 0 2px var(--surface);
+}
+.drawer-head-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+.drawer-head-name {
+  font-size: 13.5px;
+  font-weight: 680;
+  letter-spacing: -0.014em;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.drawer-head-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+/* The one piece of colour in the header, and now it can be: emerald on white
+   is unambiguous where emerald on navy was not. */
+.drawer-state-chip {
+  flex: none;
+  font-size: 10.5px;
+  font-weight: 750;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  border: 1px solid #CDE7DE;
+  color: var(--accent-deep);
+}
+/* Amber for a draft — the same three tokens every other "not finished yet"
+   state in the app uses. */
+.drawer-state-chip.draft {
+  background: var(--gold-soft);
+  border-color: var(--gold-line);
+  color: var(--gold);
+}
+
+/* --- Body ---------------------------------------------------------------- */
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background: var(--canvas);
+}
+.drawer-body::-webkit-scrollbar { width: 10px; }
+.drawer-body::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border: 3px solid var(--canvas);
+  border-radius: 999px;
+}
+.drawer-body::-webkit-scrollbar-thumb:hover { background: var(--line-strong); }
+
+.drawer-content-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Each section is a card. The old hairline dividers made five unrelated
+   decisions look like one form; a card boundary says "this is a thing you can
+   change on its own", which is what each of them is. */
+.drawer-section {
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+.drawer-section-head {
+  margin-bottom: 14px;
+}
+.drawer-section-head h3 {
+  font-size: 15px;
+  font-weight: 730;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+}
+.drawer-section-head p {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 3px;
+}
+.drawer-role-tag {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+/* --- Footer -------------------------------------------------------------- */
+.drawer-foot {
+  flex: none;
+  padding: 14px 22px;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 -6px 18px rgba(11, 37, 51, 0.05);
+}
+.drawer-foot-note {
+  font-size: 12px;
+  color: var(--muted);
+}
+.drawer-foot .btn svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+}
+
+.cm-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cm-tabs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.cm-tabs-bar .tabs {
+  margin-bottom: 0 !important;
+}
+.cm-open-settings-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-deep);
+  font-weight: 640;
+}
+
+
+/* --- Pending join requests (Settings drawer) -----------------------------
+   Amber, like every other "something is waiting on you" state in the app —
+   .quota.full and the draft-community banner use the same three tokens. */
+.cm-join-requests{
+  margin-bottom:24px;padding:16px;
+  border-radius:var(--r);
+  background:var(--gold-soft);border:1px solid var(--gold-line);
+}
+.cm-join-requests-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+}
+.cm-join-requests-head h4{
+  margin:0;font-size:14px;font-weight:700;letter-spacing:-.014em;color:var(--ink);
+}
+.cm-join-requests-flag{
+  flex:none;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--gold);
+}
+.cm-join-requests .cm-member{border-top-color:var(--gold-line)}
+
+/* ============================================================
+   GROUP PHOTO — VIEW BY TAP, EDIT BY BADGE
+   ============================================================
+   The WhatsApp arrangement, and the reason for it: a group photo has two
+   completely different jobs — look at it, and replace it — and they need two
+   targets, not two identically-styled buttons underneath. The picture is the
+   viewer. The camera badge is the editor. Removing lives inside the viewer,
+   beside the photo it would remove, where the consequence is visible.
+   ------------------------------------------------------------ */
+.cm-photo-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--line-2);
+}
+
+/* Just an anchor for the camera badge — the photo below sizes itself, so the
+   other modal that reuses .wa-avatar-wrap without this wrapper is unaffected. */
+.cm-photo {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  line-height: 0;
+}
+
+.wa-avatar-wrap {
+  position: relative;
+  display: block;
+  width: 108px;
+  height: 108px;
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  overflow: hidden;
+  background: none;
+  border: 3px solid var(--surface);
+  box-shadow: 0 4px 16px rgba(11, 37, 51, 0.14), 0 0 0 1px var(--line-2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.wa-avatar-wrap:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 22px rgba(11, 37, 51, 0.2), 0 0 0 1px var(--line);
+}
+.wa-avatar-wrap:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.wa-avatar-wrap .avatar {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50% !important;
+  font-size: 36px !important;
+}
+.wa-avatar-wrap .avatar-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.wa-avatar-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(11, 25, 33, 0.68);
+  backdrop-filter: blur(2px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  gap: 3px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  user-select: none;
+  pointer-events: none;
+}
+.wa-avatar-wrap:hover .wa-avatar-overlay,
+.wa-avatar-wrap:focus-visible .wa-avatar-overlay {
+  opacity: 1;
+}
+.wa-avatar-overlay svg { width: 22px; height: 22px; }
+.wa-avatar-overlay-text {
+  font-size: 9px;
+  font-weight: 780;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+
+/* The camera badge. Overlapping the photo's edge is what marks it as an action
+   *on* the picture rather than a control that happens to sit near it. */
+.wa-photo-fab {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid var(--surface);
+  background: var(--accent);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(11, 37, 51, 0.24);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.wa-photo-fab svg { width: 16px; height: 16px; }
+.wa-photo-fab:hover:not(:disabled) {
+  background: var(--accent-dark);
+  transform: scale(1.06);
+}
+.wa-photo-fab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.wa-photo-fab:disabled { opacity: 0.6; cursor: progress; }
+
+.cm-photo-hint {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* --- Name field ----------------------------------------------------------
+   Named apart from CommunityModal's `.cm-identity-name`, which sits beside the
+   picture in a row and needs flex sizing this stacked layout must not inherit. */
+.cm-name-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cm-name-field label {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.cm-name-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.cm-name-row .input { flex: 1; min-width: 0; }
+.cm-name-row .btn { flex: none; }
+
+/* Save is mounted only once the name has changed, so it arrives mid-typing.
+   Easing it in stops the input from appearing to jump sideways — the width it
+   gives up is the same either way, but the eye reads a slide as one movement
+   and a hard swap as two. */
+.cm-name-save {
+  animation: cmSaveIn 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes cmSaveIn {
+  from { opacity: 0; transform: translateX(6px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm-name-save { animation: none; }
+}
+.cm-field-note {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* --- The photo viewer ----------------------------------------------------
+   Dark throughout, the way every photo viewer is: light chrome around a dark
+   stage makes the frame compete with the picture. Head and foot are the same
+   surface as the stage, separated by hairlines rather than by colour.
+   ------------------------------------------------------------ */
+.wa-photo-lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 350;
+  background: rgba(5, 15, 20, 0.9);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fade 0.2s ease;
+}
+
+.wa-photo-lightbox-dialog {
+  background: var(--navy-950);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--r-xl);
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+  animation: modalIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wa-photo-lightbox-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.wa-photo-lightbox-info { min-width: 0; }
+.wa-photo-lightbox-title {
+  font-size: 15.5px;
+  font-weight: 720;
+  letter-spacing: -0.018em;
+  color: #fff;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wa-photo-lightbox-sub {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.55);
+  display: block;
+  margin-top: 2px;
+}
+.wa-photo-lightbox-close {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.85);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+.wa-photo-lightbox-close svg { width: 16px; height: 16px; }
+.wa-photo-lightbox-close:hover { background: rgba(255, 255, 255, 0.16); color: #fff; }
+.wa-photo-lightbox-close:focus-visible {
+  outline: 2px solid var(--emerald-500);
+  outline-offset: 2px;
+}
+
+.wa-photo-lightbox-body {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  max-height: 62vh;
+}
+.wa-photo-preview-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+/* Uncropped. Everywhere else this picture is a circle; here is the one place
+   it is shown as it was uploaded, which is the reason for opening it at all. */
+.wa-photo-full-img {
+  max-width: 100%;
+  max-height: 56vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--r);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+/* No photo yet — the initials bubble, at the size the real thing would be. */
+.wa-photo-avatar-lg {
+  width: 200px !important;
+  height: 200px !important;
+  border-radius: 50% !important;
+  font-size: 66px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.wa-photo-lightbox-foot {
+  padding: 14px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: center;
+}
+.wa-photo-actions-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.wa-photo-act-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 17px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 640;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.92);
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+.wa-photo-act-btn svg { flex: none; }
+.wa-photo-act-btn:hover:not(:disabled) {
+  background: rgba(31, 163, 131, 0.2);
+  border-color: var(--emerald-500);
+  color: #fff;
+}
+.wa-photo-act-btn:focus-visible {
+  outline: 2px solid var(--emerald-500);
+  outline-offset: 2px;
+}
+.wa-photo-act-btn:disabled { opacity: 0.55; cursor: progress; }
+/* The one destructive control in the viewer. Red only on hover, so it does not
+   shout at someone who opened the panel to look at the picture. */
+.wa-photo-act-btn.danger { color: #F2A9A2; }
+.wa-photo-act-btn.danger:hover:not(:disabled) {
+  background: rgba(176, 42, 32, 0.28);
+  border-color: #D9645A;
+  color: #fff;
+}
+
+/* ============================================================
+   SETTINGS DRAWER — THE CONTROLS INSIDE THE CARDS
+   ============================================================
+   Scoped to .side-drawer throughout. The same classes render inside
+   CommunityModal, where they sit on a different background and must keep the
+   look they have there. */
+
+/* Radio cards. Denser than the modal's, with the selected one carrying an
+   emerald edge and a filled dot — on a white card, a tinted background alone
+   was not enough to find at a glance. */
+.side-drawer .cm-choices { gap: 7px; margin-top: 0; }
+.side-drawer .cm-choice {
+  padding: 11px 12px;
+  border-radius: var(--r);
+  transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
+}
+.side-drawer .cm-choice:hover:not(.on) {
+  border-color: var(--line-strong);
+  background: var(--n-50);
+}
+.side-drawer .cm-choice.on {
+  border-color: var(--accent);
+  background: var(--accent-faint);
+  box-shadow: 0 0 0 1px var(--accent) inset;
+}
+.side-drawer .cm-choice.on .t { color: var(--accent-deep); }
+.side-drawer .cm-choice input { width: 15px; height: 15px; margin-top: 1px; }
+
+/* Member and request rows. Inset panel rather than hairline-separated lines,
+   so a list of eight people still reads as one block inside its card. */
+.side-drawer .cm-members {
+  border: 1px solid var(--line-2);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--surface);
+}
+.side-drawer .cm-member {
+  gap: 10px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line-2);
+  transition: background 0.14s ease;
+}
+.side-drawer .cm-member:hover { background: var(--n-50); }
+.side-drawer .cm-member:first-child { border-top: none; }
+
+/* Pending join requests keep the app's amber "waiting on you" treatment, but
+   the card around them already has a border, so this one loses its own. */
+.side-drawer .cm-join-requests {
+  padding: 12px;
+  margin-bottom: 14px;
+  border-radius: var(--r);
+}
+.side-drawer .cm-join-requests .cm-members {
+  border-color: var(--gold-line);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* Notices sit above the control they answer for, so they need to be tight. */
+.side-drawer .cm-role-ok,
+.side-drawer .inline-error {
+  margin-bottom: 12px;
+  font-size: 12px;
+  padding: 9px 12px;
+}
+
+/* The draft banner is the first thing in the body and the only amber object
+   there, so it carries a little more weight than it does inside the modal. */
+.side-drawer .cm-draft {
+  margin-bottom: 0;
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 560px) {
+  .drawer-head { padding: 16px 16px 14px; }
+  .drawer-head-titles h2 { font-size: 19px; }
+  .drawer-body { padding: 14px; }
+  .drawer-section { padding: 15px; }
+  .drawer-foot { padding: 12px 16px; }
+  .drawer-foot-note { display: none; }
+}

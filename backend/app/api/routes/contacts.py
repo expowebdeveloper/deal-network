@@ -24,12 +24,16 @@ router = APIRouter(prefix="/contacts", tags=["contacts"])
 
 
 async def plan_contact_limit(db: DbSession, user_id) -> int | None:
-    """How many contacts this member's plan allows, or None for unlimited."""
-    subscription = await db.scalar(
-        select(Subscription).where(Subscription.user_id == user_id)
+    """How many contacts this member's plan allows, or None for unlimited.
+
+    Goes through the entitlement service rather than reading the subscription's
+    plan name directly (backend_flow.md 5.3): the tier that counts is the
+    *effective* one, so a Member whose payment has lapsed is held to the
+    early-access limit of 25 until it clears.
+    """
+    return await entitlement_service.get_limit(
+        db, user_id, entitlement_service.Limit.CONTACTS_MAX
     )
-    plan = subscription.plan if subscription else PlanTier.early_access
-    return entitlement_service.contact_limit(plan)
 
 
 def _initials(name: str) -> str:
@@ -109,21 +113,25 @@ async def read_pipeline(db: DbSession, current_user: CurrentUser) -> Pipeline:
 async def create_contact(
     payload: ContactCreate, current_user: CurrentUser, db: DbSession
 ) -> Contact:
-    # "Up to 25 contacts" on early access; the paid tiers are unlimited.
-    limit = await plan_contact_limit(db, current_user.id)
-    if limit is not None:
-        used = await db.scalar(
-            select(func.count(Contact.id)).where(Contact.owner_id == current_user.id)
+    # "Up to 25 contacts" on early access; the paid tiers are unlimited. The
+    # whole question — tier, ceiling, add-ons, usage — is one call to the
+    # entitlement service, which also counts the contacts. This route holds no
+    # plan rule of its own.
+    decision = await entitlement_service.decide(db, current_user.id, "crm.contact.create")
+    if decision.blocked:
+        # This route predates the section 23 error shape and the SPA reads
+        # `detail` plus these headers, so the wire format stays as it was. The
+        # decision behind it is the same one /api/v1 would return.
+        raise HTTPException(
+            status.HTTP_403_FORBIDDEN,
+            detail="contact_limit_reached",
+            headers={
+                "X-Required-Plan": decision.upgrade_plan or PlanTier.member.value,
+                "X-Contact-Limit": str(decision.limit),
+                "X-Entitlement-Key": decision.entitlement_key,
+                "X-Addon-Available": "1" if decision.addon_available else "0",
+            },
         )
-        if (used or 0) >= limit:
-            raise HTTPException(
-                status.HTTP_403_FORBIDDEN,
-                detail="contact_limit_reached",
-                headers={
-                    "X-Required-Plan": PlanTier.member.value,
-                    "X-Contact-Limit": str(limit),
-                },
-            )
 
     data = payload.model_dump()
     person_id = data.pop("person_id", None)

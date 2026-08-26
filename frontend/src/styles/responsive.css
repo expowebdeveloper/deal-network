@@ -6,26 +6,38 @@
 @media(max-width:1180px){
   .feed-grid,.inv-grid{grid-template-columns:1fr}
   .feed-rail,.inv-rail{display:none}
+  .page{padding:30px 26px 64px}
 }
 
 /* --- Tablet landscape: sidebar becomes an icon rail --- */
 @media(max-width:1024px){
-  #app{grid-template-columns:64px 1fr}
-  .sb-head{justify-content:center;padding:15px 0}
+  #app{grid-template-columns:70px 1fr}
+  .sb-head{justify-content:center;padding:18px 0}
   .sb-head .brand-name,.sb-item span,.sb-label,.sb-count,.sb-soon,.sb-user .txt{display:none}
-  .sb-nav{padding:6px 8px}
-  .sb-item{justify-content:center;padding:11px 0}
-  .sb-user{justify-content:center}
-  .page{padding:22px 20px 52px}
+  .sb-nav{padding:10px 9px}
+  .sb-item{justify-content:center;padding:12px 0;margin-bottom:3px}
+  /* The rail is gone at this width, so the current screen is marked by the
+     panel and the lime icon alone. */
+  .sb-item.on{box-shadow:none;background:rgba(255,255,255,.13)}
+  .sb-foot{padding:10px}
+  .sb-user{justify-content:center;padding:8px 0}
+  .page{padding:26px 22px 56px}
+  .topbar{padding:0 18px}
   .modal-wide{max-width:94vw}
+}
+
+/* --- Below a wide desktop the third community column stops paying for itself:
+       at 1280px it would be a 313px card. Two wide ones read better. --- */
+@media(max-width:1280px){
+  .cgrid{grid-template-columns:repeat(2,1fr)}
 }
 
 /* --- Tablet portrait --- */
 @media(max-width:900px){
-  .cgrid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
-  .mgrid{grid-template-columns:repeat(auto-fill,minmax(212px,1fr))}
-  .plans{grid-template-columns:1fr;max-width:520px}
+  .mgrid{grid-template-columns:repeat(auto-fill,minmax(216px,1fr))}
+  .plans{grid-template-columns:1fr;max-width:540px}
   .page-head{flex-wrap:wrap}
+  .mp-stats{grid-template-columns:repeat(2,1fr)}
 }
 
 /* --- Flow view stacks vertically --- */
@@ -51,20 +63,25 @@
   .signout-btn{display:none}
   .lbl-wide{display:none}
 
-  .topbar{height:52px;padding:0 12px;gap:5px}
-  .topbar .btn-sm{height:32px;padding:0 9px}
-  .screenwrap{padding-bottom:66px}
-  .page{padding:18px 15px 34px}
+  .topbar{height:56px;padding:0 14px;gap:6px}
+  .topbar .btn-sm{height:34px;padding:0 10px}
+  .gs-panel,.nb-panel{top:56px}
+  .screenwrap{padding-bottom:68px}
+  .page{padding:20px 16px 36px}
 
-  .page-head{flex-direction:column;align-items:stretch;gap:11px;margin-bottom:18px}
-  .page-head h1{font-size:21px}
+  .page-head{flex-direction:column;align-items:stretch;gap:12px;margin-bottom:20px}
+  .page-head h1{font-size:22px}
+  .page-head p{font-size:13.5px}
   .page-head .sp{display:none}
   .page-head .btn{width:100%}
 
-  .cgrid,.mgrid{grid-template-columns:1fr;gap:12px}
-  .tiles{grid-template-columns:1fr 1fr;gap:11px}
-  .tile .n{font-size:22px}
+  .cgrid,.mgrid{grid-template-columns:1fr;gap:14px}
+  .tiles{grid-template-columns:1fr 1fr;gap:12px}
+  .tile .n{font-size:23px}
   .field-row,.field-row-3{grid-template-columns:1fr}
+  .tabs{gap:0;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{white-space:nowrap;padding:11px 13px}
 
   /* Modals become bottom sheets */
   .modal-back{padding:0;align-items:flex-end}
@@ -73,30 +90,31 @@
     border-radius:var(--r-xl) var(--r-xl) 0 0;
     animation:sheetIn .3s cubic-bezier(.32,.72,0,1);
   }
-  .modal-head{padding:18px 18px 15px}
-  .modal-body{padding:17px 18px}
-  .modal-foot{padding:13px 18px;padding-bottom:calc(13px + env(safe-area-inset-bottom,0))}
+  .modal-head{padding:19px 19px 16px}
+  .modal-body{padding:18px 19px}
+  .modal-foot{padding:14px 19px;padding-bottom:calc(14px + env(safe-area-inset-bottom,0))}
   .modal-foot .btn{flex:1}
   .cm-layout{display:block}
+  .side-drawer{max-width:100%}
 
   /* Presenter drawer full width */
   #presenter{width:100%;max-width:100%}
   .pr-body{padding-bottom:calc(40px + env(safe-area-inset-bottom,0))}
 
   /* Profile */
-  .phead{padding:0 17px 18px}
-  .phead-top{flex-direction:column;align-items:flex-start;gap:12px;margin-top:-36px}
+  .phead{padding:0 18px 20px}
+  .phead-top{flex-direction:column;align-items:flex-start;gap:13px;margin-top:-38px}
   .phead-top .who{padding-bottom:0}
-  .phead-top h1{font-size:19px}
+  .phead-top h1{font-size:20px}
   .phead-top .btn{width:100%}
-  .avatar-xl{width:74px;height:74px;font-size:24px}
-  .pstats{flex-wrap:wrap;gap:16px 26px}
-  .vis-row{flex-direction:column;align-items:stretch;gap:9px}
+  .avatar-xl{width:78px;height:78px;font-size:25px}
+  .pstats{flex-wrap:wrap;gap:16px 28px}
+  .vis-row{flex-direction:column;align-items:stretch;gap:10px}
   .vis-seg{width:100%}
   .vis-opt{flex:1;text-align:center}
 
   /* Feed */
-  .post,.composer{padding:14px 15px}
+  .post,.composer{padding:16px 16px}
   .composer-acts{flex-wrap:wrap}
   .post-stats{flex-wrap:wrap}
 
@@ -105,12 +123,13 @@
   .mcard .acts .btn{width:100%}
 
   /* CRM board scrolls sideways */
-  .board{grid-template-columns:repeat(5,minmax(190px,1fr));gap:10px}
+  .board{grid-template-columns:repeat(5,minmax(196px,1fr));gap:11px}
+  .table-wrap{border-radius:var(--r)}
 
   /* Plans */
-  .plan{padding:19px 17px}
-  .plan .price .amt{font-size:31px}
-  .earlybar{padding:13px 14px}
+  .plan{padding:22px 19px}
+  .plan .price .amt{font-size:33px}
+  .earlybar,.gate-bar{padding:14px 15px;margin-bottom:20px}
 
   /* Login */
   .oauth{height:50px}
@@ -121,14 +140,19 @@
   .bn-item{font-size:9px}
   .bn-item svg{width:19px;height:19px}
   .tiles{grid-template-columns:1fr}
-  .page{padding:16px 12px 30px}
+  .page{padding:18px 13px 32px}
+  .page-head h1{font-size:21px}
 }
 
 /* --- Touch devices: bigger tap targets --- */
 @media(hover:none){
-  .btn-sm{height:34px}
-  .chip{height:30px;padding:0 12px}
-  .vis-opt{padding:7px 10px}
-  .tab{padding:11px 14px}
+  .btn-sm{height:36px}
+  .chip{height:32px;padding:0 13px}
+  .vis-opt{padding:8px 11px}
+  .tab{padding:12px 15px}
   .dcard{cursor:default}
+  /* Hover lifts are meaningless without a pointer and leave cards stuck in the
+     lifted state after a tap. */
+  .ccard:hover,.mcard:hover,.plan:hover,.feat-card:hover,.node:hover,
+  .btn-primary:hover{transform:none}
 }

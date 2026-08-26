@@ -130,3 +130,41 @@ export function describeField(id, user, mandate) {
       return 'Not set'
   }
 }
+
+/* --- Notifications -------------------------------------------------------- */
+
+export function fetchNotifications({ limit = 15, unreadOnly = false } = {}) {
+  const params = new URLSearchParams({ limit: String(limit) })
+  if (unreadOnly) params.set('unread_only', 'true')
+  return api.get(`/api/notifications?${params}`)
+}
+
+export function fetchUnreadCount() {
+  return api.get('/api/notifications/unread-count')
+}
+
+export function markNotificationRead(id) {
+  return api.post(`/api/notifications/${id}/read`, {})
+}
+
+export function markAllNotificationsRead() {
+  return api.post('/api/notifications/read-all', {})
+}
+
+/* --- Presenter notes (internal) ------------------------------------------- */
+
+export function fetchPresenterBoard() {
+  return api.get('/api/presenter')
+}
+
+export function createPresenterNote(note) {
+  return api.post('/api/presenter', note)
+}
+
+export function updatePresenterNote(id, changes) {
+  return api.patch(`/api/presenter/${id}`, changes)
+}
+
+export function deletePresenterNote(id) {
+  return api.delete(`/api/presenter/${id}`)
+}

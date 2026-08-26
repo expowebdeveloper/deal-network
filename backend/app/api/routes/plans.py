@@ -14,6 +14,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException, status
 from sqlalchemy import func, select, update
 
 from app.api.deps import CurrentUser, DbSession
+from app.core.config import settings
 from app.models import Contact, PlanSelection, PlanTier, Subscription, SubscriptionStatus
 from app.schemas.common import Message
 from app.schemas.crm import (
@@ -40,7 +41,7 @@ PLAN_PRICES: dict[PlanTier, str] = {
 PLAN_CATALOGUE: list[dict] = [
     {
         "id": PlanTier.early_access,
-        "name": "Early access",
+        "name": "Freemium",
         "tagline": "For everyone on the network while we grow the first few hundred members.",
         "price": "$0",
         "per": None,
@@ -57,7 +58,7 @@ PLAN_CATALOGUE: list[dict] = [
     },
     {
         "id": PlanTier.member,
-        "name": "Member",
+        "name": "Silver",
         "tagline": "For individual developers, brokers and investors running their own relationships.",
         "price": "$25",
         "per": "/month",
@@ -68,7 +69,7 @@ PLAN_CATALOGUE: list[dict] = [
             "Everything in early access",
             "Unlimited contacts",
             "Pipeline board",
-            "Create your own communities",
+            "Create 1 community, public or private",
             "Introduction requests",
             ("Phases 5–7", False),
             ("Team seats", False),
@@ -76,7 +77,7 @@ PLAN_CATALOGUE: list[dict] = [
     },
     {
         "id": PlanTier.professional,
-        "name": "Professional",
+        "name": "Gold",
         "tagline": "For firms running a team, with several people working the same relationships.",
         "price": "$100",
         "per": "/month",
@@ -107,6 +108,18 @@ async def _subscription_for(db: DbSession, user_id) -> Subscription:
     return subscription
 
 
+def _purchasable(plan: PlanTier) -> bool:
+    """Whether this tier can actually be bought right now.
+
+    Early access is free, so always yes. A paid tier needs a Stripe Price
+    configured; without one, checkout would answer 503 and the member would have
+    clicked a button that could never work.
+    """
+    if plan is PlanTier.early_access:
+        return True
+    return bool(settings.stripe_enabled and settings.stripe_price_for(plan.value))
+
+
 def _plan_out(plan: dict, *, is_current: bool = False) -> PlanOut:
     return PlanOut(
         **{k: v for k, v in plan.items() if k != "features"},
@@ -117,6 +130,7 @@ def _plan_out(plan: dict, *, is_current: bool = False) -> PlanOut:
             for f in plan["features"]
         ],
         is_current=is_current,
+        purchasable=_purchasable(plan["id"]),
     )
 
 

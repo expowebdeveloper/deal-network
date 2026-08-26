@@ -9,14 +9,15 @@ from __future__ import annotations
 import re
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, status
 from sqlalchemy import delete, func, or_, select, update
 from sqlalchemy.exc import IntegrityError
 
-from app.api.deps import CurrentUser, DbSession, require_feature
+from app.api.deps import CurrentUser, DbSession
+from app.core import errors
 from app.models import (
     Community, CommunityChannel, CommunityKind, CommunityMember, JoinPolicy,
-    MembershipStatus, Post, User,
+    MembershipStatus, NotificationKind, Post, User, VisibilityLevel,
 )
 from app.schemas.common import Message, Page
 from app.schemas.community import (
@@ -24,6 +25,8 @@ from app.schemas.community import (
     CommunityUpdate, JoinResult, MembershipOut,
 )
 from app.schemas.user import UserSummary
+from app.services import communities as community_service
+from app.services import notifications
 
 router = APIRouter(prefix="/communities", tags=["communities"])
 
@@ -94,7 +97,7 @@ async def _bump_members(db: DbSession, community_id: uuid.UUID, delta: int) -> N
 async def _decorate(
     db: DbSession, communities: list[Community], user_id: uuid.UUID
 ) -> list[CommunityOut]:
-    """Attach `joined` and a small facepile to each community.
+    """Attach `joined`, the caller's own role, and a small facepile.
 
     Two queries for the whole page rather than two per row.
     """
@@ -105,14 +108,21 @@ async def _decorate(
 
     mine = (
         await db.execute(
-            select(CommunityMember.community_id, CommunityMember.status).where(
+            select(
+                CommunityMember.community_id,
+                CommunityMember.status,
+                CommunityMember.role,
+            ).where(
                 CommunityMember.user_id == user_id,
                 CommunityMember.community_id.in_(ids),
             )
         )
     ).all()
-    joined_ids = {cid for cid, st in mine if st is MembershipStatus.joined}
-    pending_ids = {cid for cid, st in mine if st is MembershipStatus.pending}
+    joined_ids = {cid for cid, st, _ in mine if st is MembershipStatus.joined}
+    pending_ids = {cid for cid, st, _ in mine if st is MembershipStatus.pending}
+    # Only a joined member has a role worth reporting — a pending request does
+    # not make someone a member, whatever the row happens to say.
+    my_roles = {cid: role for cid, st, role in mine if st is MembershipStatus.joined}
 
     faces: dict[uuid.UUID, list[UserSummary]] = {cid: [] for cid in ids}
     rows = (
@@ -134,10 +144,11 @@ async def _decorate(
     return [
         CommunityOut(
             **CommunityOut.model_validate(c).model_dump(
-                exclude={"joined", "pending", "faces"}
+                exclude={"joined", "pending", "my_role", "faces"}
             ),
             joined=c.id in joined_ids,
             pending=c.id in pending_ids,
+            my_role=my_roles.get(c.id),
             faces=faces.get(c.id, []),
         )
         for c in communities
@@ -184,11 +195,20 @@ async def list_communities(
         )
         filters.append(Community.id.in_(member_filter))
 
-    statement = select(Community)
-    count_statement = select(func.count(Community.id))
+    # Start from what this member is actually allowed to see, not from every
+    # row in the table. This used to be a bare `select(Community)`, which listed
+    # archived communities, private ones the caller had no part in, and — once
+    # communities gained a draft stage — other people's unpublished drafts.
+    # `visible_communities_query` is the same base the /api/v1 browse uses, so
+    # both surfaces answer with one rule instead of two that can drift.
+    visible = await community_service.visible_communities_query(current_user.id)
+    statement = visible
+    count_statement = select(func.count()).select_from(visible.subquery())
     if filters:
         statement = statement.where(*filters)
-        count_statement = count_statement.where(*filters)
+        count_statement = select(func.count()).select_from(
+            visible.where(*filters).subquery()
+        )
 
     total = await db.scalar(count_statement) or 0
     rows = (
@@ -207,46 +227,91 @@ async def list_communities(
     )
 
 
+#: DomainError codes -> the short `detail` string this API has always used.
+#: The SPA switches on these, so they are part of the contract.
+_LEGACY_DETAIL: dict[str, str] = {
+    errors.Code.ENTITLEMENT_REQUIRED: "upgrade_required",
+    errors.Code.PRIVATE_COMMUNITY_NOT_ALLOWED: "upgrade_required",
+    errors.Code.JOIN_POLICY_NOT_ALLOWED: "upgrade_required",
+    errors.Code.COMMUNITY_LIMIT_REACHED: "community_limit_reached",
+}
+
+
+def _as_legacy(exc: errors.DomainError) -> HTTPException:
+    """Re-shape a DomainError for the pre-v1 contract.
+
+    These routes answer `{"detail": "..."}` with the reason in headers; /api/v1
+    answers the structured section 23 body. Translating here keeps one set of
+    rules without changing what existing clients receive.
+    """
+    details = exc.details or {}
+    headers = {"X-Required-Plan": str(details.get("upgrade_plan") or "")}
+    if details.get("limit") is not None:
+        headers["X-Community-Limit"] = str(details["limit"])
+    return HTTPException(
+        exc.status_code,
+        detail=_LEGACY_DETAIL.get(exc.code, exc.message),
+        headers=headers,
+    )
+
+
 @router.post(
     "", response_model=CommunityDetail, status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(require_feature("create_communities"))],
 )
 async def create_community(
     payload: CommunityCreate, current_user: CurrentUser, db: DbSession
 ) -> CommunityDetail:
-    community = Community(
-        name=payload.name,
-        slug=await _unique_slug(db, payload.name),
-        kind=payload.kind,
-        location=payload.location,
-        description=payload.description,
-        banner=payload.banner,
-        initials="".join(word[0] for word in payload.name.split()[:2]).upper(),
-        join_policy=payload.join_policy,
-        created_by_id=current_user.id,
-        member_count=1,
-    )
-    db.add(community)
-    await db.flush()
+    """Create a community, under the same rules as POST /api/v1/communities.
 
-    seen: set[str] = set()
-    for channel in payload.channels or DEFAULT_CHANNELS:
-        name = channel.strip()
-        if name and name.lower() not in seen:
-            seen.add(name.lower())
-            db.add(CommunityChannel(community_id=community.id, name=name))
+    This used to carry `require_feature("create_communities")` and build the row
+    inline, which left two problems. The plan rules disagreed with /api/v1 — the
+    free tier is allowed one community by backend_flow.md 11, but this route
+    refused outright — and because the SPA calls *this* endpoint, that was the
+    rule members actually met. It also never set `owner_id`, so a community made
+    through the UI had no owner: nobody could administer it in the v1 endpoints
+    and it counted against nobody's plan limit.
 
-    # The creator is the first member, and its admin.
-    db.add(
-        CommunityMember(
-            community_id=community.id,
-            user_id=current_user.id,
-            status=MembershipStatus.joined,
-            is_admin=True,
+    Delegating fixes both. The service is where the sequence lives (entitlement,
+    then the per-plan ceiling under a lock, then visibility and join policy),
+    and it sets ownership and the owner's role properly.
+
+    Visibility is fixed to public because this payload has no field for it;
+    private communities are created through /api/v1/communities.
+    """
+    try:
+        community = await community_service.create_community(
+            db, current_user,
+            name=payload.name,
+            kind=payload.kind,
+            visibility=VisibilityLevel.public,
+            join_policy=payload.join_policy,
+            location=payload.location,
+            description=payload.description,
+            banner=payload.banner,
+            channels=payload.channels or list(DEFAULT_CHANNELS),
         )
-    )
-    await db.commit()
-    await db.refresh(community)
+    except errors.DomainError as exc:
+        raise _as_legacy(exc) from exc
+
+    return await _detail(db, community, current_user.id)
+
+
+@router.post("/{slug}/publish", response_model=CommunityDetail)
+async def publish_community(
+    slug: str, current_user: CurrentUser, db: DbSession
+) -> CommunityDetail:
+    """Take a draft live — the same rule as POST /api/v1/communities/{id}/publish.
+
+    Declared before /{slug} so the slug route does not swallow the path, and
+    kept on this prefix because the SPA creates communities here: without it a
+    community made in the UI would be stranded as a draft.
+    """
+    community = await community_service.get_community(db, slug)
+    try:
+        actor = await community_service.require_membership(db, community, current_user.id)
+        community = await community_service.publish_community(db, community, actor)
+    except errors.DomainError as exc:
+        raise _as_legacy(exc) from exc
     return await _detail(db, community, current_user.id)
 
 
@@ -289,29 +354,26 @@ async def read_community(slug: str, db: DbSession, current_user: CurrentUser) ->
 async def update_community(
     slug: str, payload: CommunityUpdate, current_user: CurrentUser, db: DbSession
 ) -> CommunityDetail:
+    """Edit a community, under the same rules as PATCH /api/v1/communities/{id}.
+
+    This used to set the fields inline, which left two problems. It never
+    validated `visibility` or `join_policy` against the plan, so a tier that
+    could not *create* a private community could still PATCH one into being —
+    the create route delegates and is checked, this one was not. And its
+    nullable list was `description` alone, so clearing a logo or a description's
+    neighbours came back as a 422 for no reason.
+
+    Delegating fixes both, and picks up the audit row and the draft-editable
+    rule for free.
+    """
     community = await _get_community(db, slug)
-    await _require_admin(db, community, current_user)
+    actor = await _require_admin(db, community, current_user)
 
     changes = payload.model_dump(exclude_unset=True)
-    # `description` is the only nullable field, so an explicit null elsewhere
-    # would violate NOT NULL and surface as a 500.
-    nulled = [k for k, v in changes.items() if v is None and k != "description"]
-    if nulled:
-        raise HTTPException(
-            status.HTTP_422_UNPROCESSABLE_ENTITY,
-            f"These fields cannot be set to null: {', '.join(sorted(nulled))}",
-        )
-
-    new_name = changes.get("name")
-    for field, value in changes.items():
-        setattr(community, field, value)
-
-    if new_name:
-        community.slug = await _unique_slug(db, new_name, exclude_id=community.id)
-        community.initials = "".join(w[0] for w in new_name.split()[:2]).upper()
-
-    await db.commit()
-    await db.refresh(community)
+    try:
+        community = await community_service.update_community(db, community, actor, changes)
+    except errors.DomainError as exc:
+        raise _as_legacy(exc) from exc
     return await _detail(db, community, current_user.id)
 
 
@@ -395,6 +457,16 @@ async def join_community(slug: str, current_user: CurrentUser, db: DbSession) ->
     if membership.status is MembershipStatus.joined:
         await _bump_members(db, community.id, +1)
 
+    joining = membership.status is MembershipStatus.joined
+    await community_service._notify_admins(
+        db, community, actor=current_user,
+        kind=(NotificationKind.community_member_added if joining
+              else NotificationKind.community_join_request),
+        title=(f"{current_user.name} joined {community.name}" if joining
+               else f"{current_user.name} asked to join {community.name}"),
+        body=None if joining else "Approve or decline from community settings.",
+    )
+
     try:
         await db.commit()
     except IntegrityError:
@@ -473,6 +545,13 @@ async def approve_request(
 
     membership.status = MembershipStatus.joined
     await _bump_members(db, community.id, +1)
+    notifications.notify(
+        db, user_id=user_id, actor_id=current_user.id,
+        kind=NotificationKind.community_join_approved,
+        title=f"Your request to join {community.name} was approved",
+        body=f"Welcome to {community.name}!",
+        link=f"/communities?open={community.slug}",
+    )
     await db.commit()
     await db.refresh(membership)
     return membership

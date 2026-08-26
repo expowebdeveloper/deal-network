@@ -3,53 +3,62 @@
    ============================================================ */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  height:36px;padding:0 15px;border-radius:var(--r-sm);
-  font-size:13.5px;font-weight:600;letter-spacing:-.01em;
-  border:1px solid transparent;transition:all .15s ease;white-space:nowrap;
+  height:38px;padding:0 16px;border-radius:var(--r-sm);
+  font-size:13.5px;font-weight:600;letter-spacing:-.006em;
+  border:1px solid transparent;white-space:nowrap;
+  transition:background-color .15s ease,border-color .15s ease,color .15s ease,
+             box-shadow .15s ease,transform .15s ease;
 }
-/* Lime is the "do the thing" colour: primary actions and CTAs only, always
-   with the deep green label on it (11:1) and an edge that clears 3:1 against
-   both the page and a card. */
-.btn-primary{background:var(--lime);border-color:var(--lime-edge);color:var(--on-lime);font-weight:700}
-.btn-primary:hover{background:var(--lime-strong);border-color:var(--lime-edge)}
-.btn-ghost{background:var(--surface);border-color:var(--line-strong);color:var(--ink-2)}
-.btn-ghost:hover{border-color:var(--accent);color:var(--ink);background:var(--accent-soft)}
-.btn-quiet{background:transparent;color:var(--muted)}
-.btn-quiet:hover{background:var(--accent-soft);color:var(--accent-dark)}
-/* Dark green primary, for actions that repeat — one per card in a grid, one per
-   row in a list. Lime only marks what a screen is actually pushing (the page
-   action, a dialog's confirm, choosing a plan); a wall of lime marks nothing. */
+/* Lime is the "do the thing" colour: the page action, a dialog's confirm,
+   choosing a plan. Always the deep navy label on it (11:1) and an edge that
+   clears 3:1 against both the page and a card. */
+.btn-primary{background:var(--lime);border-color:var(--lime-edge);color:var(--on-lime);font-weight:700;box-shadow:var(--shadow-sm)}
+.btn-primary:hover{background:var(--lime-strong);border-color:var(--lime-edge);box-shadow:var(--shadow);transform:translateY(-1px)}
+.btn-primary:active{transform:none;box-shadow:var(--shadow-sm)}
+.btn-primary:focus-visible{outline-color:var(--lime-edge);box-shadow:var(--ring-lime)}
+/* Emerald, for actions that repeat — one per card in a grid, one per row in a
+   list. Lime only marks what a screen is actually pushing; a wall of lime
+   marks nothing. */
 .btn-dark{background:var(--accent);border-color:var(--accent);color:var(--on-dark)}
 .btn-dark:hover{background:var(--accent-dark);border-color:var(--accent-dark)}
-.btn-sm{height:30px;padding:0 11px;font-size:12.5px;border-radius:5px}
-.btn-lg{height:44px;padding:0 22px;font-size:15px}
+.btn-ghost{background:var(--surface);border-color:var(--line-strong);color:var(--ink-2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-faint)}
+.btn-quiet{background:transparent;color:var(--muted)}
+.btn-quiet:hover{background:var(--surface-2);color:var(--ink)}
+.btn-danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn-danger:hover{background:#8E2019;border-color:#8E2019}
+.btn-sm{height:32px;padding:0 12px;font-size:12.5px;border-radius:7px}
+.btn-lg{height:46px;padding:0 24px;font-size:15px;border-radius:var(--r)}
 .btn-block{width:100%}
 .btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn[disabled]:hover{transform:none;box-shadow:none}
 
 .chip{
   display:inline-flex;align-items:center;gap:5px;
-  height:26px;padding:0 10px;border-radius:99px;
-  font-size:12px;font-weight:600;letter-spacing:-.01em;
+  height:28px;padding:0 11px;border-radius:99px;
+  font-size:12px;font-weight:600;letter-spacing:-.006em;
   border:1px solid var(--line-strong);color:var(--muted);background:var(--surface);
-  cursor:pointer;transition:all .14s ease;
+  cursor:pointer;transition:all .15s ease;
 }
-.chip:hover{border-color:var(--accent);color:var(--accent-dark);background:var(--accent-soft)}
+.chip:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-faint)}
 .chip.on{background:var(--accent);border-color:var(--accent);color:var(--on-dark)}
+.chip.on:hover{background:var(--accent-dark);border-color:var(--accent-dark);color:var(--on-dark)}
 
 .tag{
   display:inline-flex;align-items:center;gap:4px;
-  padding:2px 8px;border-radius:5px;
-  font-size:11px;font-weight:700;letter-spacing:.02em;
-  background:var(--line-2);color:var(--muted);
+  padding:3px 8px;border-radius:6px;
+  font-size:11px;font-weight:700;letter-spacing:.015em;line-height:1.35;
+  background:var(--surface-2);color:var(--muted);
+  border:1px solid transparent;
 }
-/* A ladder from open to closed: lime is the most visible, dark green means
+/* A ladder from open to closed: lime is the most visible, navy means
    restricted to the network, red keeps its "not shared" meaning. */
-.tag-public{background:var(--lime-soft);color:var(--lime-ink)}
-.tag-shared{background:var(--accent-soft);color:var(--accent-dark)}
-.tag-internal{background:var(--accent-dark);color:var(--on-dark)}
-.tag-private{background:var(--danger-soft);color:var(--danger)}
-.tag-gold{background:var(--gold-soft);color:var(--gold)}
-.tag-soon{background:var(--line-2);color:var(--faint)}
+.tag-public{background:var(--lime-soft);color:var(--lime-ink);border-color:#DCEFAE}
+.tag-shared{background:var(--accent-soft);color:var(--accent-deep);border-color:#CDE7DE}
+.tag-internal{background:var(--navy-800);color:var(--on-dark)}
+.tag-private{background:var(--danger-soft);color:var(--danger);border-color:var(--danger-line)}
+.tag-gold{background:var(--gold-soft);color:var(--gold);border-color:var(--gold-line)}
+.tag-soon{background:var(--surface-2);color:var(--faint);border-color:var(--line-2)}
 
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-sm)}
 .avatar{
@@ -57,36 +66,44 @@
   display:grid;place-items:center;
   font-size:13px;font-weight:700;letter-spacing:-.02em;color:#fff;
 }
+/* A logo fills the bubble completely; `overflow:hidden` on the parent is what
+   keeps a square image inside the circle. */
+.avatar-img{width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}
+.avatar:has(.avatar-img){overflow:hidden}
 .avatar-sm{width:30px;height:30px;font-size:11px}
 .avatar-lg{width:64px;height:64px;font-size:21px}
 .avatar-xl{width:88px;height:88px;font-size:28px;border:4px solid var(--surface)}
-/* Six greens far enough apart to tell people apart, all dark enough that the
-   white initials stay above 4.5:1 even at the light end of the gradient. */
-.a1{background:linear-gradient(135deg,#073728,#116B4A)}
-.a2{background:linear-gradient(135deg,#0B4A33,#17855C)}
-.a3{background:linear-gradient(135deg,#2C5F1E,#4C7A1A)}
-.a4{background:linear-gradient(135deg,#0A3D2C,#1A7A66)}
-.a5{background:linear-gradient(135deg,#34482A,#587F5C)}
-.a6{background:linear-gradient(135deg,#3E6212,#547A12)}
+/* Six identities far enough apart to tell people apart — navy, emerald, steel,
+   teal, indigo, graphite. Exactly one of the six is green, so a grid of members
+   or a wall of avatars never reads as a green screen. Every gradient's light
+   end still carries white initials at 4.5:1 or better. */
+.a1{background:linear-gradient(135deg,#0B2533,#1B445A)}
+.a2{background:linear-gradient(135deg,#0B5342,#16866A)}
+.a3{background:linear-gradient(135deg,#113345,#2B5A73)}
+.a4{background:linear-gradient(135deg,#14384A,#1F6E7A)}
+.a5{background:linear-gradient(135deg,#16263F,#3B5578)}
+.a6{background:linear-gradient(135deg,#1E2A30,#4A6570)}
 
-.field{display:block;margin-bottom:14px}
-.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+.field{display:block;margin-bottom:16px}
+.field label{display:block;font-size:12.5px;font-weight:620;color:var(--ink-2);margin-bottom:6px;letter-spacing:-.004em}
 .field input,.field select,.field textarea{
-  width:100%;height:38px;padding:0 12px;
+  width:100%;height:40px;padding:0 13px;
   border:1px solid var(--line-strong);border-radius:var(--r-sm);
-  background:var(--surface);font-size:13.5px;transition:border-color .14s;
+  background:var(--surface);font-size:13.5px;
+  transition:border-color .15s ease,box-shadow .15s ease;
 }
-.field textarea{height:auto;padding:10px 12px;resize:vertical;min-height:76px;line-height:1.55}
-.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.field .hint{font-size:11.5px;color:var(--faint);margin-top:5px}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field input::placeholder,.field textarea::placeholder{color:var(--faint)}
+.field textarea{height:auto;padding:11px 13px;resize:vertical;min-height:80px;line-height:1.6}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);box-shadow:var(--ring)}
+.field .hint{font-size:11.5px;color:var(--faint);margin-top:6px;line-height:1.5}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .field-row-3{grid-template-columns:1fr 1fr 1fr}
 .field.last-field{margin-bottom:0}
 
-.switch{position:relative;width:38px;height:22px;flex:none;border-radius:99px;background:var(--line-strong);transition:background .18s;cursor:pointer}
-.switch::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:var(--shadow-sm);transition:transform .18s}
+.switch{position:relative;width:40px;height:23px;flex:none;border-radius:99px;background:var(--line-strong);transition:background .2s ease;cursor:pointer}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:var(--shadow-sm);transition:transform .2s ease}
 .switch.on{background:var(--accent)}
-.switch.on::after{transform:translateX(16px)}
+.switch.on::after{transform:translateX(17px)}
 
 .sec-title{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
 .divider{height:1px;background:var(--line);border:0}

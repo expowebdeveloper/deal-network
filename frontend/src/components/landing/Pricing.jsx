@@ -4,6 +4,7 @@ import { Loading, ErrorState } from '../ui/States'
 import { CheckIcon, CrossIcon, InfoIcon } from '../icons/Icons'
 import { useApp } from '../../context/AppContext'
 import { fetchPlanCatalogue } from '../../lib/feed'
+import { createSignupIntent, signupIntent } from '../../lib/billing'
 import { roadmap } from '../../data/landing'
 
 /** How far up the roadmap a tier reaches. `roadmap` is the full phase list, so
@@ -34,6 +35,7 @@ function Feature({ feature }) {
 export default function Pricing() {
   const { openModal } = useApp()
   const [state, setState] = useState({ status: 'loading', plans: [], error: null })
+  const [picking, setPicking] = useState(null)
 
   const load = useCallback(async () => {
     setState((s) => ({ ...s, status: 'loading' }))
@@ -49,6 +51,29 @@ export default function Pricing() {
   useEffect(() => { load() }, [load])
 
   const signIn = () => openModal('login', {})
+
+  /**
+   * Choosing a plan here happens *before* there is an account, so the choice is
+   * recorded server-side first (backend_flow.md 7.1) and its id is carried
+   * through sign-in. Without that step the tier would have to travel as a query
+   * parameter the visitor could edit, which is exactly what the spec rules out.
+   *
+   * If the intent cannot be created the sign-in dialog still opens — losing the
+   * pre-selection is a small annoyance; blocking sign-up is not acceptable.
+   */
+  async function choosePlan(plan) {
+    if (picking) return
+    setPicking(plan.id)
+    try {
+      const intent = await createSignupIntent(plan.id)
+      signupIntent.set(intent.signup_intent_id)
+    } catch {
+      signupIntent.clear()
+    } finally {
+      setPicking(null)
+      openModal('login', { signupIntentPlan: plan.id })
+    }
+  }
 
   return (
     <PublicPage page="pricing" onLogin={signIn}>
@@ -75,7 +100,12 @@ export default function Pricing() {
 
           {state.status === 'ready' && (
             <div className="plans">
-              {state.plans.map((plan) => (
+              {state.plans.map((plan) => {
+                // A paid tier with no Stripe Price configured server-side cannot
+                // be bought yet; the card says so rather than sending a visitor
+                // through sign-in to a payment page that cannot open.
+                const unavailable = plan.purchasable === false
+                return (
                 <div className={`card plan${plan.featured ? ' feat' : ''}`} key={plan.id}>
                   {plan.featured && <span className="plan-badge">MOST POPULAR</span>}
 
@@ -94,13 +124,25 @@ export default function Pricing() {
                   <div className="plan-phase">{phaseLabel(plan.max_phase)}</div>
 
                   <button
-                    className={`btn btn-${plan.featured ? 'primary' : 'ghost'} btn-block`}
-                    onClick={signIn}
+                    className={`btn btn-${plan.featured && !unavailable ? 'primary' : 'ghost'} btn-block`}
+                    data-busy={picking === plan.id}
+                    disabled={unavailable}
+                    onClick={() => choosePlan(plan)}
                   >
-                    Choose plan
+                    {unavailable
+                      ? 'Not available yet'
+                      : picking === plan.id ? 'Just a moment…' : 'Choose plan'}
                   </button>
+
+                  {unavailable && (
+                    <p className="plan-unavailable">
+                      Card payments are not switched on yet. Early access is free
+                      and available now.
+                    </p>
+                  )}
                 </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>
