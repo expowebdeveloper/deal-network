@@ -84,7 +84,10 @@ export default function Members() {
                 >
                   Connect
                 </button>
-                <button className="btn btn-ghost btn-sm" onClick={() => navigate('/profile')}>
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => navigate(`/members/${m.id}`)}
+                >
                   View
                 </button>
               </div>

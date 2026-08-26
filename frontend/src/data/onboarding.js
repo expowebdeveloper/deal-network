@@ -3,7 +3,6 @@ export const roleOptions = [
   { title: 'Investor / LP', desc: 'I put capital into other people’s projects' },
   { title: 'Broker / Agent', desc: 'I introduce buyers, sellers and tenants' },
   { title: 'Lender', desc: 'I provide construction or acquisition finance' },
-  { title: 'Service provider', desc: 'Architecture, legal, PM, valuation and similar' },
 ]
 
 export const termsChecks = [
