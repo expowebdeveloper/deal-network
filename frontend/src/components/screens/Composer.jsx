@@ -1,13 +1,7 @@
 import { useRef, useState } from 'react'
 import Avatar from '../ui/Avatar'
-import { PhotoIcon, DocumentIcon, PinIcon, CloseIcon } from '../icons/Icons'
-import { createPost, uploadMedia, deleteMedia, fileSize } from '../../lib/feed'
-
-const IMAGE_TYPES = 'image/jpeg,image/png,image/gif,image/webp'
-const DOC_TYPES =
-  '.pdf,.txt,.csv,.doc,.docx,.xls,.xlsx,application/pdf,text/plain,text/csv,' +
-  'application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,' +
-  'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+import { PhotoIcon, VideoIcon, DocumentIcon, PinIcon, CloseIcon } from '../icons/Icons'
+import { ACCEPT, createPost, uploadMedia, deleteMedia, fileSize } from '../../lib/feed'
 
 /**
  * Home composer. Attachments upload immediately (so the member sees progress and
@@ -25,6 +19,7 @@ export default function Composer({ currentUser, onPosted }) {
   const [error, setError] = useState(null)
 
   const photoInput = useRef(null)
+  const videoInput = useRef(null)
   const docInput = useRef(null)
   // Bumped on cancel/submit so a late upload cannot re-enter a cleared composer.
   const sessionRef = useRef(0)
@@ -152,9 +147,15 @@ export default function Composer({ currentUser, onPosted }) {
       {attachments.length > 0 && (
         <div className="composer-files">
           {attachments.map((a) => (
-            <div className={`composer-file${a.kind === 'image' ? ' is-image' : ''}`} key={a.id}>
+            <div
+              className={`composer-file${
+                a.kind === 'image' || a.kind === 'video' ? ' is-image' : ''}`}
+              key={a.id}
+            >
               {a.kind === 'image' ? (
                 <img src={a.url} alt={a.name} />
+              ) : a.kind === 'video' ? (
+                <video src={a.url} muted playsInline preload="metadata" />
               ) : (
                 <div className="composer-file-doc">
                   <DocumentIcon />
@@ -181,6 +182,9 @@ export default function Composer({ currentUser, onPosted }) {
       <div className="composer-acts">
         <button className="composer-act" onClick={() => photoInput.current?.click()}>
           <PhotoIcon />Photo
+        </button>
+        <button className="composer-act" onClick={() => videoInput.current?.click()}>
+          <VideoIcon />Video
         </button>
         <button className="composer-act" onClick={() => docInput.current?.click()}>
           <DocumentIcon />Document
@@ -212,12 +216,27 @@ export default function Composer({ currentUser, onPosted }) {
       <input
         ref={photoInput}
         type="file"
-        accept={IMAGE_TYPES}
+        accept={ACCEPT.image}
         multiple
         hidden
         onChange={handleFiles}
       />
-      <input ref={docInput} type="file" accept={DOC_TYPES} multiple hidden onChange={handleFiles} />
+      <input
+        ref={videoInput}
+        type="file"
+        accept={ACCEPT.video}
+        multiple
+        hidden
+        onChange={handleFiles}
+      />
+      <input
+        ref={docInput}
+        type="file"
+        accept={ACCEPT.document}
+        multiple
+        hidden
+        onChange={handleFiles}
+      />
     </div>
   )
 }

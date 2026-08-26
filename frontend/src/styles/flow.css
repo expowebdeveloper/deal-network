@@ -6,7 +6,7 @@
   height:56px;flex:none;display:flex;align-items:center;gap:13px;
   padding:0 22px;background:var(--surface);border-bottom:1px solid var(--line);
 }
-.flow-top h2{font-size:15.5px;font-weight:720;letter-spacing:-.022em}
+.flow-top h2{font-size:16px;font-weight:720;letter-spacing:-.024em;color:var(--ink)}
 .flow-top p{font-size:12.5px;color:var(--muted)}
 .flow-scroll{flex:1;overflow:auto;padding:30px 26px 60px}
 .flow-inner{max-width:1220px;margin:0 auto}
@@ -30,9 +30,10 @@
 .node .ntags{display:flex;flex-wrap:wrap;gap:4px;margin-top:9px}
 .node.locked{background:var(--surface-2);border-style:dashed;cursor:default;opacity:.72}
 .node.locked:hover{transform:none;border-color:var(--line);box-shadow:none}
-.node.entry{border-color:var(--ink);background:var(--ink);color:#fff}
-.node.entry .nd{color:rgba(255,255,255,.62)}
-.node.entry:hover{border-color:var(--ink)}
+/* Where the flow starts: the one navy node in the diagram. */
+.node.entry{border-color:var(--navy-900);background:var(--navy-900);color:#fff}
+.node.entry .nd{color:rgba(255,255,255,.66)}
+.node.entry:hover{border-color:var(--navy-900);background:var(--navy-800)}
 .arrow{display:flex;align-items:center;justify-content:center;width:30px;flex:none;color:var(--faint)}
 .arrow svg{width:16px;height:16px}
 .vgap{display:flex;justify-content:flex-start;padding:5px 0 5px 74px}

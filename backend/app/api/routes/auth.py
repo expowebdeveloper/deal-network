@@ -87,13 +87,31 @@ async def list_providers(request: Request) -> ProvidersResponse:
 
 
 @router.get("/{provider}/login")
-async def start_login(provider: str, redirect_to: str | None = Query(default=None)):
+async def start_login(
+    provider: str,
+    redirect_to: str | None = Query(default=None),
+    signup_intent: str | None = Query(
+        default=None,
+        description="Signup intent id from POST /api/v1/billing/signup-intent, so the "
+                    "plan chosen before signing up survives the OAuth round trip.",
+    ),
+):
     """Kick off the OAuth dance."""
     if provider not in {"google", "apple"}:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Unknown provider")
 
+    # Validated here rather than on the way back, so a malformed id fails at the
+    # button rather than after the member has signed in with Google.
+    if signup_intent:
+        try:
+            uuid.UUID(signup_intent)
+        except ValueError:
+            raise HTTPException(
+                status.HTTP_422_UNPROCESSABLE_ENTITY, "signup_intent is not a valid id"
+            ) from None
+
     try:
-        state = create_oauth_state(provider, redirect_to)
+        state = create_oauth_state(provider, redirect_to, signup_intent)
         url = oauth.authorize_url(provider, state)
     except oauth.OAuthError as exc:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, str(exc)) from exc
@@ -149,6 +167,10 @@ async def google_callback(
         refresh_token=tokens.refresh_token,
         expires_in=tokens.expires_in,
         new_user=str(created).lower(),
+        # The plan picked before signing up. The SPA posts it to
+        # POST /api/v1/billing/activate-signup once the terms are agreed to;
+        # it is not spent here because that step comes first in the product.
+        signup_intent=claims.get("signup_intent") or "",
     )
 
 
@@ -209,6 +231,7 @@ async def apple_callback(
         refresh_token=tokens.refresh_token,
         expires_in=tokens.expires_in,
         new_user=str(created).lower(),
+        signup_intent=claims.get("signup_intent") or "",
     )
 
 

@@ -36,3 +36,26 @@ class MediaRef(BaseModel):
     original_name: str
     content_type: str
     size_bytes: int
+
+
+class StorageUsageOut(BaseModel):
+    """Storage used against the plan's allowance — backend_flow.md section 19.
+
+    Two per-file numbers, because they can differ: `plan_max_file_bytes` is what
+    the tier grants, `max_file_bytes` is what this deployment will actually
+    accept. `capped_by_deployment` is true when the second is the binding one,
+    so the UI can show the real figure rather than a promise it cannot keep.
+    """
+
+    used_bytes: int
+    # None means unlimited.
+    storage_limit_bytes: int | None = None
+    remaining_bytes: int | None = None
+    max_file_bytes: int | None = None
+    plan_max_file_bytes: int | None = None
+    capped_by_deployment: bool = False
+    percent_used: float | None = None
+
+    used_display: str
+    storage_limit_display: str
+    max_file_display: str
