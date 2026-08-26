@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Community Architecture &amp; Setup Flow</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root{
+    --navy-dark:#122536;
+    --navy:#1F3B4D;
+    --teal:#2F7D6E;
+    --teal-light:#DCEEEA;
+    --paper:#F7F8F7;
+    --paper-2:#EFF2F1;
+    --ink:#1B2426;
+    --ink-soft:#4B5A5D;
+    --line:#D8E0DE;
+    --gold:#A6822F;
+    --silver:#7C8894;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:64px 32px 120px;}
+
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;color:var(--navy-dark);margin:0;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--teal);font-weight:600;margin-bottom:14px;display:block;
+  }
+  .hero{
+    padding-bottom:48px;border-bottom:1px solid var(--line);margin-bottom:56px;
+  }
+  .hero h1{font-size:40px;font-weight:700;line-height:1.15;max-width:760px;letter-spacing:-.01em;}
+  .hero p{font-size:17px;color:var(--ink-soft);max-width:640px;margin-top:18px;}
+
+  section{margin-bottom:64px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:26px;}
+  .sec-num{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--teal);
+    border:1px solid var(--teal);border-radius:20px;padding:3px 11px;font-weight:600;
+  }
+  .sec-head h2{font-size:24px;font-weight:700;}
+  .sec-intro{color:var(--ink-soft);font-size:15px;max-width:700px;margin-bottom:28px;}
+
+  /* Role eligibility grid */
+  .role-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .role-card{
+    background:var(--white);border:1px solid var(--line);border-radius:10px;padding:20px 18px;
+  }
+  .role-card .role-name{font-weight:700;font-size:15px;color:var(--navy);margin-bottom:8px;}
+  .role-card .role-desc{font-size:13px;color:var(--ink-soft);margin-bottom:14px;min-height:52px;}
+  .tier-pill-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .tier-pill{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;
+    padding:3px 8px;border-radius:20px;letter-spacing:.02em;
+  }
+  .tier-pill.locked{background:#F0EDE7;color:#A39B8B;}
+  .tier-pill.can{background:var(--teal-light);color:var(--teal);}
+
+  /* Flow diagram */
+  .flow{display:flex;flex-direction:column;gap:0;}
+  .flow-step{
+    display:grid;grid-template-columns:56px 1fr;gap:22px;position:relative;padding-bottom:34px;
+  }
+  .flow-step:last-child{padding-bottom:0;}
+  .flow-step:not(:last-child)::before{
+    content:"";position:absolute;left:27px;top:56px;bottom:0;width:2px;background:var(--line);
+  }
+  .flow-node{
+    width:56px;height:56px;border-radius:50%;background:var(--navy);color:var(--white);
+    display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;
+    font-weight:600;font-size:17px;z-index:1;flex-shrink:0;
+  }
+  .flow-step.gate .flow-node{background:var(--gold);}
+  .flow-body{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:18px 22px;}
+  .flow-body h3{font-size:16px;font-weight:700;margin-bottom:6px;}
+  .flow-body p{font-size:14px;color:var(--ink-soft);margin:0;}
+  .flow-body .tag{
+    display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;
+    color:var(--gold);background:#FBF4E4;padding:2px 8px;border-radius:20px;margin-bottom:8px;
+  }
+
+  /* Anatomy cards */
+  .anatomy-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .anatomy-card{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:24px;}
+  .anatomy-card h3{font-size:15px;font-weight:700;margin-bottom:14px;color:var(--navy);}
+  .role-row{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--paper-2);font-size:14px;}
+  .role-row:first-of-type{border-top:none;}
+  .role-row .who{font-weight:600;}
+  .role-row .what{color:var(--ink-soft);text-align:right;max-width:280px;}
+  .chan-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+  .chan{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--paper-2);
+    padding:4px 10px;border-radius:6px;color:var(--navy);
+  }
+  .type-block{margin-bottom:16px;}
+  .type-block:last-child{margin-bottom:0;}
+  .type-block .t-label{font-weight:700;font-size:13.5px;color:var(--teal);margin-bottom:3px;}
+  .type-block p{font-size:13.5px;color:var(--ink-soft);margin:0;}
+
+  /* Join journey */
+  .journey{display:flex;gap:0;}
+  .j-step{flex:1;position:relative;padding:0 16px;text-align:center;}
+  .j-step:first-child{padding-left:0;}
+  .j-step:last-child{padding-right:0;}
+  .j-dot{
+    width:14px;height:14px;border-radius:50%;background:var(--teal);margin:0 auto 14px;
+    position:relative;z-index:1;
+  }
+  .j-step::after{
+    content:"";position:absolute;top:6px;left:calc(50% + 20px);right:calc(-50% + 20px);
+    height:2px;background:var(--line);
+  }
+  .j-step:last-child::after{display:none;}
+  .j-step h4{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;margin:0 0 6px;}
+  .j-step p{font-size:12.5px;color:var(--ink-soft);margin:0;}
+
+  /* Upsell trigger table */
+  table.trig{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  table.trig th{
+    background:var(--navy-dark);color:var(--white);text-align:left;font-size:12px;
+    font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;text-transform:uppercase;
+    padding:12px 16px;font-weight:600;
+  }
+  table.trig td{padding:14px 16px;font-size:13.5px;border-top:1px solid var(--paper-2);color:var(--ink);}
+  table.trig tr:nth-child(even) td{background:var(--paper);}
+  table.trig td.strong{font-weight:600;color:var(--navy);}
+
+  .footnote{
+    margin-top:56px;padding-top:24px;border-top:1px solid var(--line);
+    font-size:12.5px;color:#8B98A0;
+  }
+
+  @media (max-width:820px){
+    .role-grid{grid-template-columns:repeat(2,1fr);}
+    .anatomy-grid{grid-template-columns:1fr;}
+    .journey{flex-direction:column;gap:20px;}
+    .j-step::after{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <span class="eyebrow">Draft for review &middot; Community Architecture</span>
+    <h1>How a community gets created, structured, and grows on the platform</h1>
+    <p>End-to-end design covering who can start a community, how it's set up, how members join, and what triggers an upgrade prompt. This is a proposal built on top of the Phase&nbsp;2 CRM/Community scope in the PRD &mdash; flag anything that should change.</p>
+  </div>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>Who can create a community</h2></div>
+    <p class="sec-intro">Creation rights are gated by subscription tier, not by role. Any of the four platform roles &mdash; Developer, Investor, Broker, Lender &mdash; can create a community once they're on a paid plan. Freemium accounts can join and participate, but can't start one.</p>
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-name">Developer</div>
+        <div class="role-desc">Typically creates market or asset-class communities (e.g. "Bangalore Developers") to network with lenders and investors.</div>
+        <div class="tier-pill-row"><span class="tier-pill locked">Freemium: join only</span><span class="tier-pill can">Silver+: can create</span></div>
+      </div>
+      <div class="role-card">
+        <div class="role-name">Investor</div>
+        <div class="role-desc">Creates investor-only groups, or joins developer communities to source deal flow.</div>
+        <div class="tier-pill-row"><span class="tier-pill locked">Freemium: join only</span><span class="tier-pill can">Silver+: can create</span></div>
+      </div>
+      <div class="role-card">
+        <div class="role-name">Broker</div>
+        <div class="role-desc">Creates regional communities to connect buyers, sellers and both sides of a deal.</div>
+        <div class="tier-pill-row"><span class="tier-pill locked">Freemium: join only</span><span class="tier-pill can">Silver+: can create</span></div>
+      </div>
+      <div class="role-card">
+        <div class="role-name">Lender</div>
+        <div class="role-desc">Creates or joins asset-class communities to stay close to financing demand.</div>
+        <div class="tier-pill-row"><span class="tier-pill locked">Freemium: join only</span><span class="tier-pill can">Silver+: can create</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>End-to-end flow</h2></div>
+    <p class="sec-intro">From "I want to start a community" to an active, moderated space. The gated step is the only place subscription tier changes the path.</p>
+    <div class="flow">
+
+      <div class="flow-step gate">
+        <div class="flow-node">1</div>
+        <div class="flow-body">
+          <span class="tag">Eligibility gate</span>
+          <h3>User taps "Create community"</h3>
+          <p>System checks subscription tier. Freemium sees an upgrade prompt instead of the creation form. Silver/Gold proceed &mdash; Silver only if they haven't already used their one community slot (see Section&nbsp;05).</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-node">2</div>
+        <div class="flow-body">
+          <h3>Choose community type</h3>
+          <p><strong>Market-based</strong> (e.g. "Mohali &amp; Tricity Builders") or <strong>Asset-class-based</strong> (e.g. "Apartment Operators"). This drives which filter tab it appears under in the directory.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-node">3</div>
+        <div class="flow-body">
+          <h3>Name, description &amp; visibility</h3>
+          <p>Set the community name, a short description, and choose <strong>Open</strong> (anyone can join instantly) or <strong>Request to join</strong> (admin approves each member).</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-node">4</div>
+        <div class="flow-body">
+          <h3>Configure channels</h3>
+          <p>Starts with four defaults &mdash; <span class="chan">#general</span> <span class="chan">#approvals</span> <span class="chan">#finance</span> <span class="chan">#introductions</span> &mdash; the creator can rename, remove, or add channels up to their tier's limit.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-node">5</div>
+        <div class="flow-body">
+          <h3>Invite founding members</h3>
+          <p>Creator invites members directly from their contacts/connections, or leaves it empty and relies on directory discovery.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-node">6</div>
+        <div class="flow-body">
+          <h3>Publish &mdash; community goes live</h3>
+          <p>Appears in the platform-wide Communities directory, filterable by market or asset class. Creator is automatically the Admin.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-node">7</div>
+        <div class="flow-body">
+          <h3>Ongoing: members post, admin moderates</h3>
+          <p>Members post updates and discuss inside channels; the Admin approves join requests (if Request-to-join), moderates content, and manages channels.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-node">8</div>
+        <div class="flow-body">
+          <h3>Growth hits a cap &rarr; upgrade prompt</h3>
+          <p>Member count or channel count approaches the plan's limit &mdash; system shows the relevant add-on or tier upgrade (see Section&nbsp;06).</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>Community anatomy</h2></div>
+    <p class="sec-intro">What a community is actually made of once it exists.</p>
+    <div class="anatomy-grid">
+      <div class="anatomy-card">
+        <h3>Roles inside a community</h3>
+        <div class="role-row"><span class="who">Admin</span><span class="what">The creator, by default. Approves join requests, moderates posts, manages channels, can promote members to Moderator.</span></div>
+        <div class="role-row"><span class="who">Moderator</span><span class="what">Gold tier only. Shares moderation/approval workload; cannot change billing or delete the community.</span></div>
+        <div class="role-row"><span class="who">Member</span><span class="what">Can post, comment, join channels, and appear in the member directory.</span></div>
+      </div>
+      <div class="anatomy-card">
+        <h3>Community types</h3>
+        <div class="type-block">
+          <div class="t-label">Market-based</div>
+          <p>Organized by geography &mdash; e.g. "New York Multifamily," "Bangalore Developers." Good for local deal flow and financing.</p>
+        </div>
+        <div class="type-block">
+          <div class="t-label">Asset-class-based</div>
+          <p>Organized by property type &mdash; e.g. "Medical &amp; Healthcare Property," "Mixed-Use Developers." Good for specialist knowledge-sharing.</p>
+        </div>
+        <div class="type-block">
+          <div class="t-label">Default channels</div>
+          <div class="chan-list">
+            <span class="chan">#general</span><span class="chan">#approvals</span><span class="chan">#finance</span><span class="chan">#introductions</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Member join journey</h2></div>
+    <p class="sec-intro">How someone goes from browsing the directory to being an active member.</p>
+    <div class="journey">
+      <div class="j-step"><div class="j-dot"></div><h4>Discover</h4><p>Browse or filter the Communities directory by market or asset class.</p></div>
+      <div class="j-step"><div class="j-dot"></div><h4>Join or request</h4><p>Open communities: instant join. Request-to-join: sends a request to the Admin.</p></div>
+      <div class="j-step"><div class="j-dot"></div><h4>Approval</h4><p>Admin accepts or declines (request-to-join only). Instant for open communities.</p></div>
+      <div class="j-step"><div class="j-dot"></div><h4>Active member</h4><p>Appears in the member list, can post in channels, shows up in "shared communities" on profiles.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>Community &amp; member limits by tier</h2></div>
+    <p class="sec-intro">Quick reference &mdash; full subscription detail lives in the companion pricing artifact.</p>
+    <table class="trig">
+      <tr><th>Tier</th><th>Communities you can create</th><th>Members per community</th><th>Moderator seats</th></tr>
+      <tr><td class="strong">Freemium</td><td>0 &mdash; join only</td><td>&mdash;</td><td>&mdash;</td></tr>
+      <tr><td class="strong">Silver &middot; $25/mo</td><td>1</td><td>Up to 150</td><td>0 (Admin only)</td></tr>
+      <tr><td class="strong">Gold &middot; $100/mo</td><td>Up to 3</td><td>Up to 500</td><td>Up to 3</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">06</span><h2>What happens when a limit is hit</h2></div>
+    <p class="sec-intro">Every cap in this document ends in an in-product prompt, never a silent block.</p>
+    <table class="trig">
+      <tr><th>Trigger</th><th>What the user sees</th><th>Resolution path</th></tr>
+      <tr>
+        <td>Silver user tries to create a 2nd community</td>
+        <td>"You've used your 1 community on the Silver plan."</td>
+        <td>Buy the <strong>Extra Community</strong> add-on, or upgrade to Gold (includes 3)</td>
+      </tr>
+      <tr>
+        <td>Community hits its member cap</td>
+        <td>"This community is at its 150/500 member limit."</td>
+        <td>Buy the <strong>Extra Members</strong> add-on, or upgrade tier</td>
+      </tr>
+      <tr>
+        <td>Gold user tries to create a 4th community</td>
+        <td>"You've used all 3 communities on the Gold plan."</td>
+        <td>Buy an additional <strong>Extra Community</strong> add-on</td>
+      </tr>
+      <tr>
+        <td>Silver Admin wants to delegate moderation</td>
+        <td>"Moderator seats aren't available on Silver."</td>
+        <td>Upgrade to Gold</td>
+      </tr>
+    </table>
+  </section>
+
+  <div class="footnote">
+    Draft v1 &middot; Community architecture proposal built on the Phase 2 (CRM, Profiles &amp; Networking) scope in the consolidated PRD. Numbers (member caps, channel limits, moderator counts) are a starting proposal, not confirmed &mdash; see the companion subscription-plan artifact for how these tie to pricing and add-ons.
+  </div>
+
+</div>
+</body>
+</html>

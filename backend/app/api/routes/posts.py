@@ -18,6 +18,7 @@ from app.schemas.post import (
     CommentCreate, CommentOut, LikeState, PostCommunity, PostCreate, PostOut,
 )
 from app.schemas.user import UserSummary
+from app.services import community_permissions as perms
 
 router = APIRouter(prefix="/posts", tags=["feed"])
 
@@ -175,6 +176,16 @@ async def create_post(
         if membership is None:
             raise HTTPException(
                 status.HTTP_403_FORBIDDEN, "Join the community before posting in it"
+            )
+
+        # Who may post is the community's own setting. `meets_rank` and not
+        # `outranks`, so an admin still clears an admin-only community.
+        if not perms.meets_rank(membership.role, community.post_min_role):
+            raise HTTPException(
+                status.HTTP_403_FORBIDDEN,
+                perms.POST_REFUSAL.get(
+                    community.post_min_role, "You cannot post in this community."
+                ),
             )
 
     data = payload.model_dump()

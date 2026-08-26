@@ -1,40 +1,70 @@
 /* ============================================================
    COMMUNITIES / MEMBERS GRIDS
    ============================================================ */
-.filterbar{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:18px}
-.filterbar .lbl{font-size:11.5px;font-weight:700;color:var(--faint);letter-spacing:.04em;text-transform:uppercase;margin-right:3px}
-.filter-sep{width:1px;height:20px;background:var(--line);margin:0 5px}
+.filterbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:22px}
+.filterbar .lbl{font-size:11px;font-weight:800;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;margin-right:4px}
+.filter-sep{width:1px;height:22px;background:var(--line);margin:0 6px}
 
-.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:15px}
-.ccard{padding:0;overflow:hidden;transition:all .17s ease;cursor:pointer}
-.ccard:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);border-color:var(--faint)}
-.ccard-banner{height:66px;position:relative}
-.b1{background:linear-gradient(120deg,#073728,#116B4A)}
-.b2{background:linear-gradient(120deg,#0B4A33,#17855C)}
-.b3{background:linear-gradient(120deg,#2C5F1E,#4C7A1A)}
-.b4{background:linear-gradient(120deg,#0A3D2C,#1A7A66)}
-.b5{background:linear-gradient(120deg,#34482A,#587F5C)}
-.b6{background:linear-gradient(120deg,#3E6212,#547A12)}
-.ccard-banner .kind{
-  position:absolute;top:9px;left:11px;
-  padding:2px 8px;border-radius:5px;font-size:10.5px;font-weight:750;letter-spacing:.03em;
-  background:rgba(255,255,255,.92);color:var(--ink);
+/* A fixed column count rather than auto-fill: auto-fill answers a wider page
+   by adding columns, which keeps every card exactly the same size. Three
+   columns that stretch is what actually makes the cards bigger. */
+.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(min-width:2200px){.cgrid{grid-template-columns:repeat(4,1fr)}}
+.ccard{
+  padding:0;overflow:hidden;cursor:pointer;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
 }
-.ccard-body{padding:13px 15px 15px}
-.ccard-body h3{font-size:14.5px;font-weight:700;letter-spacing:-.018em}
-.ccard-body .desc{font-size:12.5px;color:var(--muted);line-height:1.52;margin-top:5px;min-height:38px}
-.ccard-foot{display:flex;align-items:center;gap:9px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line-2)}
+.ccard:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px);border-color:var(--line-strong)}
+.ccard-banner{height:86px;position:relative}
+/* The same six identities as the avatars, opened up a stop — these are large
+   decorative fills, not 30px bubbles, so they can carry more light. */
+.b1{background:linear-gradient(120deg,#0B2533,#1F4D66)}
+.b2{background:linear-gradient(120deg,#0B5342,#179575)}
+.b3{background:linear-gradient(120deg,#113345,#2F6584)}
+.b4{background:linear-gradient(120deg,#14384A,#227C8A)}
+.b5{background:linear-gradient(120deg,#16263F,#43608A)}
+.b6{background:linear-gradient(120deg,#1E2A30,#546F7C)}
+.ccard-banner .kind{
+  position:absolute;top:11px;left:13px;
+  padding:3px 9px;border-radius:6px;font-size:10.5px;font-weight:750;letter-spacing:.03em;
+  background:rgba(255,255,255,.94);color:var(--ink);
+  box-shadow:0 1px 2px rgba(11,37,51,.14);
+}
+.ccard-body{padding:17px 19px 19px}
+.ccard-body h3{font-size:16.5px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.ccard-body .desc{font-size:13.5px;color:var(--muted);line-height:1.6;margin-top:7px;min-height:44px}
+.ccard-foot{display:flex;align-items:center;gap:11px;margin-top:17px;padding-top:15px;border-top:1px solid var(--line-2)}
 .facepile{display:flex}
 .facepile .avatar{margin-left:-8px;border:2px solid var(--surface)}
 .facepile .avatar:first-child{margin-left:0}
-.ccard-count{font-size:11.5px;color:var(--muted);font-weight:560}
+.ccard-count{font-size:12.5px;color:var(--muted);font-weight:560}
 
-.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(252px,1fr));gap:15px}
-.mcard{padding:17px 16px;text-align:center;transition:all .17s ease}
-.mcard:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
-.mcard .avatar{margin:0 auto 11px}
-.mcard h3{font-size:14.5px;font-weight:700;letter-spacing:-.018em}
-.mcard .role{font-size:12.5px;color:var(--ink-2);margin-top:3px;font-weight:560}
-.mcard .loc{font-size:12px;color:var(--muted);margin-top:2px}
-.mcard .mutual{font-size:11.5px;color:var(--faint);margin-top:9px}
-.mcard .acts{display:flex;gap:7px;margin-top:13px}
+/* Member cards are compact by design, so they keep flowing — just a slightly
+   larger floor so a wide page does not shrink them. */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:20px}
+.mcard{
+  padding:20px 18px;text-align:center;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.mcard:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px);border-color:var(--line-strong)}
+.mcard .avatar{margin:0 auto 12px}
+.mcard h3{font-size:15px;font-weight:700;letter-spacing:-.018em;color:var(--ink)}
+.mcard .role{font-size:12.5px;color:var(--ink-2);margin-top:4px;font-weight:560}
+.mcard .loc{font-size:12px;color:var(--muted);margin-top:3px}
+.mcard .mutual{font-size:11.5px;color:var(--faint);margin-top:10px}
+.mcard .acts{display:flex;gap:8px;margin-top:15px}
+
+/* The DRAFT chip sits opposite the kind label on a card's banner. Gold rather
+   than the accent: it is a state to resolve, not a category. */
+.ccard-draft{
+  position:absolute;top:10px;right:11px;
+  font-size:9.5px;font-weight:800;letter-spacing:.1em;
+  padding:3px 7px;border-radius:6px;
+  background:var(--gold-soft);color:var(--gold);
+  border:1px solid var(--gold-line);
+}
+
+/* Logo beside the name on a card. Only rendered when there is one, so the
+   heading keeps its original position for every community without a picture. */
+.ccard-title{display:flex;align-items:center;gap:10px;min-width:0}
+.ccard-title h3{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

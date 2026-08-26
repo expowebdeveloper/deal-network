@@ -1,5 +1,6 @@
 import { useApp } from '../../context/AppContext'
 import CommunityModal from './CommunityModal'
+import CommunitySettingsDrawer from './CommunitySettingsDrawer'
 import CreateCommunityModal from './CreateCommunityModal'
 import ConnectModal from './ConnectModal'
 import CheckoutModal from './CheckoutModal'
@@ -13,10 +14,12 @@ import TermsModal from './TermsModal'
 import RoleModal from './RoleModal'
 import WizardModal from './WizardModal'
 import { ConnectSentModal, PaidModal } from './ConfirmModal'
+import ConfirmActionModal from './ConfirmActionModal'
 
 /** One modal at a time, keyed by the name passed to openModal(). */
 const MODALS = {
   community: CommunityModal,
+  'community-settings': CommunitySettingsDrawer,
   'create-community': CreateCommunityModal,
   connect: ConnectModal,
   'connect-sent': ConnectSentModal,
@@ -31,6 +34,7 @@ const MODALS = {
   terms: TermsModal,
   role: RoleModal,
   wizard: WizardModal,
+  confirm: ConfirmActionModal,
 }
 
 export default function ModalHost() {
