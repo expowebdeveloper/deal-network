@@ -2,6 +2,24 @@
 
 import { api, API_URL, refreshSession, request, tokens } from './api'
 
+/**
+ * What each picker offers, mirroring ALLOWED in the backend's services/storage.py.
+ *
+ * The API is the authority — it re-checks the declared type *and* the file's
+ * magic bytes, and refuses executables and archives by name. This list only
+ * keeps the file dialog from showing files that were never going to be accepted.
+ */
+export const ACCEPT = {
+  image: 'image/jpeg,image/png,image/gif,image/webp',
+  video: 'video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov',
+  document:
+    '.pdf,.txt,.csv,.doc,.docx,.xls,.xlsx,application/pdf,text/plain,text/csv,'
+    + 'application/msword,'
+    + 'application/vnd.openxmlformats-officedocument.wordprocessingml.document,'
+    + 'application/vnd.ms-excel,'
+    + 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+}
+
 /** Media URLs come back as /media/xyz.png — make them absolute for <img src>. */
 export function mediaUrl(path) {
   if (!path) return ''
@@ -106,6 +124,10 @@ export async function uploadMedia(file, _retried = false) {
     id: payload.id,
     kind: payload.kind,
     url: mediaUrl(payload.url),
+    // The server-relative form, for callers that *store* the reference rather
+    // than render it — a community logo is saved on the row and has to keep
+    // working from any host, so it must not carry this client's API origin.
+    path: payload.url,
     name: payload.original_name,
     contentType: payload.content_type,
     sizeBytes: payload.size_bytes,
@@ -168,4 +190,19 @@ export function fileSize(bytes) {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+/* --- Search --------------------------------------------------------------- */
+
+/**
+ * One call across people, communities and your own contacts.
+ *
+ * `signal` is required in practice, not optional: this fires as the member
+ * types, so an earlier slower response can land after a later one and overwrite
+ * it. The caller aborts the previous request instead of trying to sort the
+ * replies out afterwards.
+ */
+export function search(q, { limit = 5, signal } = {}) {
+  const params = new URLSearchParams({ q, limit: String(limit) })
+  return api.get(`/api/search?${params}`, { signal })
 }

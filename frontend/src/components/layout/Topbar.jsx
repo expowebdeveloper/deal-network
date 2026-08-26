@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../../context/AppContext'
-import { BrandMark, SearchIcon, FlowIcon, BellIcon, PresenterIcon } from '../icons/Icons'
+import { BrandMark, FlowIcon, PresenterIcon } from '../icons/Icons'
+import NotificationBell from './NotificationBell'
+import GlobalSearch from './GlobalSearch'
 
 export default function Topbar({ locked = false, fullScreen = false }) {
   const {
@@ -43,10 +45,7 @@ export default function Topbar({ locked = false, fullScreen = false }) {
         <span>Deal Network</span>
       </div>
 
-      <div className="searchbox">
-        <SearchIcon width={2} style={{ width: 15, height: 15 }} />
-        <input placeholder="Search people, communities, contacts" />
-      </div>
+      <GlobalSearch />
       <div className="topbar-sp" />
 
       <button className="btn btn-ghost btn-sm" onClick={openFlow}>
@@ -54,9 +53,7 @@ export default function Topbar({ locked = false, fullScreen = false }) {
         <span className="lbl-wide">How it connects</span>
       </button>
 
-      <button className="icon-btn" title="Notifications">
-        <BellIcon />
-      </button>
+      <NotificationBell />
 
       <button
         className={`icon-btn${presenterOpen ? ' on' : ''}`}

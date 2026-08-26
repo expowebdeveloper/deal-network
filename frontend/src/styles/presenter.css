@@ -2,8 +2,8 @@
    PRESENTER DRAWER
    ============================================================ */
 #presenter{
-  position:fixed;top:0;right:0;bottom:0;width:392px;max-width:92vw;z-index:170;
-  background:var(--green-950);color:rgba(255,255,255,.86);
+  position:fixed;top:0;right:0;bottom:0;width:400px;max-width:92vw;z-index:170;
+  background:linear-gradient(180deg,var(--navy-900),var(--navy-950));color:rgba(255,255,255,.86);
   display:flex;flex-direction:column;
   box-shadow:-16px 0 44px rgba(0,0,0,.3);
   transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
@@ -24,7 +24,7 @@
 .dcard-pr{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:9px;padding:13px 14px;margin-bottom:10px}
 .dcard-pr .q{font-size:13px;font-weight:660;color:#fff;line-height:1.4;letter-spacing:-.012em}
 .dcard-pr .prop{font-size:12px;color:rgba(255,255,255,.66);margin-top:8px;line-height:1.55}
-.dcard-pr .prop b{color:var(--lime);font-weight:650}
+.dcard-pr .prop b{color:var(--emerald-500);font-weight:650}
 .dcard-pr .risk{font-size:11.5px;color:rgba(255,255,255,.66);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08);line-height:1.5}
 .pr-table{width:100%;border-collapse:collapse;font-size:11.5px;min-width:0}
 .pr-table th{text-align:left;padding:7px 8px;font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.64);border-bottom:1px solid rgba(255,255,255,.1)}
@@ -38,7 +38,57 @@
 .shot .nm{font-size:12.5px;font-weight:680;color:#fff}
 .shot .ph{font-size:11px;color:rgba(255,255,255,.64);margin-top:4px}
 .pr-note{
-  padding:13px 14px;border-radius:9px;
-  background:rgba(111,214,192,.09);border:1px solid rgba(111,214,192,.24);
-  font-size:12.5px;line-height:1.58;color:#CDEE9B;font-style:italic;
+  padding:14px 15px;border-radius:var(--r-sm);
+  background:rgba(31,163,131,.10);border:1px solid rgba(31,163,131,.26);
+  font-size:12.5px;line-height:1.6;color:#B9E6D8;font-style:italic;
 }
+
+/* --- Editing (staff only) -------------------------------------------------- */
+
+.pr-sec .hd{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pr-add{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 9px;border:1px solid rgba(255,255,255,.24);border-radius:6px;
+  background:none;cursor:pointer;font:inherit;font-size:10.5px;font-weight:650;
+  color:#fff;opacity:.75;
+}
+.pr-add:hover{opacity:1;background:rgba(255,255,255,.08)}
+.pr-add svg{width:11px;height:11px}
+
+/* Controls sit inline with the heading and stay quiet until hover, so the panel
+   still reads as notes rather than as a form. */
+.pr-ctl{float:right;display:inline-flex;gap:8px;opacity:0;transition:opacity .12s}
+.dcard-pr:hover .pr-ctl,.shot:hover .pr-ctl,.pr-note:hover .pr-ctl{opacity:1}
+.pr-ctl button{
+  border:0;background:none;cursor:pointer;font:inherit;font-size:10.5px;font-weight:650;
+  color:#fff;opacity:.8;
+}
+.pr-ctl button:hover{opacity:1;text-decoration:underline}
+.pr-ctl button.danger{color:#F0A79F}
+
+.pr-form{display:grid;gap:9px;margin:8px 0 14px;padding:11px;border-radius:6px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14)}
+.pr-form label{display:grid;gap:4px;font-size:10.5px;font-weight:650;
+  letter-spacing:.04em;text-transform:uppercase;opacity:.7}
+.pr-form textarea{
+  width:100%;resize:vertical;font:inherit;font-size:12.5px;line-height:1.55;
+  padding:7px 9px;border-radius:5px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(0,0,0,.22);color:inherit;
+}
+.pr-form textarea:focus{outline:none;border-color:var(--emerald-500);box-shadow:0 0 0 3px rgba(31,163,131,.22)}
+
+.pr-form-foot{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.pr-hint{margin-right:auto;font-size:10px;opacity:.55}
+.pr-ctl-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 10px;border-radius:5px;cursor:pointer;font:inherit;
+  font-size:11.5px;font-weight:650;
+  border:1px solid rgba(255,255,255,.22);background:none;color:inherit;
+}
+.pr-ctl-btn svg{width:12px;height:12px}
+.pr-ctl-btn.ok{background:var(--lime);border-color:var(--lime);color:var(--on-lime)}
+.pr-ctl-btn:disabled{opacity:.5;cursor:default}
+
+.dcard-pr.row .prop .was{opacity:.65}
+.dcard-pr.row .risk.now{opacity:1}

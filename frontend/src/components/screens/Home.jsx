@@ -15,24 +15,7 @@ import {
   timeAgo, fileSize,
 } from '../../lib/feed'
 
-function Attachment({ file }) {
-  if (file.kind === 'image') {
-    return (
-      <a className="post-image" href={file.url} target="_blank" rel="noreferrer">
-        <img src={file.url} alt={file.name} loading="lazy" />
-      </a>
-    )
-  }
-  return (
-    <a className="post-doc" href={file.url} target="_blank" rel="noreferrer" download={file.name}>
-      <DocumentIcon />
-      <div>
-        <div className="n">{file.name}</div>
-        <div className="s">{fileSize(file.sizeBytes)}</div>
-      </div>
-    </a>
-  )
-}
+import MediaViewer from '../media/MediaViewer'
 
 function Post({ post, onChanged }) {
   const [liked, setLiked] = useState(post.likedByMe)
@@ -114,11 +97,7 @@ function Post({ post, onChanged }) {
 
       {post.body?.trim() && <div className="post-body">{post.body}</div>}
 
-      {post.attachments.length > 0 && (
-        <div className="post-files">
-          {post.attachments.map((f) => <Attachment key={f.id} file={f} />)}
-        </div>
-      )}
+      <MediaViewer files={post.attachments} />
 
       {post.embed && (
         <div className="post-embed">

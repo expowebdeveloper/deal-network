@@ -74,7 +74,7 @@ class Pipeline(BaseModel):
     columns: list[PipelineColumn]
 
 
-# --- Investors ------------------------------------------------------------
+# --- Investors ----------------------------------------------------------
 
 class IntroCommunity(ORMModel):
     id: uuid.UUID
@@ -127,6 +127,11 @@ class PlanOut(BaseModel):
     featured: bool = False
     features: list[PlanFeature]
     is_current: bool = False
+    # False when this tier cannot currently be bought — a paid plan with no
+    # Stripe Price configured on the server. The Plans screen greys the button
+    # out rather than letting the member click through to a 503 they can do
+    # nothing about. Free tiers are always purchasable.
+    purchasable: bool = True
 
 
 class PublicPlanOut(PlanOut):
