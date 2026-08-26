@@ -1,51 +1,54 @@
 /* ============================================================
    CRM
    ============================================================ */
-.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:24px}
 .tab{
-  padding:9px 14px;font-size:13.5px;font-weight:620;color:var(--muted);
-  border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .13s;
+  padding:11px 15px;font-size:13.5px;font-weight:620;color:var(--muted);
+  border-bottom:2px solid transparent;margin-bottom:-1px;letter-spacing:-.008em;
+  transition:color .15s ease,border-color .15s ease;
 }
 .tab:hover{color:var(--ink)}
-.tab.on{color:var(--ink);border-bottom-color:var(--accent)}
+.tab.on{color:var(--accent-deep);border-bottom-color:var(--accent)}
 
 .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface)}
 table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:720px}
 thead th{
-  text-align:left;padding:10px 15px;font-size:11px;font-weight:800;
-  letter-spacing:.06em;text-transform:uppercase;color:var(--faint);
+  text-align:left;padding:12px 16px;font-size:11px;font-weight:800;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--faint);
   background:var(--surface-2);border-bottom:1px solid var(--line);white-space:nowrap;
 }
-tbody td{padding:12px 15px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+tbody td{padding:13px 16px;border-bottom:1px solid var(--line-2);vertical-align:middle}
 tbody tr:last-child td{border-bottom:none}
-tbody tr:hover{background:var(--surface-2)}
+tbody tr{transition:background-color .12s ease}
+tbody tr:hover{background:var(--accent-faint)}
 .td-name{display:flex;align-items:center;gap:10px}
 .td-name .n{font-weight:640;letter-spacing:-.012em}
 .td-name .c{font-size:12px;color:var(--muted)}
-.stage{display:inline-flex;padding:3px 9px;border-radius:5px;font-size:11.5px;font-weight:700}
-/* The stages read as a progression: quiet green while it is early, lime once a
-   conversation is live, solid dark green when it is committed. */
-.s-new{background:var(--surface-2);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line)}
-.s-contacted{background:var(--gold-soft);color:var(--gold)}
-.s-disc{background:var(--lime-soft);color:var(--lime-ink)}
+.stage{display:inline-flex;padding:3px 10px;border-radius:6px;font-size:11.5px;font-weight:700;border:1px solid transparent;line-height:1.4}
+/* The stages read as a progression: neutral while it is early, amber once
+   someone has reached out, lime while a conversation is live, solid emerald
+   when it is committed, and spent grey once it closes. */
+.s-new{background:#E8ECEF;color:var(--ink-2);border-color:#D2DAE0}
+.s-contacted{background:var(--gold-soft);color:var(--gold);border-color:var(--gold-line)}
+.s-disc{background:var(--lime-soft);color:var(--lime-ink);border-color:#DCEFAE}
 .s-comm{background:var(--accent);color:var(--on-dark)}
-.s-closed{background:var(--line-2);color:var(--muted)}
+.s-closed{background:var(--surface-2);color:var(--faint);border-color:var(--line)}
 
 .board{display:grid;grid-template-columns:repeat(5,minmax(200px,1fr));gap:13px;overflow-x:auto;padding-bottom:8px}
-.col{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:11px;min-height:280px;transition:background .15s,border-color .15s}
+.col{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:12px;min-height:300px;transition:background-color .15s ease,border-color .15s ease}
 .col.dragover{background:var(--accent-soft);border-color:var(--accent)}
 .col-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;padding:0 3px}
 .col-head .t{font-size:12px;font-weight:750;letter-spacing:-.008em}
-.col-head .n{font-size:11px;font-weight:700;color:var(--faint);background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+.col-head .n{font-size:11px;font-weight:700;color:var(--faint);background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:1px 7px;min-width:20px;text-align:center}
 .dcard{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);
   padding:11px 12px;margin-bottom:8px;cursor:grab;box-shadow:var(--shadow-sm);
   transition:box-shadow .14s,transform .14s;
 }
-.dcard:hover{box-shadow:var(--shadow)}
+.dcard:hover{box-shadow:var(--shadow);border-color:var(--line-strong)}
 .dcard:active{cursor:grabbing}
 .dcard.dragging{opacity:.4;transform:rotate(1.5deg)}
-.dcard.picked{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.dcard.picked{border-color:var(--accent);box-shadow:var(--ring)}
 .board.picking .col{border-style:dashed;border-color:var(--accent)}
 .board.picking .col:hover{background:var(--accent-soft)}
 .dcard .t{font-size:13px;font-weight:660;letter-spacing:-.014em;line-height:1.35}
@@ -58,8 +61,8 @@ tbody tr:hover{background:var(--surface-2)}
 
 /* How much of the free tier's contact allowance is used. */
 .quota{
-  display:inline-flex;align-items:center;gap:6px;
-  margin-bottom:14px;padding:7px 12px;border-radius:99px;
+  display:inline-flex;align-items:center;gap:7px;
+  margin-bottom:16px;padding:7px 13px;border-radius:99px;
   background:var(--surface-2);border:1px solid var(--line);
   font-size:12.5px;color:var(--muted);
 }
@@ -68,9 +71,9 @@ tbody tr:hover{background:var(--surface-2)}
 /* Shown in place of a board or screen the plan does not carry. */
 .locked-panel{
   display:flex;flex-direction:column;align-items:center;text-align:center;
-  gap:10px;padding:46px 32px;max-width:520px;margin:8px auto;
+  gap:11px;padding:52px 32px;max-width:520px;margin:8px auto;
 }
-.locked-panel svg{width:26px;height:26px;color:var(--faint)}
+.locked-panel svg{width:28px;height:28px;color:var(--faint)}
 .locked-panel h3{font-size:16.5px;font-weight:700;letter-spacing:-.015em}
 .locked-panel p{font-size:13.5px;color:var(--muted);line-height:1.6;max-width:44ch}
 .locked-panel .btn{margin-top:6px}

@@ -31,10 +31,24 @@ class Subscription(UUIDMixin, TimestampMixin, Base):
         nullable=False,
     )
     # Never store raw card data — this is the last four only, for display.
+    # Under Stripe these are filled from the webhook's payment-method summary;
+    # no card number ever reaches this process.
     card_last4: Mapped[str | None] = mapped_column(String(4))
     card_name: Mapped[str | None] = mapped_column(String(160))
+    card_brand: Mapped[str | None] = mapped_column(String(40))
     billing_country: Mapped[str | None] = mapped_column(String(80))
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     cancelled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    # --- Stripe ----------------------------------------------------------
+    # Unique so a webhook can find the row by either id, and so a bug cannot
+    # attach one Stripe subscription to two members.
+    stripe_customer_id: Mapped[str | None] = mapped_column(String(80), unique=True, index=True)
+    stripe_subscription_id: Mapped[str | None] = mapped_column(
+        String(80), unique=True, index=True
+    )
+    stripe_price_id: Mapped[str | None] = mapped_column(String(80))
+    current_period_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    cancel_at_period_end: Mapped[bool] = mapped_column(default=False, nullable=False)
 
     user: Mapped["User"] = relationship(lazy="selectin")  # noqa: F821
